@@ -1,33 +1,32 @@
-# dependencies
-/node_modules/
+# Node modules
+node_modules/
 
-# compiled output
-/dist/
-/build/
+# Build/output folders
+dist/
+build/
 
-# environment variables
+# Environment files
 .env
+.env.local
 .env.*.local
 
-# logs
+# Logs
 npm-debug.log*
 yarn-debug.log*
+yarn-error.log*
 pnpm-debug.log*
-lerna-debug.log*
 
-# testing
-/coverage/
-/nyc_output/
-
-# IDEs and editors
-.vscode/
-.idea/
-*.sublime-workspace
-*.sublime-project
-
-# OS files
+# OS-generated files
 .DS_Store
 Thumbs.db
 
-# misc
-.cache/
+# Uploaded media (avatars, offerings, etc.)
+uploads/
+
+# Editor/project-specific
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln

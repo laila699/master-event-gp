@@ -1,6 +1,7 @@
 // lib/screens/dashboard_screen.dart
 
 import 'package:flutter/material.dart';
+import 'package:masterevent/screens/admin_dashboard_screen.dart';
 import '../models/user.dart';
 import 'my_events_screen.dart';
 // Make sure this import points at your vendor‐dashboard file:
@@ -20,6 +21,7 @@ class DashboardScreen extends StatelessWidget {
         // <— fix: return VendorDashboardScreen, not DashboardScreen again
         return const VendorDashboardScreen();
       case 'admin':
+        return const AdminDashboardScreen();
       default:
         return _GenericHomeScreen(user: user);
     }

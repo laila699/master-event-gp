@@ -11,7 +11,7 @@ import vendorRoutes from "./routes/vendors";
 import bookingRoutes from "./routes/bookings";
 import notificationsRoutes from "./routes/notifications";
 import menuRoutes from "./routes/menu"; // <— your “restaurant menu” router
-
+import adminRoutes from "./routes/admin";
 // Middleware
 import { requireAuth } from "./middleware/auth";
 import { errorHandler } from "./middleware/error";
@@ -30,6 +30,7 @@ app.use(cors({ origin: "*" }));
 
 // 2) Parse JSON bodies
 app.use(express.json());
+app.use("/api/admin", adminRoutes);
 
 // 3) Serve uploaded files under “/uploads”
 app.use("/api/uploads/", express.static(path.join(__dirname, "../uploads")));
