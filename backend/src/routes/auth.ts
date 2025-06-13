@@ -6,6 +6,7 @@ import {
   login,
   getMe,
   updateMe,
+  getUserById,
 } from "../controllers/auth.controller";
 import { requireAuth } from "../middleware/auth";
 
@@ -17,5 +18,6 @@ router.get("/me", requireAuth, getMe);
 
 // New: update the authenticated user
 router.put("/me", requireAuth, updateMe);
+router.get("/users/:id", getUserById); // ← add this
 
 export default router;

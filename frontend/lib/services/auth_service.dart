@@ -2,8 +2,10 @@
 
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'token_storage.dart';
-import '../models/user.dart';
+import '../models/user.dart' as app_user;
 import 'dart:convert';
 
 class AuthService {
@@ -15,14 +17,14 @@ class AuthService {
   /// POST /auth/register → { token, user }
   /// Accepts: name, email, phone, password, role, optional profileImage,
   /// and optional vendorProfile (which is a VendorProfile instance).
-  Future<User> register({
+  Future<app_user.User> register({
     required String name,
     required String email,
     required String phone,
     required String password,
     required String role,
     File? profileImage,
-    VendorProfile? vendorProfile,
+    app_user.VendorProfile? vendorProfile,
   }) async {
     // 1) Build a Map<String, dynamic> so we can insert MultipartFile + other fields
     final Map<String, dynamic> formDataMap = {
@@ -62,32 +64,57 @@ class AuthService {
 
     // 6) Save JWT locally, then return a User object
     await _tokenStorage.saveToken(token);
-    return User.fromJson(userJson);
+    return app_user.User.fromJson(userJson);
   }
 
   /// POST /auth/login → { token, user }
-  Future<User> login({required String email, required String password}) async {
+  Future<app_user.User> login({
+    required String email,
+    required String password,
+  }) async {
     final response = await _dio.post(
       '/auth/login',
       data: {'email': email, 'password': password},
     );
-    final data = response.data as Map<String, dynamic>;
-    final token = data['token'] as String;
-    final userJson = data['user'] as Map<String, dynamic>;
 
-    await _tokenStorage.saveToken(token);
-    return User.fromJson(userJson);
+    final data = response.data as Map<String, dynamic>;
+    final jwtToken = data['token'] as String;
+    final userJson = data['user'] as Map<String, dynamic>;
+    final firebaseToken = data['firebaseToken'] as String; // ◀ just cast
+
+    // 1️⃣ Sign into FirebaseAuth so Firestore rules see the right UID
+    try {
+      await FirebaseAuth.instance.signInWithCustomToken(firebaseToken);
+      print('🔐 Firebase sign-in succeeded');
+    } on FirebaseAuthException catch (e) {
+      debugPrint(
+        '❌ signInWithCustomToken failed: code=${e.code}, message=${e.message}',
+      );
+      rethrow; // or wrap in a clearer Exception
+    }
+
+    // 2️⃣ Persist your own JWT
+    await _tokenStorage.saveToken(jwtToken);
+
+    // 3️⃣ Return your app User model
+    return app_user.User.fromJson(userJson);
   }
 
   /// GET /auth/me → current user
-  Future<User> me() async {
+  Future<app_user.User> me() async {
     final response = await _dio.get('/auth/me');
     final userJson = response.data as Map<String, dynamic>;
-    return User.fromJson(userJson);
+    return app_user.User.fromJson(userJson);
+  }
+
+  Future<String> getUserName(String id) async {
+    final resp = await _dio.get("/auth/users/$id");
+    final data = resp.data as Map<String, dynamic>;
+    return data['name'] as String;
   }
 
   /// PUT /auth/me → update profile (name, email, phone, avatar)
-  Future<User> updateProfile({
+  Future<app_user.User> updateProfile({
     required String name,
     required String email,
     required String phone,
@@ -115,7 +142,7 @@ class AuthService {
     );
 
     final data = response.data as Map<String, dynamic>;
-    return User.fromJson(data);
+    return app_user.User.fromJson(data);
   }
 
   Future<void> logout() async {

@@ -8,80 +8,69 @@ class RestaurantListScreen extends StatefulWidget {
 }
 
 class _RestaurantListScreenState extends State<RestaurantListScreen> {
- final List<Map<String, dynamic>> _allRestaurants = [
-  {
-    'name': 'fareed zamano',
-    'image': 'assets/fareed.jpg',
-    'rating': 4.7,
-    'location': 'رفيديا - نابلس',
-    'phone': '0593130136',
-    'foodImages': ['assets/f1.jpg', 'assets/f2.jpg'],
-    'city': 'نابلس',
-    'customerReviews': [
-      {
-        'name': 'أحمد',
-        'rating': 5,
-        'comment': 'طعام ممتاز وخدمة رائعة!',
-      },
-      {
-        'name': 'ليلى',
-        'rating': 4,
-        'comment': 'الجو جميل لكن الأسعار مرتفعة قليلاً.',
-      },
-    ],
-  },
-  {
-    'name': '1948',
-    'image': 'assets/1948.jpg',
-    'rating': 4.5,
-    'location': 'رفيديا - نابلس',
-    'phone': '0597888807',
-    'foodImages': ['assets/jeb.jpg', 'assets/ma.jpg', 'assets/kob.jpg'],
-    'city': 'نابلس',
-    'customerReviews': [
-      {
-        'name': 'سعيد',
-        'rating': 4,
-        'comment': 'الطعام شهي والمكان نظيف.',
-      },
-    ],
-  },
-  {
-    'name': 'مطعم القدس',
-    'image': 'assets/f1.jpg',
-    'rating': 4.2,
-    'location': 'شارع القدس - الخليل',
-    'phone': '0599XXXXXX',
-    'foodImages': ['assets/jeb.jpg', 'assets/kob.jpg'],
-    'city': 'الخليل',
-    'customerReviews': [
-       {
-        'name': 'منى',
-        'rating': 5,
-        'comment': 'أفضل بوفيه حضرته على الإطلاق!',
-      },
-    ],
-  },
-  {
-    'name': 'مطعم حلا',
-    'image': 'assets/f2.jpg',
-    'rating': 4.2,
-    'location': 'شارع القدس - الخليل',
-    'phone': '0599XXXXXX',
-    'foodImages': ['assets/kob.jpg', 'assets/jeb.jpg'],
-    'city': 'طولكرم',
-    'customerReviews': [
-      {
-        'name': 'منى',
-        'rating': 5,
-        'comment': 'أفضل بوفيه حضرته على الإطلاق!',
-      },
-    ],
-  },
-];
-
-    
- 
+  final List<Map<String, dynamic>> _allRestaurants = [
+    {
+      'name': 'fareed zamano',
+      'image': 'assets/fareed.jpg',
+      'rating': 4.7,
+      'location': 'رفيديا - نابلس',
+      'phone': '0593130136',
+      'foodImages': ['assets/f1.jpg', 'assets/f2.jpg'],
+      'city': 'نابلس',
+      'customerReviews': [
+        {'name': 'أحمد', 'rating': 5, 'comment': 'طعام ممتاز وخدمة رائعة!'},
+        {
+          'name': 'ليلى',
+          'rating': 4,
+          'comment': 'الجو جميل لكن الأسعار مرتفعة قليلاً.',
+        },
+      ],
+    },
+    {
+      'name': '1948',
+      'image': 'assets/1948.jpg',
+      'rating': 4.5,
+      'location': 'رفيديا - نابلس',
+      'phone': '0597888807',
+      'foodImages': ['assets/jeb.jpg', 'assets/ma.jpg', 'assets/kob.jpg'],
+      'city': 'نابلس',
+      'customerReviews': [
+        {'name': 'سعيد', 'rating': 4, 'comment': 'الطعام شهي والمكان نظيف.'},
+      ],
+    },
+    {
+      'name': 'مطعم القدس',
+      'image': 'assets/f1.jpg',
+      'rating': 4.2,
+      'location': 'شارع القدس - الخليل',
+      'phone': '0599XXXXXX',
+      'foodImages': ['assets/jeb.jpg', 'assets/kob.jpg'],
+      'city': 'الخليل',
+      'customerReviews': [
+        {
+          'name': 'منى',
+          'rating': 5,
+          'comment': 'أفضل بوفيه حضرته على الإطلاق!',
+        },
+      ],
+    },
+    {
+      'name': 'مطعم حلا',
+      'image': 'assets/f2.jpg',
+      'rating': 4.2,
+      'location': 'شارع القدس - الخليل',
+      'phone': '0599XXXXXX',
+      'foodImages': ['assets/kob.jpg', 'assets/jeb.jpg'],
+      'city': 'طولكرم',
+      'customerReviews': [
+        {
+          'name': 'منى',
+          'rating': 5,
+          'comment': 'أفضل بوفيه حضرته على الإطلاق!',
+        },
+      ],
+    },
+  ];
 
   List<Map<String, dynamic>> _filteredRestaurants = [];
   final _searchController = TextEditingController();
@@ -89,7 +78,9 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
   @override
   void initState() {
     super.initState();
-    _filteredRestaurants = List.from(_allRestaurants); // تهيئة القائمة المفلترة بكل المطاعم
+    _filteredRestaurants = List.from(
+      _allRestaurants,
+    ); // تهيئة القائمة المفلترة بكل المطاعم
   }
 
   void _filterRestaurants(String city) {
@@ -97,9 +88,13 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
       if (city.isEmpty) {
         _filteredRestaurants = List.from(_allRestaurants);
       } else {
-        _filteredRestaurants = _allRestaurants
-            .where((res) => res['city'].toLowerCase().contains(city.toLowerCase()))
-            .toList();
+        _filteredRestaurants =
+            _allRestaurants
+                .where(
+                  (res) =>
+                      res['city'].toLowerCase().contains(city.toLowerCase()),
+                )
+                .toList();
       }
     });
   }
@@ -119,7 +114,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                 style: GoogleFonts.cairo(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple,
+                  color: Colors.purple,
                 ),
               ),
             ),
@@ -179,14 +174,17 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => RestaurantDetailsScreen(
-                              name: res['name'],
-                              location: res['location'],
-                              rating: res['rating'].toDouble(),
-                              phone: res['phone'],
-                              reviewImages: List<String>.from(res['foodImages'] ?? []),
-                                customerReviews: res['customerReviews'] ?? [], 
-                            ),
+                            builder:
+                                (_) => RestaurantDetailsScreen(
+                                  name: res['name'],
+                                  location: res['location'],
+                                  rating: res['rating'].toDouble(),
+                                  phone: res['phone'],
+                                  reviewImages: List<String>.from(
+                                    res['foodImages'] ?? [],
+                                  ),
+                                  customerReviews: res['customerReviews'] ?? [],
+                                ),
                           ),
                         );
                       },

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -23,18 +24,28 @@ class OfferingDetailsScreen extends ConsumerWidget {
     final authState = ref.watch(authNotifierProvider);
     final user =
         authState.status == AuthStatus.authenticated ? authState.user! : null;
+    if (user == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('تفاصيل العرض'),
+          backgroundColor: Colors.purple,
+        ),
+        body: const Center(child: Text('يجب تسجيل الدخول أولاً')),
+      );
+    }
+    final vendorId = user.id;
     final isVendorOwner =
-        user != null && user.role == 'vendor' && user.id == offering.vendorId;
-    final isAdmin = user != null && user.role == 'admin';
+        user.role == 'vendor' && vendorId == offering.vendorId;
+    final isAdmin = user.role == 'admin';
 
     // Base URL for loading “offering.images[ ]” (adjust host if needed)
-    final host = '172.16.0.120';
-    final base = 'http://$host:5000';
+    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final base = 'http://$host:5000/api';
 
     return Scaffold(
       appBar: AppBar(
         title: Text('تفاصيل العرض'),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.purple,
         actions: [
           if (isVendorOwner || isAdmin)
             IconButton(
@@ -64,7 +75,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
                 if (confirm == true) {
                   // Call delete from notifier, then pop back to list
                   await ref
-                      .read(vendorOfferingsProvider.notifier)
+                      .read(vendorOfferingsProvider(vendorId).notifier)
                       .deleteExisting(offeringId: offering.id);
                   Navigator.of(context).pop(); // back to list
                   ScaffoldMessenger.of(
@@ -78,7 +89,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
               icon: const Icon(Icons.edit),
               onPressed: () async {
                 // Reuse your existing edit dialog logic
-                await _showEditOfferingDialog(context, ref, offering);
+                await _showEditOfferingDialog(context, ref, vendorId, offering);
                 // After editing, rebuild so that updated data is shown
               },
             ),
@@ -147,10 +158,10 @@ class OfferingDetailsScreen extends ConsumerWidget {
                 vertical: 8.0,
               ),
               child: Text(
-                '${offering.price.toStringAsFixed(2)} ر.س',
+                '${offering.price.toStringAsFixed(2)} ش.إ',
                 style: TextStyle(
                   fontSize: 20,
-                  color: Colors.deepPurple.shade700,
+                  color: Colors.purple.shade700,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -181,6 +192,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
   Future<void> _showEditOfferingDialog(
     BuildContext context,
     WidgetRef ref,
+    String vendorId,
     Offering off,
   ) async {
     final _titleCtl = TextEditingController(text: off.title);
@@ -297,7 +309,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
                         double.tryParse(_priceCtl.text.trim()) ?? off.price;
                     if (title.isNotEmpty && price > 0) {
                       ref
-                          .read(vendorOfferingsProvider.notifier)
+                          .read(vendorOfferingsProvider(vendorId).notifier)
                           .updateExisting(
                             offeringId: off.id,
                             title: title,

@@ -4,58 +4,56 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:masterevent/providers/auth_provider.dart';
 
 import '../../models/menu_section.dart';
 
 import '../../providers/restaurant_provider.dart';
 
 class MenuTab extends ConsumerWidget {
-  const MenuTab({super.key});
+  final String vendorId;
+  const MenuTab({Key? key, required this.vendorId}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final menuAsync = ref.watch(restaurantMenuProvider);
-    final host = '172.16.0.120';
-    // On iOS Simulator, localhost will work; on Android emulator you must use 10.0.2.2
+    final menuAsync = ref.watch(restaurantMenuProvider(vendorId));
+    final host = '192.168.1.122';
     final base = 'http://$host:5000/api';
+
+    // Determine roles
+    final auth = ref.watch(authNotifierProvider);
+    final user = auth.status == AuthStatus.authenticated ? auth.user : null;
+    final isVendor = user?.role == 'vendor' && user?.id == vendorId;
+    final isAdmin = user?.role == 'admin';
+    final canEdit = isVendor == true || isAdmin == true;
 
     return menuAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, st) => Center(child: Text('خطأ: $err')),
+      error: (e, _) => Center(child: Text('خطأ: $e')),
       data: (sections) {
         return Stack(
           children: [
-            // Main content: list of expandable sections
             ListView.builder(
               padding: const EdgeInsets.all(8),
               itemCount: sections.length,
-              itemBuilder: (context, secIndex) {
-                final section = sections[secIndex];
-
+              itemBuilder: (ctx, idx) {
+                final section = sections[idx];
                 return Card(
                   margin: const EdgeInsets.symmetric(vertical: 4),
                   child: ExpansionTile(
                     key: ValueKey(section.id),
-                    tilePadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 4,
-                    ),
                     title: Text(
                       section.name,
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        color: Colors.deepPurple.shade700,
+                        color: Colors.purple.shade700,
                       ),
                     ),
-                    childrenPadding: const EdgeInsets.symmetric(horizontal: 16),
                     children: [
-                      // 1) List of dishes under this section
+                      // dishes
                       ...section.items.map((dish) {
                         return ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 0,
-                          ),
                           leading:
                               dish.imageUrl == null
                                   ? const Icon(
@@ -66,17 +64,16 @@ class MenuTab extends ConsumerWidget {
                                   : ClipRRect(
                                     borderRadius: BorderRadius.circular(4),
                                     child: Image.network(
-                                      '${base}${dish.imageUrl}',
+                                      '$base${dish.imageUrl}',
                                       width: 40,
                                       height: 40,
                                       fit: BoxFit.cover,
-                                      errorBuilder: (ctx, err, stack) {
-                                        return const Icon(
-                                          Icons.broken_image,
-                                          size: 40,
-                                          color: Colors.grey,
-                                        );
-                                      },
+                                      errorBuilder:
+                                          (_, __, ___) => const Icon(
+                                            Icons.broken_image,
+                                            size: 40,
+                                            color: Colors.grey,
+                                          ),
                                     ),
                                   ),
                           title: Text(
@@ -84,67 +81,81 @@ class MenuTab extends ConsumerWidget {
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(
-                            '${dish.price} شيكل',
-                            style: TextStyle(color: Colors.deepPurple.shade600),
+                            '${dish.price} ش.إ',
+                            style: TextStyle(color: Colors.purple.shade600),
                           ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              // Edit dish
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.edit,
-                                  color: Colors.deepPurple,
-                                ),
-                                onPressed: () {
-                                  _showEditDishDialog(
-                                    context,
-                                    ref,
-                                    section.id,
-                                    dish,
-                                  );
-                                },
-                              ),
-                              // Delete dish
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {
-                                  ref
-                                      .read(restaurantMenuProvider.notifier)
-                                      .deleteDish(
-                                        sectionId: section.id,
-                                        dishId: dish.id,
-                                      );
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('جارٍ حذف الوجبة'),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          ),
+                          trailing:
+                              canEdit
+                                  ? Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.edit,
+                                          color: Colors.purple,
+                                        ),
+                                        onPressed: () {
+                                          _showEditDishDialog(
+                                            context,
+                                            ref,
+                                            section.id,
+                                            dish,
+                                            vendorId,
+                                          );
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                        onPressed: () {
+                                          ref
+                                              .read(
+                                                restaurantMenuProvider(
+                                                  vendorId,
+                                                ).notifier,
+                                              )
+                                              .deleteDish(
+                                                sectionId: section.id,
+                                                dishId: dish.id,
+                                              );
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('تم حذف الوجبة'),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  )
+                                  : null,
                         );
                       }).toList(),
 
-                      // 2) “Add Dish” button at bottom of this section
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8.0),
-                        child: TextButton.icon(
-                          icon: const Icon(Icons.add),
-                          label: const Text('إضافة وجبة جديدة'),
-                          style: TextButton.styleFrom(
-                            foregroundColor: Colors.deepPurple,
-                            textStyle: const TextStyle(fontSize: 16),
+                      // add-dish button
+                      if (canEdit)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: TextButton.icon(
+                            icon: const Icon(Icons.add),
+                            label: const Text('إضافة وجبة جديدة'),
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.purple,
+                              textStyle: const TextStyle(fontSize: 16),
+                            ),
+                            onPressed: () {
+                              _showAddDishDialog(
+                                context,
+                                ref,
+                                section.id,
+                                vendorId,
+                              );
+                            },
                           ),
-                          onPressed: () {
-                            _showAddDishDialog(context, ref, section.id);
-                          },
                         ),
-                      ),
 
                       const Divider(height: 1),
                     ],
@@ -153,18 +164,19 @@ class MenuTab extends ConsumerWidget {
               },
             ),
 
-            // FAB for adding a new section (only)
-            Positioned(
-              bottom: 16,
-              right: 16,
-              child: FloatingActionButton(
-                backgroundColor: Colors.deepPurple,
-                child: const Icon(Icons.add_business),
-                onPressed: () {
-                  _showAddSectionDialog(context, ref);
-                },
+            // add-section FAB
+            if (canEdit)
+              Positioned(
+                bottom: 16,
+                right: 16,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.purple,
+                  child: const Icon(Icons.add_business),
+                  onPressed: () {
+                    _showAddSectionDialog(context, ref, vendorId);
+                  },
+                ),
               ),
-            ),
           ],
         );
       },
@@ -175,6 +187,7 @@ class MenuTab extends ConsumerWidget {
   Future<void> _showAddSectionDialog(
     BuildContext context,
     WidgetRef ref,
+    String vendorId,
   ) async {
     final _secCtl = TextEditingController();
 
@@ -205,7 +218,9 @@ class MenuTab extends ConsumerWidget {
     );
 
     if (sectionName != null && sectionName.isNotEmpty) {
-      ref.read(restaurantMenuProvider.notifier).addSection(name: sectionName);
+      ref
+          .read(restaurantMenuProvider(vendorId).notifier)
+          .addSection(name: sectionName);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('جارٍ إضافة القسم "$sectionName"')),
       );
@@ -217,6 +232,7 @@ class MenuTab extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     String sectionId,
+    String vendorId,
   ) async {
     final _nameCtl = TextEditingController();
     final _priceCtl = TextEditingController();
@@ -293,7 +309,7 @@ class MenuTab extends ConsumerWidget {
                       icon: const Icon(Icons.photo_library),
                       label: const Text('اختيار / التقاط صورة'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple.shade200,
+                        backgroundColor: Colors.purple.shade200,
                         foregroundColor: Colors.white,
                       ),
                       onPressed: () async {
@@ -317,7 +333,7 @@ class MenuTab extends ConsumerWidget {
                     TextField(
                       controller: _priceCtl,
                       decoration: const InputDecoration(
-                        labelText: 'السعر (ر.س)',
+                        labelText: 'السعر (ش.إ)',
                       ),
                       keyboardType: TextInputType.number,
                     ),
@@ -335,7 +351,7 @@ class MenuTab extends ConsumerWidget {
                     final priceText = _priceCtl.text.trim();
                     if (name.isNotEmpty && priceText.isNotEmpty) {
                       ref
-                          .read(restaurantMenuProvider.notifier)
+                          .read(restaurantMenuProvider(vendorId).notifier)
                           .addDish(
                             sectionId: sectionId,
                             dishName: name,
@@ -364,6 +380,7 @@ class MenuTab extends ConsumerWidget {
     WidgetRef ref,
     String sectionId,
     Dish dish,
+    String vendorId,
   ) async {
     final _nameCtl = TextEditingController(text: dish.name);
     final _priceCtl = TextEditingController(text: dish.price.toString());
@@ -460,7 +477,7 @@ class MenuTab extends ConsumerWidget {
                       icon: const Icon(Icons.photo_library),
                       label: const Text('استبدال الصورة'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.deepPurple.shade200,
+                        backgroundColor: Colors.purple.shade200,
                         foregroundColor: Colors.white,
                       ),
                       onPressed: () async {
@@ -484,7 +501,7 @@ class MenuTab extends ConsumerWidget {
                     TextField(
                       controller: _priceCtl,
                       decoration: const InputDecoration(
-                        labelText: 'السعر (ر.س)',
+                        labelText: 'السعر (ش.إ)',
                       ),
                       keyboardType: TextInputType.number,
                     ),
@@ -502,7 +519,7 @@ class MenuTab extends ConsumerWidget {
                     final newPriceText = _priceCtl.text.trim();
                     if (newName.isNotEmpty && newPriceText.isNotEmpty) {
                       ref
-                          .read(restaurantMenuProvider.notifier)
+                          .read(restaurantMenuProvider(vendorId).notifier)
                           .updateDish(
                             sectionId: sectionId,
                             dishId: dish.id,

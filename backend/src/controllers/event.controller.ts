@@ -7,13 +7,28 @@ import mongoose from "mongoose";
 // POST /api/events
 export const createEvent = asyncHandler(async (req: Request, res: Response) => {
   const organizerId = req.user!._id;
-  const { title, date, venue } = req.body;
-  const event = await Event.create({
+  const { title, date, venue, venueLocation } = req.body;
+
+  // Build a payload object, only including venueLocation if it's valid
+  const payload: any = {
     organizer: organizerId,
     title,
-    date,
+    date: new Date(date),
     venue,
-  });
+  };
+
+  // venueLocation should be { type: 'Point', coordinates: [lng, lat] }
+  if (
+    venueLocation &&
+    Array.isArray(venueLocation.coordinates) &&
+    venueLocation.coordinates.length === 2
+  ) {
+    payload.venueLocation = venueLocation;
+  }
+
+  const event = await Event.create(payload);
+
+  // Return the full document, including the newly‐written venueLocation
   res.status(201).json(event);
 });
 
@@ -43,13 +58,33 @@ export const getEventById = asyncHandler(
 export const updateEvent = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const organizerId = req.user!._id;
+
+  // Extract settings if present, and everything else
+  const { settings, ...rest } = req.body;
+
+  // Build a $set object:
+  const setOps: Record<string, any> = { ...rest };
+
+  if (settings && typeof settings === "object") {
+    // For each field in settings, dot‐set it
+    for (const [key, val] of Object.entries(settings)) {
+      setOps[`settings.${key}`] = val;
+    }
+  }
+
+  // Now perform an atomic update
   const updated = await Event.findOneAndUpdate(
     { _id: id, organizer: organizerId },
-    req.body,
+    { $set: setOps },
     { new: true }
   );
-  if (!updated)
-    return res.status(404).json({ message: "Event not found or forbidden" });
+
+  if (!updated) {
+    return res
+      .status(404)
+      .json({ message: "Event not found or you are not the organizer" });
+  }
+
   res.json(updated);
 });
 

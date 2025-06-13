@@ -1,32 +1,25 @@
 // lib/providers/offering_provider.dart
 
-/// ... (other imports remain unchanged)
 import 'dart:io';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/offering.dart';
 import '../services/offering_service.dart';
 import 'auth_provider.dart';
 
-/// StateNotifier that holds this vendor’s offerings.
+/// StateNotifier that holds offerings for a specific vendor.
 class VendorOfferingsNotifier
     extends StateNotifier<AsyncValue<List<Offering>>> {
   final OfferingService _service;
-  final Ref _ref; // store Ref so we can read authState
+  final Ref _ref;
+  final String vendorId;
 
-  VendorOfferingsNotifier(this._service, this._ref)
+  VendorOfferingsNotifier(this._service, this._ref, this.vendorId)
     : super(const AsyncValue.loading()) {
     _loadOfferings();
   }
 
   Future<void> _loadOfferings() async {
-    final authState = _ref.read(authNotifierProvider);
-    if (authState.status != AuthStatus.authenticated) {
-      state = const AsyncValue.error('غير مسجل دخول', StackTrace.empty);
-      return;
-    }
-
-    final vendorId = authState.user!.id;
+    // Fetch offerings using the passed-in vendorId, not auth user
     try {
       final list = await _service.listOfferings(vendorId: vendorId);
       state = AsyncValue.data(list);
@@ -38,24 +31,15 @@ class VendorOfferingsNotifier
   /// Public method to refresh from UI:
   Future<void> refresh() async => _loadOfferings();
 
-  /// Add a new offering (unchanged)
+  /// Add a new offering for this vendor
   Future<void> addOffering({
     required String title,
     String? description,
     required double price,
     List<File>? images,
   }) async {
-    final authState = _ref.read(authNotifierProvider);
-    if (authState.status != AuthStatus.authenticated) return;
-    final vendorId = authState.user!.id;
-
-    // We do show a loading state here because it's a full refresh
-    // 1) remember the old list (if any) before we switch to loading:
-    final previousList = state.valueOrNull ?? <Offering>[];
-
-    // 2) show loading indicator (optional—remove if you don't want to flash)
+    final previous = state.valueOrNull ?? <Offering>[];
     state = const AsyncValue.loading();
-
     try {
       final newOff = await _service.createOffering(
         vendorId: vendorId,
@@ -64,16 +48,13 @@ class VendorOfferingsNotifier
         price: price,
         imageFiles: images,
       );
-
-      // 3) merge the newly created offering with the old ones
-      state = AsyncValue.data([...previousList, newOff]);
+      state = AsyncValue.data([...previous, newOff]);
     } catch (e, st) {
-      // Restore old list in case of error, or show error state:
       state = AsyncValue.error(e, st);
     }
   }
 
-  /// UPDATE: change to avoid flipping to a loading spinner
+  /// Update an existing offering for this vendor
   Future<void> updateExisting({
     required String offeringId,
     String? title,
@@ -81,21 +62,10 @@ class VendorOfferingsNotifier
     double? price,
     List<File>? newImages,
   }) async {
-    final authState = _ref.read(authNotifierProvider);
-    if (authState.status != AuthStatus.authenticated) return;
-    final vendorId = authState.user!.id;
-
-    // Instead of setting a loading state, keep the old list visible:
-    final previousValue = state.valueOrNull;
-    if (previousValue == null) {
-      // If there was no data to begin with, bail out or reload:
-      await _loadOfferings();
-      return;
-    }
-
+    final prev = state.valueOrNull;
+    if (prev == null) return;
     try {
-      // Call backend to update
-      final updatedOff = await _service.updateOffering(
+      final updated = await _service.updateOffering(
         vendorId: vendorId,
         offeringId: offeringId,
         title: title,
@@ -103,53 +73,63 @@ class VendorOfferingsNotifier
         price: price,
         newImageFiles: newImages,
       );
-
-      // Replace just that one item in our existing list:
-      final newList =
-          previousValue.map((off) {
-            if (off.id == offeringId) {
-              return updatedOff;
-            }
-            return off;
-          }).toList();
-
-      state = AsyncValue.data(newList);
+      state = AsyncValue.data(
+        prev.map((off) => off.id == offeringId ? updated : off).toList(),
+      );
     } catch (e, st) {
-      // If something goes wrong, preserve old data but emit error
       state = AsyncValue.error(e, st);
     }
   }
 
-  /// Delete an offering
+  // get offer by id
+  Future<Offering> getOfferingById(String offeringId) async {
+    try {
+      return await _service.fetchOfferingById(
+        vendorId: vendorId,
+        offeringId: offeringId,
+      );
+    } catch (e) {
+      throw Exception('Failed to fetch offering: $e');
+    }
+  }
+
+  /// Delete an offering for this vendor
   Future<void> deleteExisting({required String offeringId}) async {
-    final authState = _ref.read(authNotifierProvider);
-    if (authState.status != AuthStatus.authenticated) return;
-    final vendorId = authState.user!.id;
-
-    final previousValue = state.valueOrNull;
-    if (previousValue == null) return;
-
+    final prev = state.valueOrNull;
+    if (prev == null) return;
     try {
       await _service.deleteOffering(vendorId: vendorId, offeringId: offeringId);
-
-      // Remove it locally without flipping to loading
-      final newList =
-          previousValue.where((off) => off.id != offeringId).toList();
-      state = AsyncValue.data(newList);
+      state = AsyncValue.data(
+        prev.where((off) => off.id != offeringId).toList(),
+      );
     } catch (e, st) {
       state = AsyncValue.error(e, st);
     }
   }
 }
 
-/// Expose as a global provider
-final vendorOfferingsProvider =
-    StateNotifierProvider<VendorOfferingsNotifier, AsyncValue<List<Offering>>>((
-      ref,
-    ) {
-      final service = ref.watch(offeringServiceProvider);
-      return VendorOfferingsNotifier(service, ref);
-    });
+final offeringDetailProvider = FutureProvider.family<Offering, String>((
+  ref,
+  offeringId,
+) {
+  final auth = ref.watch(authNotifierProvider);
+  final vendorId = auth.user!.id;
+  return ref
+      .read(vendorOfferingsProvider(vendorId).notifier)
+      .getOfferingById(offeringId);
+});
+
+/// Expose as a family provider keyed by vendorId
+final vendorOfferingsProvider = StateNotifierProvider.family<
+  VendorOfferingsNotifier,
+  AsyncValue<List<Offering>>,
+  String
+>((ref, vendorId) {
+  final service = ref.watch(offeringServiceProvider);
+  return VendorOfferingsNotifier(service, ref, vendorId);
+});
+
+/// OfferingService provider
 final offeringServiceProvider = Provider<OfferingService>((ref) {
   final dio = ref.watch(dioProvider);
   final storage = ref.watch(tokenStorageProvider);

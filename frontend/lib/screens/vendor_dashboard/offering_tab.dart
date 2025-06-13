@@ -1,9 +1,15 @@
 // lib/screens/vendor_dashboard/offering_tab.dart
 
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:masterevent/providers/auth_provider.dart'
+    show authNotifierProvider, AuthStatus;
+import 'package:masterevent/providers/chat_provider.dart';
+import 'package:masterevent/screens/chat_screen.dart';
+import 'package:masterevent/screens/create_booking_screen.dart';
 import 'package:masterevent/screens/offering_details_screen.dart';
 
 import '../../models/offering.dart';
@@ -11,14 +17,25 @@ import '../../providers/offering_provider.dart';
 
 /// Displays the vendor’s offerings in a ListView, with Add/Edit/Delete.
 class OfferingTab extends ConsumerWidget {
-  const OfferingTab({super.key});
+  final String vendorId;
+
+  const OfferingTab({Key? key, required this.vendorId}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final offeringsAsync = ref.watch(vendorOfferingsProvider);
-    final host = '172.16.0.120';
-    // On iOS Simulator, localhost will work; on Android emulator you must use 10.0.2.2
+    // Watch offerings for this vendor
+    final offeringsAsync = ref.watch(vendorOfferingsProvider(vendorId));
+
+    // Base URL for thumbnails
+    final host = '192.168.1.122';
     final base = 'http://$host:5000/api';
+
+    // Determine current user role
+    final auth = ref.watch(authNotifierProvider);
+    final user = auth.status == AuthStatus.authenticated ? auth.user : null;
+    final isVendor = user?.role == 'vendor' && user?.id == vendorId;
+    final isAdmin = user?.role == 'admin';
+    final canEdit = isVendor == true || isAdmin == true;
 
     return offeringsAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -43,7 +60,7 @@ class OfferingTab extends ConsumerWidget {
                           : ClipRRect(
                             borderRadius: BorderRadius.circular(4),
                             child: Image.network(
-                              '${base}${off.images.first}',
+                              '$base${off.images.first}',
                               width: 40,
                               height: 40,
                               fit: BoxFit.cover,
@@ -54,31 +71,73 @@ class OfferingTab extends ConsumerWidget {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   subtitle: Text(
-                    '${off.price.toStringAsFixed(2)} ر.س',
-                    style: TextStyle(color: Colors.deepPurple.shade700),
+                    '${off.price.toStringAsFixed(2)} ش.إ',
+                    style: TextStyle(color: Colors.purple.shade700),
                   ),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.deepPurple),
-                        onPressed: () async {
-                          await _showEditOfferingDialog(context, ref, off);
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          ref
-                              .read(vendorOfferingsProvider.notifier)
-                              .deleteExisting(offeringId: off.id);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('تم حذف العرض')),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
+                  trailing:
+                      canEdit
+                          ? Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.edit,
+                                  color: Colors.purple,
+                                ),
+                                onPressed: () {
+                                  _showEditOfferingDialog(
+                                    context,
+                                    ref,
+                                    off,
+                                    vendorId,
+                                  );
+                                },
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.delete,
+                                  color: Colors.red,
+                                ),
+                                onPressed: () {
+                                  ref
+                                      .read(
+                                        vendorOfferingsProvider(
+                                          vendorId,
+                                        ).notifier,
+                                      )
+                                      .deleteExisting(offeringId: off.id);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('تم حذف العرض'),
+                                    ),
+                                  );
+                                },
+                              ),
+                            ],
+                          )
+                          : Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) => CreateBookingScreen(
+                                            offering: off,
+                                          ),
+                                    ),
+                                  );
+                                  // TODO: Implement booking logic for off.id
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.purple,
+                                  foregroundColor: Colors.white,
+                                ),
+                                child: const Text('احجز'),
+                              ),
+                            ],
+                          ),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(
@@ -89,17 +148,20 @@ class OfferingTab extends ConsumerWidget {
                 );
               },
             ),
-            Positioned(
-              bottom: 16,
-              right: 16,
-              child: FloatingActionButton(
-                backgroundColor: Colors.deepPurple,
-                child: const Icon(Icons.add),
-                onPressed: () async {
-                  await _showCreateOfferingDialog(context, ref);
-                },
+
+            // Only vendor/admin can add new offerings:
+            if (canEdit)
+              Positioned(
+                bottom: 16,
+                right: 16,
+                child: FloatingActionButton(
+                  backgroundColor: Colors.purple,
+                  child: const Icon(Icons.add),
+                  onPressed: () {
+                    _showCreateOfferingDialog(context, ref, vendorId);
+                  },
+                ),
               ),
-            ),
           ],
         );
       },
@@ -110,6 +172,7 @@ class OfferingTab extends ConsumerWidget {
   Future<void> _showCreateOfferingDialog(
     BuildContext context,
     WidgetRef ref,
+    String vendorId,
   ) async {
     final _titleCtl = TextEditingController();
     final _descCtl = TextEditingController();
@@ -226,7 +289,7 @@ class OfferingTab extends ConsumerWidget {
                             : _descCtl.text.trim();
                     if (title.isNotEmpty && price > 0) {
                       ref
-                          .read(vendorOfferingsProvider.notifier)
+                          .read(vendorOfferingsProvider(vendorId).notifier)
                           .addOffering(
                             title: title,
                             description: desc,
@@ -254,6 +317,7 @@ class OfferingTab extends ConsumerWidget {
     BuildContext context,
     WidgetRef ref,
     Offering off,
+    String vendorId,
   ) async {
     final _titleCtl = TextEditingController(text: off.title);
     final _descCtl = TextEditingController(text: off.description);
@@ -369,7 +433,7 @@ class OfferingTab extends ConsumerWidget {
                         double.tryParse(_priceCtl.text.trim()) ?? off.price;
                     if (title.isNotEmpty && price > 0) {
                       ref
-                          .read(vendorOfferingsProvider.notifier)
+                          .read(vendorOfferingsProvider(vendorId).notifier)
                           .updateExisting(
                             offeringId: off.id,
                             title: title,

@@ -1,26 +1,41 @@
 // lib/services/vendor_service.dart
+import 'dart:io';
+
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:masterevent/models/provider_attribute.dart';
+import 'package:masterevent/models/service_type.dart';
+import 'package:masterevent/models/user.dart';
 import '../models/provider_model.dart';
+import 'package:path/path.dart' as p;
+import 'package:flutter/foundation.dart'; // for kIsWeb
+import 'package:http_parser/http_parser.dart'; // for MediaType
 
 class VendorService {
   final Dio _dio;
   VendorService(this._dio);
-
-  Future<List<dynamic>> listVendors({
+  Future<List<User>> listVendors({
+    required VendorServiceType type,
+    String? city,
     double? lat,
     double? lng,
     double? radiusKm,
+    Map<String, String>? attrs,
   }) async {
-    final resp = await _dio.get(
-      '/vendors',
-      queryParameters: {
-        if (lat != null) 'lat': lat,
-        if (lng != null) 'lng': lng,
-        if (radiusKm != null) 'radius': radiusKm,
+    final qp = <String, dynamic>{
+      'serviceType': type.value,
+      if (city != null) 'city': city,
+      if (lat != null && lng != null) ...{
+        'lat': lat.toString(),
+        'lng': lng.toString(),
+        'radius': radiusKm?.toString() ?? '10',
       },
-    );
-    return resp.data as List<dynamic>;
+      if (attrs != null)
+        for (final e in attrs.entries) e.key: e.value,
+    };
+
+    final resp = await _dio.get('/vendors', queryParameters: qp);
+    return (resp.data as List).map((json) => User.fromJson(json)).toList();
   }
 
   Future<ProviderModel> fetchProviderModel(String vendorId) async {
@@ -38,10 +53,52 @@ class VendorService {
     );
   }
 
+  Future<String> uploadAttributeImage(
+    String vendorId,
+    String key,
+    dynamic file, // can be File or XFile
+  ) async {
+    MultipartFile multipart;
+
+    if (kIsWeb && file is XFile) {
+      // Web: read bytes
+      final bytes = await file.readAsBytes();
+      multipart = MultipartFile.fromBytes(
+        bytes,
+        filename: file.name,
+        contentType: MediaType(
+          'image',
+          p.extension(file.name).replaceFirst('.', ''),
+        ),
+      );
+    } else if (file is File) {
+      // Mobile/desktop: normal File
+      final filename = p.basename(file.path);
+      multipart = await MultipartFile.fromFile(file.path, filename: filename);
+    } else {
+      throw ArgumentError('Unsupported file type');
+    }
+
+    final formData = FormData.fromMap({'file': multipart});
+
+    final resp = await _dio.post<Map<String, dynamic>>(
+      '/vendors/$vendorId/attributes/$key/image',
+      data: formData,
+      // Let Dio set the content-type boundary header automatically
+    );
+
+    if (resp.statusCode == 200 && resp.data?['url'] != null) {
+      return resp.data!['url'] as String;
+    }
+    throw Exception('Upload failed');
+  }
+
   Future<void> updateLocation(String vendorId, double lat, double lng) async {
     await _dio.put(
       '/vendors/$vendorId/location',
-      data: {'lat': lat.toString(), 'lng': lng.toString()},
+      data: {
+        "location": {'lat': lat.toString(), 'lng': lng.toString()},
+      },
     );
   }
 

@@ -7,11 +7,16 @@ import 'booking_screen4.dart'; // <== تأكدي من أن هذا هو المس�
 class EntertainmentDetailScreen extends StatelessWidget {
   final Map<String, dynamic> entertainmentOption;
 
-  const EntertainmentDetailScreen({super.key, required this.entertainmentOption});
+  const EntertainmentDetailScreen({
+    super.key,
+    required this.entertainmentOption,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final List<String> galleryImages = (entertainmentOption['details']?['gallery_images'] as List<String>?) ?? [];
+    final List<String> galleryImages =
+        (entertainmentOption['details']?['gallery_images'] as List<String>?) ??
+        [];
     if (galleryImages.isEmpty && entertainmentOption['image'] != null) {
       galleryImages.add(entertainmentOption['image']);
     }
@@ -20,9 +25,12 @@ class EntertainmentDetailScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(
           entertainmentOption['name'],
-          style: GoogleFonts.cairo(fontWeight: FontWeight.bold, color: Colors.white),
+          style: GoogleFonts.cairo(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.purple,
       ),
       backgroundColor: const Color(0xFFF7F7F7),
       body: SingleChildScrollView(
@@ -43,7 +51,12 @@ class EntertainmentDetailScreen extends StatelessWidget {
                       child: GestureDetector(
                         onTap: () {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text('عرض الصورة بحجم كامل: $img', style: GoogleFonts.cairo())),
+                            SnackBar(
+                              content: Text(
+                                'عرض الصورة بحجم كامل: $img',
+                                style: GoogleFonts.cairo(),
+                              ),
+                            ),
                           );
                         },
                         child: Container(
@@ -68,7 +81,13 @@ class EntertainmentDetailScreen extends StatelessWidget {
                                 return Container(
                                   height: 250,
                                   color: Colors.grey[200],
-                                  child: const Center(child: Icon(Icons.broken_image_outlined, size: 60, color: Colors.grey)),
+                                  child: const Center(
+                                    child: Icon(
+                                      Icons.broken_image_outlined,
+                                      size: 60,
+                                      color: Colors.grey,
+                                    ),
+                                  ),
                                 );
                               },
                             ),
@@ -84,7 +103,11 @@ class EntertainmentDetailScreen extends StatelessWidget {
 
             Text(
               entertainmentOption['name'],
-              style: GoogleFonts.cairo(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+              style: GoogleFonts.cairo(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: Colors.purple,
+              ),
             ),
             const SizedBox(height: 8),
             Text(
@@ -94,23 +117,40 @@ class EntertainmentDetailScreen extends StatelessWidget {
             const SizedBox(height: 10),
             Text(
               '💰 ${entertainmentOption['price_range']}',
-              style: GoogleFonts.cairo(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green[700]),
+              style: GoogleFonts.cairo(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.green[700],
+              ),
             ),
             const SizedBox(height: 20),
 
             if (entertainmentOption['details'] != null) ...[
-              Text('تفاصيل إضافية:', style: GoogleFonts.cairo(fontSize: 20, fontWeight: FontWeight.bold)),
+              Text(
+                'تفاصيل إضافية:',
+                style: GoogleFonts.cairo(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               const SizedBox(height: 8),
               if (entertainmentOption['details']['duration'] != null)
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Row(
                     children: [
-                      const Icon(Icons.timer_outlined, size: 20, color: Colors.grey),
+                      const Icon(
+                        Icons.timer_outlined,
+                        size: 20,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'المدة: ${entertainmentOption['details']['duration']}',
-                        style: GoogleFonts.cairo(fontSize: 15, color: Colors.grey[700]),
+                        style: GoogleFonts.cairo(
+                          fontSize: 15,
+                          color: Colors.grey[700],
+                        ),
                       ),
                     ],
                   ),
@@ -120,12 +160,19 @@ class EntertainmentDetailScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Row(
                     children: [
-                      const Icon(Icons.checklist_rtl_outlined, size: 20, color: Colors.grey),
+                      const Icon(
+                        Icons.checklist_rtl_outlined,
+                        size: 20,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(width: 8),
                       Expanded(
                         child: Text(
                           'المتطلبات: ${entertainmentOption['details']['requirements']}',
-                          style: GoogleFonts.cairo(fontSize: 15, color: Colors.grey[700]),
+                          style: GoogleFonts.cairo(
+                            fontSize: 15,
+                            color: Colors.grey[700],
+                          ),
                         ),
                       ),
                     ],
@@ -136,11 +183,18 @@ class EntertainmentDetailScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Row(
                     children: [
-                      const Icon(Icons.music_note, size: 20, color: Colors.blue),
+                      const Icon(
+                        Icons.music_note,
+                        size: 20,
+                        color: Colors.blue,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         '🎵 يمكن طلب أغاني مخصصة',
-                        style: GoogleFonts.cairo(fontSize: 15, color: Colors.blue),
+                        style: GoogleFonts.cairo(
+                          fontSize: 15,
+                          color: Colors.blue,
+                        ),
                       ),
                     ],
                   ),
@@ -150,11 +204,18 @@ class EntertainmentDetailScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Row(
                     children: [
-                      const Icon(Icons.theater_comedy_outlined, size: 20, color: Colors.grey),
+                      const Icon(
+                        Icons.theater_comedy_outlined,
+                        size: 20,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'النوع: ${entertainmentOption['details']['genre']?.join(', ')}',
-                        style: GoogleFonts.cairo(fontSize: 15, color: Colors.grey[700]),
+                        style: GoogleFonts.cairo(
+                          fontSize: 15,
+                          color: Colors.grey[700],
+                        ),
                       ),
                     ],
                   ),
@@ -164,11 +225,18 @@ class EntertainmentDetailScreen extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 4.0),
                   child: Row(
                     children: [
-                      const Icon(Icons.child_care, size: 20, color: Colors.grey),
+                      const Icon(
+                        Icons.child_care,
+                        size: 20,
+                        color: Colors.grey,
+                      ),
                       const SizedBox(width: 8),
                       Text(
                         'الفئة العمرية: ${entertainmentOption['details']['age_group']}',
-                        style: GoogleFonts.cairo(fontSize: 15, color: Colors.grey[700]),
+                        style: GoogleFonts.cairo(
+                          fontSize: 15,
+                          color: Colors.grey[700],
+                        ),
                       ),
                     ],
                   ),
@@ -178,28 +246,44 @@ class EntertainmentDetailScreen extends StatelessWidget {
 
             Text(
               'يناسب المناسبات التالية:',
-              style: GoogleFonts.cairo(fontSize: 20, fontWeight: FontWeight.bold),
+              style: GoogleFonts.cairo(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8.0,
               runSpacing: 4.0,
-              children: (entertainmentOption['suitable_for_events'] as List<String>)
-                  .map((event) => Chip(
-                        label: Text(event, style: GoogleFonts.cairo(fontSize: 13)),
-                        backgroundColor: Colors.deepPurple.shade100,
-                        labelStyle: GoogleFonts.cairo(color: Colors.deepPurple.shade800),
-                      ))
-                  .toList(),
+              children:
+                  (entertainmentOption['suitable_for_events'] as List<String>)
+                      .map(
+                        (event) => Chip(
+                          label: Text(
+                            event,
+                            style: GoogleFonts.cairo(fontSize: 13),
+                          ),
+                          backgroundColor: Colors.purple.shade100,
+                          labelStyle: GoogleFonts.cairo(
+                            color: Colors.purple.shade800,
+                          ),
+                        ),
+                      )
+                      .toList(),
             ),
             const SizedBox(height: 30),
 
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  backgroundColor: Colors.purple,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 16,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                   elevation: 5,
                 ),
                 onPressed: () {
@@ -207,14 +291,22 @@ class EntertainmentDetailScreen extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => BookingScreen(
-                        // نمرر اسم العرض كـ 'serviceName' الآن
-                        serviceName: entertainmentOption['name'],
-                      ),
+                      builder:
+                          (context) => BookingScreen(
+                            // نمرر اسم العرض كـ 'serviceName' الآن
+                            serviceName: entertainmentOption['name'],
+                          ),
                     ),
                   );
                 },
-                child: Text('➕ اطلب هذا العرض', style: GoogleFonts.cairo(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                child: Text(
+                  '➕ اطلب هذا العرض',
+                  style: GoogleFonts.cairo(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
               ),
             ),
           ],

@@ -141,6 +141,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
     final user = authState.user;
+    final host = '192.168.1.122';
+    // On iOS Simulator, localhost will work; on Android emulator you must use 10.0.2.2
+    final base = 'http://$host:5000/api';
 
     // listen here, not in initState
     ref.listen<AuthState>(authNotifierProvider, (previous, next) {
@@ -184,7 +187,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text("تعديل الملف الشخصي"),
-          backgroundColor: Colors.deepPurple,
+          backgroundColor: Colors.purple,
           foregroundColor: Colors.white,
         ),
         body: SingleChildScrollView(
@@ -205,7 +208,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             _pickedImage != null
                                 ? FileImage(_pickedImage!)
                                 : (user.avatarUrl != null
-                                        ? NetworkImage(user.avatarUrl!)
+                                        ? NetworkImage(
+                                          '${base}${user.avatarUrl}',
+                                        )
                                         : null)
                                     as ImageProvider<Object>?,
                         child:
@@ -223,7 +228,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         right: 0,
                         bottom: 0,
                         child: Material(
-                          color: Colors.deepPurple,
+                          color: Colors.purple,
                           shape: const CircleBorder(),
                           elevation: 2,
                           child: InkWell(
@@ -317,10 +322,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 color: Colors.white,
                               ),
                             )
-                            : const Icon(Icons.save),
-                    label: Text(_isSaving ? 'جاري الحفظ...' : 'حفظ التغييرات'),
+                            : const Icon(Icons.save, color: Colors.white),
+                    label: Text(
+                      _isSaving ? 'جاري الحفظ...' : 'حفظ التغييرات',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
+                      backgroundColor: Colors.purple,
                       padding: const EdgeInsets.symmetric(vertical: 12),
                     ),
                     onPressed: _isSaving ? null : _saveProfile,

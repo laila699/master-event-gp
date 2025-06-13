@@ -1,29 +1,46 @@
 // lib/screens/dashboard_screen.dart
-
 import 'package:flutter/material.dart';
-import 'package:masterevent/screens/admin_dashboard_screen.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user.dart';
-import 'my_events_screen.dart';
-// Make sure this import points at your vendor‐dashboard file:
-import 'vendor_dashboard/dashboard_screen.dart' show VendorDashboardScreen;
+import '../screens/my_events_screen.dart';
+import '../screens/vendor_dashboard/dashboard_screen.dart'
+    show VendorDashboardScreen;
+import '../services/notification_service.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   final User user;
-
   const DashboardScreen({Key? key, required this.user}) : super(key: key);
 
   @override
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Initialize FCM listener & register token
+    ref.read(notificationServiceProvider);
+  }
+
+  @override
+  void dispose() {
+    // Unregister FCM token on logout/dispose
+    ref.read(notificationServiceProvider).unregisterToken();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    switch (user.role) {
+    switch (widget.user.role) {
       case 'organizer':
-        return MyEventsScreen(user: user);
+        return MyEventsScreen(user: widget.user);
       case 'vendor':
-        // <— fix: return VendorDashboardScreen, not DashboardScreen again
         return const VendorDashboardScreen();
       case 'admin':
-        return const AdminDashboardScreen();
+      // return const AdminDashboardScreen();
       default:
-        return _GenericHomeScreen(user: user);
+        return _GenericHomeScreen(user: widget.user);
     }
   }
 }
@@ -37,12 +54,11 @@ class _GenericHomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('مرحبًا، ${user.name}'),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.purple,
       ),
       body: Center(
         child: Text(
-          'مرحبًا بك في تطبيق Master Event!\n\n'
-          'لا توجد لوحة مخصصة للصلاحية "${user.role}".',
+          'مرحبًا بك، ${user.name}! لا توجد لوحة مخصصة لرول ${user.role}.',
           textAlign: TextAlign.center,
           style: const TextStyle(fontSize: 18),
         ),

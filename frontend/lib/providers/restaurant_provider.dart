@@ -18,8 +18,9 @@ class RestaurantMenuNotifier
     extends StateNotifier<AsyncValue<List<MenuSection>>> {
   final RestaurantService _service;
   final Ref _ref;
+  final String vendorId;
 
-  RestaurantMenuNotifier(this._service, this._ref)
+  RestaurantMenuNotifier(this._service, this._ref, this.vendorId)
     : super(const AsyncValue.loading()) {
     _loadMenu();
   }
@@ -31,7 +32,6 @@ class RestaurantMenuNotifier
       return;
     }
 
-    final vendorId = authState.user!.id;
     try {
       final list = await _service.listMenu(vendorId: vendorId);
       state = AsyncValue.data(list);
@@ -238,10 +238,11 @@ class RestaurantMenuNotifier
 }
 
 /// 3) Expose as a global provider
-final restaurantMenuProvider = StateNotifierProvider<
+final restaurantMenuProvider = StateNotifierProvider.family<
   RestaurantMenuNotifier,
-  AsyncValue<List<MenuSection>>
->((ref) {
+  AsyncValue<List<MenuSection>>,
+  String
+>((ref, vendorId) {
   final service = ref.watch(restaurantServiceProvider);
-  return RestaurantMenuNotifier(service, ref);
+  return RestaurantMenuNotifier(service, ref, vendorId);
 });

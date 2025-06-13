@@ -66,9 +66,15 @@ class _PhotographerListScreenState extends State<PhotographerListScreen> {
   List<Map<String, dynamic>> _filteredPhotographers = [];
 
   List<String> get _availableCities =>
-      {'الكل', ...widget.initialPhotographers.map((p) => p['city']).toSet()}.toList().cast<String>();
+      {
+        'الكل',
+        ...widget.initialPhotographers.map((p) => p['city']).toSet(),
+      }.toList().cast<String>();
   List<String> get _availableEventTypes =>
-      {'الكل', ...widget.initialPhotographers.expand((p) => p['eventTypes']).toSet()}.toList().cast<String>();
+      {
+        'الكل',
+        ...widget.initialPhotographers.expand((p) => p['eventTypes']).toSet(),
+      }.toList().cast<String>();
 
   @override
   void initState() {
@@ -78,11 +84,20 @@ class _PhotographerListScreenState extends State<PhotographerListScreen> {
 
   void _filterPhotographers() {
     setState(() {
-      _filteredPhotographers = widget.initialPhotographers.where((photographer) {
-        final cityMatch = _selectedCity == null || _selectedCity == 'الكل' || photographer['city'] == _selectedCity;
-        final eventTypeMatch = _selectedEventType == null || _selectedEventType == 'الكل' || (photographer['eventTypes'] as List).contains(_selectedEventType);
-        return cityMatch && eventTypeMatch;
-      }).toList();
+      _filteredPhotographers =
+          widget.initialPhotographers.where((photographer) {
+            final cityMatch =
+                _selectedCity == null ||
+                _selectedCity == 'الكل' ||
+                photographer['city'] == _selectedCity;
+            final eventTypeMatch =
+                _selectedEventType == null ||
+                _selectedEventType == 'الكل' ||
+                (photographer['eventTypes'] as List).contains(
+                  _selectedEventType,
+                );
+            return cityMatch && eventTypeMatch;
+          }).toList();
     });
   }
 
@@ -106,10 +121,11 @@ class _PhotographerListScreenState extends State<PhotographerListScreen> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.purple,
       ),
       backgroundColor: Color(0xFFF7F7F7), // لون الخلفية من فرونت المطاعم
-      body: SingleChildScrollView( // إضافة SingleChildScrollView هنا
+      body: SingleChildScrollView(
+        // إضافة SingleChildScrollView هنا
         child: Column(
           children: [
             Padding(
@@ -121,12 +137,13 @@ class _PhotographerListScreenState extends State<PhotographerListScreen> {
                   DropdownButton<String>(
                     value: _selectedCity,
                     hint: Text('المدينة', style: GoogleFonts.cairo()),
-                    items: _availableCities.map((city) {
-                      return DropdownMenuItem<String>(
-                        value: city,
-                        child: Text(city, style: GoogleFonts.cairo()),
-                      );
-                    }).toList(),
+                    items:
+                        _availableCities.map((city) {
+                          return DropdownMenuItem<String>(
+                            value: city,
+                            child: Text(city, style: GoogleFonts.cairo()),
+                          );
+                        }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedCity = value;
@@ -138,12 +155,13 @@ class _PhotographerListScreenState extends State<PhotographerListScreen> {
                   DropdownButton<String>(
                     value: _selectedEventType,
                     hint: Text('نوع المناسبة', style: GoogleFonts.cairo()),
-                    items: _availableEventTypes.map((type) {
-                      return DropdownMenuItem<String>(
-                        value: type,
-                        child: Text(type, style: GoogleFonts.cairo()),
-                      );
-                    }).toList(),
+                    items:
+                        _availableEventTypes.map((type) {
+                          return DropdownMenuItem<String>(
+                            value: type,
+                            child: Text(type, style: GoogleFonts.cairo()),
+                          );
+                        }).toList(),
                     onChanged: (value) {
                       setState(() {
                         _selectedEventType = value;
@@ -155,22 +173,31 @@ class _PhotographerListScreenState extends State<PhotographerListScreen> {
               ),
             ),
             ListView.builder(
-              physics: NeverScrollableScrollPhysics(), // لمنع تداخل السكرول مع SingleChildScrollView
+              physics:
+                  NeverScrollableScrollPhysics(), // لمنع تداخل السكرول مع SingleChildScrollView
               shrinkWrap: true, // لجعل حجم ListView مناسبًا لمحتواه
               padding: const EdgeInsets.all(12.0),
               itemCount: _filteredPhotographers.length,
               itemBuilder: (context, index) {
                 final photographer = _filteredPhotographers[index];
-                final imagePath = (photographer['portfolioImages'] as List<String>).isNotEmpty
-                    ? photographer['portfolioImages'][0]
-                    : 'assets/default_profile.jpg';
-                final customerReviews = (photographer['customerReviews'] as List).cast<num>();
-                final averageRating = customerReviews.isNotEmpty
-                    ? customerReviews.map((e) => e.toDouble()).reduce((a, b) => a + b) / customerReviews.length
-                    : 0.0;
+                final imagePath =
+                    (photographer['portfolioImages'] as List<String>).isNotEmpty
+                        ? photographer['portfolioImages'][0]
+                        : 'assets/default_profile.jpg';
+                final customerReviews =
+                    (photographer['customerReviews'] as List).cast<num>();
+                final averageRating =
+                    customerReviews.isNotEmpty
+                        ? customerReviews
+                                .map((e) => e.toDouble())
+                                .reduce((a, b) => a + b) /
+                            customerReviews.length
+                        : 0.0;
                 return Card(
                   color: Colors.white, // لون الكارد أبيض
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                   elevation: 4,
                   margin: EdgeInsets.symmetric(vertical: 10),
                   child: ListTile(
@@ -191,20 +218,34 @@ class _PhotographerListScreenState extends State<PhotographerListScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 4),
-                        Text('📍 ${photographer['city']}', style: GoogleFonts.cairo(color: Colors.grey[600])),
-                        Text('📸 أنواع التصوير: ${(photographer['photographyTypes'] as List).join(', ')}',
-                            style: GoogleFonts.cairo(color: Colors.grey[600])),
-                        Text('⭐ التقييم: ${averageRating.toStringAsFixed(1)}',
-                            style: GoogleFonts.cairo(color: Colors.amber[700])),
-                        Text('💰 ${photographer['priceRange']}', style: GoogleFonts.cairo(color: Colors.green[700])),
+                        Text(
+                          '📍 ${photographer['city']}',
+                          style: GoogleFonts.cairo(color: Colors.grey[600]),
+                        ),
+                        Text(
+                          '📸 أنواع التصوير: ${(photographer['photographyTypes'] as List).join(', ')}',
+                          style: GoogleFonts.cairo(color: Colors.grey[600]),
+                        ),
+                        Text(
+                          '⭐ التقييم: ${averageRating.toStringAsFixed(1)}',
+                          style: GoogleFonts.cairo(color: Colors.amber[700]),
+                        ),
+                        Text(
+                          '💰 ${photographer['priceRange']}',
+                          style: GoogleFonts.cairo(color: Colors.green[700]),
+                        ),
                       ],
                     ),
-                    trailing: Icon(Icons.arrow_forward_ios, color: Colors.deepPurple),
+                    trailing: Icon(
+                      Icons.arrow_forward_ios,
+                      color: Colors.purple,
+                    ),
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => PhotographerDetailScreen(photographer),
+                          builder:
+                              (_) => PhotographerDetailScreen(photographer),
                         ),
                       );
                     },

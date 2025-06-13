@@ -18,7 +18,6 @@ const router = Router({ mergeParams: true });
 
 // All menu routes assume the path prefix is /api/vendors/:vendorId/menu
 router.use(requireAuth); // Must be logged in
-router.use(requireRole("vendor")); // Must have vendor role
 
 // ─── Return “sections + items” in one shot ─────────────────────────────────────────
 router.get("/", getFullMenu);

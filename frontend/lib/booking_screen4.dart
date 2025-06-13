@@ -6,10 +6,7 @@ import 'package:intl/intl.dart';
 class BookingScreen extends StatefulWidget {
   final String serviceName; // اسم العرض أو الفرقة
 
-  const BookingScreen({
-    super.key,
-    required this.serviceName,
-  });
+  const BookingScreen({super.key, required this.serviceName});
 
   @override
   State<BookingScreen> createState() => _BookingScreenState();
@@ -20,7 +17,8 @@ class _BookingScreenState extends State<BookingScreen> {
   TimeOfDay? _selectedTime; // إضافة حقل الوقت
   final TextEditingController _locationController = TextEditingController();
   String? _selectedEventType;
-  final TextEditingController _attendeesController = TextEditingController(); // لإدخال عدد الحضور
+  final TextEditingController _attendeesController =
+      TextEditingController(); // لإدخال عدد الحضور
 
   final List<String> _eventTypes = [
     'زفاف',
@@ -49,13 +47,13 @@ class _BookingScreenState extends State<BookingScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Colors.deepPurple,
+              primary: Colors.purple,
               onPrimary: Colors.white,
               onSurface: Colors.black87,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: Colors.deepPurple,
+                foregroundColor: Colors.purple,
                 textStyle: GoogleFonts.cairo(),
               ),
             ),
@@ -80,13 +78,13 @@ class _BookingScreenState extends State<BookingScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Colors.deepPurple,
+              primary: Colors.purple,
               onPrimary: Colors.white,
               onSurface: Colors.black87,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: Colors.deepPurple,
+                foregroundColor: Colors.purple,
                 textStyle: GoogleFonts.cairo(),
               ),
             ),
@@ -107,7 +105,10 @@ class _BookingScreenState extends State<BookingScreen> {
     if (_selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('الرجاء اختيار تاريخ المناسبة.', style: GoogleFonts.cairo()),
+          content: Text(
+            'الرجاء اختيار تاريخ المناسبة.',
+            style: GoogleFonts.cairo(),
+          ),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -116,7 +117,10 @@ class _BookingScreenState extends State<BookingScreen> {
     if (_selectedTime == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('الرجاء اختيار وقت المناسبة.', style: GoogleFonts.cairo()),
+          content: Text(
+            'الرجاء اختيار وقت المناسبة.',
+            style: GoogleFonts.cairo(),
+          ),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -125,7 +129,10 @@ class _BookingScreenState extends State<BookingScreen> {
     if (_locationController.text.trim().isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('الرجاء إدخال مكان إقامة العرض بالتفصيل.', style: GoogleFonts.cairo()),
+          content: Text(
+            'الرجاء إدخال مكان إقامة العرض بالتفصيل.',
+            style: GoogleFonts.cairo(),
+          ),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -134,16 +141,23 @@ class _BookingScreenState extends State<BookingScreen> {
     if (_selectedEventType == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('الرجاء اختيار نوع المناسبة.', style: GoogleFonts.cairo()),
+          content: Text(
+            'الرجاء اختيار نوع المناسبة.',
+            style: GoogleFonts.cairo(),
+          ),
           backgroundColor: Colors.redAccent,
         ),
       );
       return;
     }
-    if (int.tryParse(_attendeesController.text) == null || int.parse(_attendeesController.text) <= 0) {
+    if (int.tryParse(_attendeesController.text) == null ||
+        int.parse(_attendeesController.text) <= 0) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('الرجاء إدخال عدد حضور صحيح وموجب.', style: GoogleFonts.cairo()),
+          content: Text(
+            'الرجاء إدخال عدد حضور صحيح وموجب.',
+            style: GoogleFonts.cairo(),
+          ),
           backgroundColor: Colors.redAccent,
         ),
       );
@@ -155,30 +169,61 @@ class _BookingScreenState extends State<BookingScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-          title: Text('تأكيد الحجز', style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
+          title: Text(
+            'تأكيد الحجز',
+            style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+          ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('تم إرسال طلب حجز: ${widget.serviceName}', style: GoogleFonts.cairo()),
+              Text(
+                'تم إرسال طلب حجز: ${widget.serviceName}',
+                style: GoogleFonts.cairo(),
+              ),
               const SizedBox(height: 8),
-              Text('تاريخ المناسبة: ${DateFormat('dd/MM/yyyy').format(_selectedDate!)}', style: GoogleFonts.cairo()),
-              Text('وقت المناسبة: ${_selectedTime!.format(context)}', style: GoogleFonts.cairo()),
-              Text('مكان المناسبة: ${_locationController.text}', style: GoogleFonts.cairo()),
-              Text('نوع المناسبة: ${_selectedEventType!}', style: GoogleFonts.cairo()),
-              Text('عدد الحضور المتوقع: ${_attendeesController.text}', style: GoogleFonts.cairo()),
+              Text(
+                'تاريخ المناسبة: ${DateFormat('dd/MM/yyyy').format(_selectedDate!)}',
+                style: GoogleFonts.cairo(),
+              ),
+              Text(
+                'وقت المناسبة: ${_selectedTime!.format(context)}',
+                style: GoogleFonts.cairo(),
+              ),
+              Text(
+                'مكان المناسبة: ${_locationController.text}',
+                style: GoogleFonts.cairo(),
+              ),
+              Text(
+                'نوع المناسبة: ${_selectedEventType!}',
+                style: GoogleFonts.cairo(),
+              ),
+              Text(
+                'عدد الحضور المتوقع: ${_attendeesController.text}',
+                style: GoogleFonts.cairo(),
+              ),
               const SizedBox(height: 15),
-              Text('ستصلك رسالة تأكيد على بريدك الإلكتروني قريباً.', style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
+              Text(
+                'ستصلك رسالة تأكيد على بريدك الإلكتروني قريباً.',
+                style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
+              ),
             ],
           ),
           actions: <Widget>[
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // إغلاق AlertDialog
-                Navigator.of(context).pop(); // العودة للشاشة السابقة (تفاصيل العرض)
+                Navigator.of(
+                  context,
+                ).pop(); // العودة للشاشة السابقة (تفاصيل العرض)
               },
-              child: Text('حسناً', style: GoogleFonts.cairo(color: Colors.deepPurple)),
+              child: Text(
+                'حسناً',
+                style: GoogleFonts.cairo(color: Colors.purple),
+              ),
             ),
           ],
         );
@@ -199,9 +244,12 @@ class _BookingScreenState extends State<BookingScreen> {
       appBar: AppBar(
         title: Text(
           'حجز عرض: ${widget.serviceName}',
-          style: GoogleFonts.cairo(fontWeight: FontWeight.bold, color: Colors.white),
+          style: GoogleFonts.cairo(
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.purple,
       ),
       backgroundColor: const Color(0xFFF7F7F7),
       body: SingleChildScrollView(
@@ -211,20 +259,31 @@ class _BookingScreenState extends State<BookingScreen> {
           children: [
             Text(
               'تفاصيل حجز العرض:',
-              style: GoogleFonts.cairo(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+              style: GoogleFonts.cairo(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.purple,
+              ),
             ),
             const SizedBox(height: 20),
 
             // حقل اختيار تاريخ المناسبة
             Text(
               'تاريخ المناسبة:',
-              style: GoogleFonts.cairo(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+              style: GoogleFonts.cairo(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 10),
             GestureDetector(
               onTap: () => _selectDate(context),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 15,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -239,10 +298,13 @@ class _BookingScreenState extends State<BookingScreen> {
                           : DateFormat('dd/MM/yyyy').format(_selectedDate!),
                       style: GoogleFonts.cairo(
                         fontSize: 16,
-                        color: _selectedDate == null ? Colors.grey[600] : Colors.black87,
+                        color:
+                            _selectedDate == null
+                                ? Colors.grey[600]
+                                : Colors.black87,
                       ),
                     ),
-                    const Icon(Icons.calendar_today, color: Colors.deepPurple),
+                    const Icon(Icons.calendar_today, color: Colors.purple),
                   ],
                 ),
               ),
@@ -252,13 +314,20 @@ class _BookingScreenState extends State<BookingScreen> {
             // حقل اختيار وقت المناسبة
             Text(
               'وقت المناسبة:',
-              style: GoogleFonts.cairo(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+              style: GoogleFonts.cairo(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 10),
             GestureDetector(
               onTap: () => _selectTime(context),
               child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 15,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(10),
@@ -273,10 +342,16 @@ class _BookingScreenState extends State<BookingScreen> {
                           : _selectedTime!.format(context),
                       style: GoogleFonts.cairo(
                         fontSize: 16,
-                        color: _selectedTime == null ? Colors.grey[600] : Colors.black87,
+                        color:
+                            _selectedTime == null
+                                ? Colors.grey[600]
+                                : Colors.black87,
                       ),
                     ),
-                    const Icon(Icons.access_time_outlined, color: Colors.deepPurple),
+                    const Icon(
+                      Icons.access_time_outlined,
+                      color: Colors.purple,
+                    ),
                   ],
                 ),
               ),
@@ -286,7 +361,11 @@ class _BookingScreenState extends State<BookingScreen> {
             // حقل مكان المناسبة
             Text(
               'مكان المناسبة (العنوان التفصيلي):',
-              style: GoogleFonts.cairo(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+              style: GoogleFonts.cairo(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -300,8 +379,14 @@ class _BookingScreenState extends State<BookingScreen> {
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none,
                 ),
-                prefixIcon: const Icon(Icons.location_on_outlined, color: Colors.deepPurple),
-                contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                prefixIcon: const Icon(
+                  Icons.location_on_outlined,
+                  color: Colors.purple,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: 15,
+                ),
               ),
               style: GoogleFonts.cairo(fontSize: 16, color: Colors.black87),
               maxLines: 2,
@@ -311,12 +396,19 @@ class _BookingScreenState extends State<BookingScreen> {
             // حقل اختيار نوع المناسبة
             Text(
               'نوع المناسبة:',
-              style: GoogleFonts.cairo(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+              style: GoogleFonts.cairo(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 10),
             DropdownButtonFormField<String>(
               value: _selectedEventType,
-              hint: Text('اختر نوع المناسبة', style: GoogleFonts.cairo(color: Colors.grey[600])),
+              hint: Text(
+                'اختر نوع المناسبة',
+                style: GoogleFonts.cairo(color: Colors.grey[600]),
+              ),
               decoration: InputDecoration(
                 filled: true,
                 fillColor: Colors.white,
@@ -324,14 +416,21 @@ class _BookingScreenState extends State<BookingScreen> {
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none,
                 ),
-                contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 15,
+                ),
               ),
-              items: _eventTypes.map((type) {
-                return DropdownMenuItem<String>(
-                  value: type,
-                  child: Text(type, style: GoogleFonts.cairo(color: Colors.black87)),
-                );
-              }).toList(),
+              items:
+                  _eventTypes.map((type) {
+                    return DropdownMenuItem<String>(
+                      value: type,
+                      child: Text(
+                        type,
+                        style: GoogleFonts.cairo(color: Colors.black87),
+                      ),
+                    );
+                  }).toList(),
               onChanged: (value) {
                 setState(() {
                   _selectedEventType = value;
@@ -345,7 +444,11 @@ class _BookingScreenState extends State<BookingScreen> {
             // حقل عدد الحضور المتوقع
             Text(
               'عدد الحضور المتوقع:',
-              style: GoogleFonts.cairo(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+              style: GoogleFonts.cairo(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
+              ),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -360,8 +463,14 @@ class _BookingScreenState extends State<BookingScreen> {
                   borderRadius: BorderRadius.circular(10),
                   borderSide: BorderSide.none,
                 ),
-                prefixIcon: const Icon(Icons.group_outlined, color: Colors.deepPurple),
-                contentPadding: const EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                prefixIcon: const Icon(
+                  Icons.group_outlined,
+                  color: Colors.purple,
+                ),
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 15,
+                  horizontal: 15,
+                ),
               ),
               style: GoogleFonts.cairo(fontSize: 16, color: Colors.black87),
             ),
@@ -371,18 +480,25 @@ class _BookingScreenState extends State<BookingScreen> {
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.deepPurple.shade50,
+                color: Colors.purple.shade50,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.deepPurple.shade100),
+                border: Border.all(color: Colors.purple.shade100),
               ),
               child: Row(
                 children: [
-                  const Icon(Icons.info_outline, color: Colors.deepPurple, size: 24),
+                  const Icon(
+                    Icons.info_outline,
+                    color: Colors.purple,
+                    size: 24,
+                  ),
                   const SizedBox(width: 10),
                   Expanded(
                     child: Text(
                       '🌟 يُنصح بالحجز قبل أسبوعين على الأقل لضمان توفر الفرقة/العرض في الموعد المطلوب.',
-                      style: GoogleFonts.cairo(fontSize: 14, color: Colors.deepPurple.shade800),
+                      style: GoogleFonts.cairo(
+                        fontSize: 14,
+                        color: Colors.purple.shade800,
+                      ),
                     ),
                   ),
                 ],
@@ -394,15 +510,24 @@ class _BookingScreenState extends State<BookingScreen> {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
-                  padding: const EdgeInsets.symmetric(horizontal: 60, vertical: 18),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                  backgroundColor: Colors.purple,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 60,
+                    vertical: 18,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
                   elevation: 5,
                 ),
                 onPressed: _confirmBooking,
                 child: Text(
                   '✅ تثبيت الحجز',
-                  style: GoogleFonts.cairo(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: GoogleFonts.cairo(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
             ),

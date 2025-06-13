@@ -20,6 +20,14 @@ class OfferingService {
         .toList();
   }
 
+  Future<Offering> fetchOfferingById({
+    required String vendorId,
+    required String offeringId,
+  }) async {
+    final resp = await _dio.get('/vendors/$vendorId/offerings/$offeringId');
+    return Offering.fromJson(resp.data as Map<String, dynamic>);
+  }
+
   /// Create a new offering. `imageFiles` can be multiple local Files.
   Future<Offering> createOffering({
     required String vendorId,

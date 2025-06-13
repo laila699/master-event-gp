@@ -122,3 +122,19 @@ export const uploadOfferingImages = multer({
     cb(new Error("نوع الملف غير مدعوم. فقط أنواع الصور مسموح بها."));
   },
 });
+const attrsDir = path.join(__dirname, "../../uploads/attributes");
+if (!fs.existsSync(attrsDir)) fs.mkdirSync(attrsDir, { recursive: true });
+export const uploadAttributeImages = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, attrsDir),
+    filename: (_req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      const base = path.basename(file.originalname, ext);
+      cb(null, `${base}-${Date.now()}${ext}`);
+    },
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    cb(null, true);
+  },
+});

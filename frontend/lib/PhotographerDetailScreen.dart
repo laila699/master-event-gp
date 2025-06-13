@@ -10,12 +10,13 @@ class PhotographerDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  final averageRating = (photographer['customerReviews'] as List).isNotEmpty
-    ? (photographer['customerReviews'] as List)
-        .map((e) => (e as num).toDouble())
-        .reduce((a, b) => a + b) /
-      (photographer['customerReviews'] as List).length
-    : 0.0;
+    final averageRating =
+        (photographer['customerReviews'] as List).isNotEmpty
+            ? (photographer['customerReviews'] as List)
+                    .map((e) => (e as num).toDouble())
+                    .reduce((a, b) => a + b) /
+                (photographer['customerReviews'] as List).length
+            : 0.0;
 
     return Scaffold(
       appBar: AppBar(
@@ -23,7 +24,7 @@ class PhotographerDetailScreen extends StatelessWidget {
           photographer['name'],
           style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.purple,
       ),
       backgroundColor: Color(0xFFF7F7F7),
       body: Padding(
@@ -47,13 +48,34 @@ class PhotographerDetailScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('📍 المدينة: ${photographer['city']}', style: _infoStyle(context)),
-                  Text('📷 نوع العمل: ${photographer['mobile'] ? 'ميداني' : 'استوديو فقط'}', style: _infoStyle(context)),
-                  Text('⭐ التقييم: ${averageRating.toStringAsFixed(1)}', style: _ratingStyle(context)),
-                  Text('💰 نطاق الأسعار: ${photographer['priceRange']}', style: _priceStyle(context)),
-                  Text('🎨 أنواع التصوير: ${(photographer['photographyTypes'] as List).join(', ')}', style: _infoStyle(context)),
-                  Text('🎉 يصور مناسبات: ${(photographer['eventTypes'] as List).join(', ')}', style: _infoStyle(context)),
-                  Text('📞 رقم التواصل: ${photographer['phone']}', style: _infoStyle(context)),
+                  Text(
+                    '📍 المدينة: ${photographer['city']}',
+                    style: _infoStyle(context),
+                  ),
+                  Text(
+                    '📷 نوع العمل: ${photographer['mobile'] ? 'ميداني' : 'استوديو فقط'}',
+                    style: _infoStyle(context),
+                  ),
+                  Text(
+                    '⭐ التقييم: ${averageRating.toStringAsFixed(1)}',
+                    style: _ratingStyle(context),
+                  ),
+                  Text(
+                    '💰 نطاق الأسعار: ${photographer['priceRange']}',
+                    style: _priceStyle(context),
+                  ),
+                  Text(
+                    '🎨 أنواع التصوير: ${(photographer['photographyTypes'] as List).join(', ')}',
+                    style: _infoStyle(context),
+                  ),
+                  Text(
+                    '🎉 يصور مناسبات: ${(photographer['eventTypes'] as List).join(', ')}',
+                    style: _infoStyle(context),
+                  ),
+                  Text(
+                    '📞 رقم التواصل: ${photographer['phone']}',
+                    style: _infoStyle(context),
+                  ),
                 ],
               ),
             ),
@@ -65,41 +87,46 @@ class PhotographerDetailScreen extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
+                  backgroundColor: Colors.purple,
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => PhotographerReservationScreen(
-                        photographerName: photographer['name'],
-                      ),
+                      builder:
+                          (_) => PhotographerReservationScreen(
+                            photographerName: photographer['name'],
+                          ),
                     ),
                   );
                 },
                 child: Text(
                   'احجز الآن',
-                  style: GoogleFonts.cairo(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                  style: GoogleFonts.cairo(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
     );
   }
 
-  TextStyle _infoStyle(BuildContext context) => GoogleFonts.cairo(
-    fontSize: 16,
-    color: Colors.black87,
-  );
+  TextStyle _infoStyle(BuildContext context) =>
+      GoogleFonts.cairo(fontSize: 16, color: Colors.black87);
 
   TextStyle _titleStyle(BuildContext context) => GoogleFonts.cairo(
     fontSize: 18,
     fontWeight: FontWeight.bold,
-    color: Colors.deepPurple[700],
+    color: Colors.purple[700],
   );
 
   TextStyle _ratingStyle(BuildContext context) => GoogleFonts.cairo(
@@ -117,27 +144,33 @@ class PhotographerDetailScreen extends StatelessWidget {
   Widget _buildImageList(BuildContext context) {
     return ListView(
       scrollDirection: Axis.horizontal,
-      children: (photographer['portfolioImages'] as List<String>)
-          .map<Widget>(
-            (img) => GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => FullImageScreen(imagePath: img),
+      children:
+          (photographer['portfolioImages'] as List<String>)
+              .map<Widget>(
+                (img) => GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => FullImageScreen(imagePath: img),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset(
+                        img,
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
                   ),
-                );
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(img, width: 150, height: 150, fit: BoxFit.cover),
                 ),
-              ),
-            ),
-          )
-          .toList(),
+              )
+              .toList(),
     );
   }
 }
@@ -155,11 +188,7 @@ class FullImageScreen extends StatelessWidget {
         iconTheme: IconThemeData(color: Colors.white),
         elevation: 0,
       ),
-      body: Center(
-        child: InteractiveViewer(
-          child: Image.asset(imagePath),
-        ),
-      ),
+      body: Center(child: InteractiveViewer(child: Image.asset(imagePath))),
     );
   }
 }

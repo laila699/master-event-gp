@@ -23,11 +23,21 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.restaurant?['name'] ?? '');
-    _locationController = TextEditingController(text: widget.restaurant?['location'] ?? '');
-    _phoneController = TextEditingController(text: widget.restaurant?['phone'] ?? '');
-    _cityController = TextEditingController(text: widget.restaurant?['city'] ?? '');
-    _imageUrlController = TextEditingController(text: widget.restaurant?['image'] ?? '');
+    _nameController = TextEditingController(
+      text: widget.restaurant?['name'] ?? '',
+    );
+    _locationController = TextEditingController(
+      text: widget.restaurant?['location'] ?? '',
+    );
+    _phoneController = TextEditingController(
+      text: widget.restaurant?['phone'] ?? '',
+    );
+    _cityController = TextEditingController(
+      text: widget.restaurant?['city'] ?? '',
+    );
+    _imageUrlController = TextEditingController(
+      text: widget.restaurant?['image'] ?? '',
+    );
 
     // تعبئة حقول صور الطعام إذا كان المطعم موجوداً
     if (widget.restaurant != null && widget.restaurant!['foodImages'] != null) {
@@ -35,7 +45,9 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
         _foodImageControllers.add(TextEditingController(text: img));
       }
     } else {
-      _foodImageControllers.add(TextEditingController()); // حقل واحد فارغ على الأقل
+      _foodImageControllers.add(
+        TextEditingController(),
+      ); // حقل واحد فارغ على الأقل
     }
   }
 
@@ -75,19 +87,28 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
         'phone': _phoneController.text,
         'city': _cityController.text,
         'image': _imageUrlController.text,
-        'foodImages': _foodImageControllers
-            .where((c) => c.text.isNotEmpty)
-            .map((c) => c.text)
-            .toList(),
-        'rating': widget.restaurant?['rating'] ?? 0.0, // تقييم افتراضي أو الحالي
-        'customerReviews': widget.restaurant?['customerReviews'] ?? [], // مراجعات افتراضية أو الحالية
+        'foodImages':
+            _foodImageControllers
+                .where((c) => c.text.isNotEmpty)
+                .map((c) => c.text)
+                .toList(),
+        'rating':
+            widget.restaurant?['rating'] ?? 0.0, // تقييم افتراضي أو الحالي
+        'customerReviews':
+            widget.restaurant?['customerReviews'] ??
+            [], // مراجعات افتراضية أو الحالية
       };
 
-      print('Restaurant Data to Save: $newRestaurantData'); // للتحقق في الـ Console
+      print(
+        'Restaurant Data to Save: $newRestaurantData',
+      ); // للتحقق في الـ Console
 
       // في التطبيق الحقيقي، هنا تقومين باستدعاء API لحفظ البيانات
       // وبعد نجاح الحفظ، ترجعين إلى الشاشة السابقة
-      Navigator.pop(context, true); // إرجاع true للإشارة إلى أن البيانات قد تتغير
+      Navigator.pop(
+        context,
+        true,
+      ); // إرجاع true للإشارة إلى أن البيانات قد تتغير
     }
   }
 
@@ -107,9 +128,11 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
         title: Text(
           isEditing ? 'تعديل بيانات المطعم' : 'إضافة مطعم جديد',
           style: GoogleFonts.cairo(
-              fontWeight: FontWeight.bold, color: Colors.white),
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.purple,
         centerTitle: true,
         actions: [
           if (isEditing) // زر الحذف يظهر فقط في وضع التعديل
@@ -119,27 +142,32 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
                 // تأكيد الحذف
                 showDialog(
                   context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text('تأكيد الحذف', style: GoogleFonts.cairo()),
-                    content: Text('هل أنت متأكد من رغبتك في حذف هذا المطعم؟',
-                        style: GoogleFonts.cairo()),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                        },
-                        child: Text('إلغاء', style: GoogleFonts.cairo()),
+                  builder:
+                      (ctx) => AlertDialog(
+                        title: Text('تأكيد الحذف', style: GoogleFonts.cairo()),
+                        content: Text(
+                          'هل أنت متأكد من رغبتك في حذف هذا المطعم؟',
+                          style: GoogleFonts.cairo(),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(ctx).pop();
+                            },
+                            child: Text('إلغاء', style: GoogleFonts.cairo()),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(ctx).pop();
+                              _deleteRestaurant(); // استدعاء دالة الحذف
+                            },
+                            child: Text(
+                              'حذف',
+                              style: GoogleFonts.cairo(color: Colors.red),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                          _deleteRestaurant(); // استدعاء دالة الحذف
-                        },
-                        child: Text('حذف',
-                            style: GoogleFonts.cairo(color: Colors.red)),
-                      ),
-                    ],
-                  ),
                 );
               },
             ),
@@ -213,9 +241,10 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
               Text(
                 'صور الأطعمة/القاعة:',
                 style: GoogleFonts.cairo(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple),
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.purple,
+                ),
               ),
               const SizedBox(height: 10),
               // حقول صور الأطعمة/القاعة
@@ -235,10 +264,13 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
                             hint: 'assets/food_image_${index + 1}.jpg',
                           ),
                         ),
-                        if (_foodImageControllers.length > 1) // لا تعرض زر الحذف إذا كان هناك حقل واحد فقط
+                        if (_foodImageControllers.length >
+                            1) // لا تعرض زر الحذف إذا كان هناك حقل واحد فقط
                           IconButton(
-                            icon: const Icon(Icons.remove_circle,
-                                color: Colors.red),
+                            icon: const Icon(
+                              Icons.remove_circle,
+                              color: Colors.red,
+                            ),
                             onPressed: () => _removeFoodImageField(index),
                           ),
                       ],
@@ -250,9 +282,11 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton.icon(
                   onPressed: _addFoodImageField,
-                  icon: const Icon(Icons.add_a_photo, color: Colors.deepPurple),
-                  label: Text('أضف صورة أخرى',
-                      style: GoogleFonts.cairo(color: Colors.deepPurple)),
+                  icon: const Icon(Icons.add_a_photo, color: Colors.purple),
+                  label: Text(
+                    'أضف صورة أخرى',
+                    style: GoogleFonts.cairo(color: Colors.purple),
+                  ),
                 ),
               ),
               const SizedBox(height: 30),
@@ -263,16 +297,20 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
                   label: Text(
                     isEditing ? 'حفظ التعديلات' : 'إضافة المطعم',
                     style: GoogleFonts.cairo(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
+                    backgroundColor: Colors.purple,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 15),
+                      horizontal: 40,
+                      vertical: 15,
+                    ),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                   ),
                 ),
               ),
@@ -299,7 +337,7 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
-          labelStyle: GoogleFonts.cairo(color: Colors.deepPurple),
+          labelStyle: GoogleFonts.cairo(color: Colors.purple),
           hintStyle: GoogleFonts.cairo(color: Colors.grey[500]),
           filled: true,
           fillColor: Colors.white,
@@ -309,7 +347,7 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.deepPurple, width: 2),
+            borderSide: const BorderSide(color: Colors.purple, width: 2),
           ),
         ),
         style: GoogleFonts.cairo(fontSize: 16, color: Colors.black87),

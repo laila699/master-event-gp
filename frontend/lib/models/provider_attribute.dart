@@ -62,4 +62,23 @@ class ProviderAttribute {
     if (itemType != null) 'itemType': itemType,
     if (fields != null) 'fields': fields!.map((f) => f.toJson()).toList(),
   };
+  ProviderAttribute copy() {
+    return ProviderAttribute(
+      key: key,
+      label: label,
+      type: type,
+      value: _deepCopyValue(),
+      required: required,
+      options: options != null ? List<dynamic>.from(options!) : null,
+      itemType: itemType,
+      fields: fields?.map((f) => f.copy()).toList(),
+    );
+  }
+
+  /// Helper to deep copy the value field.
+  dynamic _deepCopyValue() {
+    if (value is List) return List.from(value as List);
+    if (value is Map) return Map<String, dynamic>.from(value as Map);
+    return value;
+  }
 }

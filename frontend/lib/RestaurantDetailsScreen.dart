@@ -95,7 +95,10 @@ class RestaurantDetailsScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => FullScreenImage(imagePath: reviewImages[index]),
+                            builder:
+                                (_) => FullScreenImage(
+                                  imagePath: reviewImages[index],
+                                ),
                           ),
                         );
                       },
@@ -139,16 +142,26 @@ class RestaurantDetailsScreen extends StatelessWidget {
                     style: GoogleFonts.cairo(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
+                      color: Colors.purple,
                     ),
                   ),
                   SizedBox(height: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: buffetMenu.map((item) => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 4.0),
-                      child: Text('• $item', style: GoogleFonts.cairo()),
-                    )).toList(),
+                    children:
+                        buffetMenu
+                            .map(
+                              (item) => Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0,
+                                ),
+                                child: Text(
+                                  '• $item',
+                                  style: GoogleFonts.cairo(),
+                                ),
+                              ),
+                            )
+                            .toList(),
                   ),
                 ],
               ),
@@ -179,32 +192,58 @@ class RestaurantDetailsScreen extends StatelessWidget {
                     style: GoogleFonts.cairo(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
+                      color: Colors.purple,
                     ),
                   ),
                   SizedBox(height: 10),
                   customerReviews.isEmpty
-                      ? Text('لا يوجد تقييمات حتى الآن.', style: GoogleFonts.cairo())
+                      ? Text(
+                        'لا يوجد تقييمات حتى الآن.',
+                        style: GoogleFonts.cairo(),
+                      )
                       : Column(
-                          children: customerReviews.map((review) => Padding(
-                            padding: const EdgeInsets.only(bottom: 12.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Text('${review['name']} ', style: GoogleFonts.cairo(fontWeight: FontWeight.bold)),
-                                    Icon(Icons.star, color: Colors.amber, size: 18),
-                                    Text(' (${review['rating']}/5)', style: GoogleFonts.cairo()),
-                                  ],
-                                ),
-                                SizedBox(height: 4),
-                                Text('${review['comment']}', style: GoogleFonts.cairo()),
-                                Divider(),
-                              ],
-                            ),
-                          )).toList(),
-                        ),
+                        children:
+                            customerReviews
+                                .map(
+                                  (review) => Padding(
+                                    padding: const EdgeInsets.only(
+                                      bottom: 12.0,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                              '${review['name']} ',
+                                              style: GoogleFonts.cairo(
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                              size: 18,
+                                            ),
+                                            Text(
+                                              ' (${review['rating']}/5)',
+                                              style: GoogleFonts.cairo(),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          '${review['comment']}',
+                                          style: GoogleFonts.cairo(),
+                                        ),
+                                        Divider(),
+                                      ],
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                      ),
                 ],
               ),
             ),
@@ -215,7 +254,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
+                  backgroundColor: Colors.purple,
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   textStyle: TextStyle(fontSize: 16),
                   shape: RoundedRectangleBorder(
@@ -225,7 +264,9 @@ class RestaurantDetailsScreen extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (_) => ReservationScreen(restaurantName: name)),
+                    MaterialPageRoute(
+                      builder: (_) => ReservationScreen(restaurantName: name),
+                    ),
                   );
                 },
                 child: Text(
@@ -260,7 +301,9 @@ class FullScreenImage extends StatelessWidget {
       ),
       body: Center(
         child: InteractiveViewer(
-          child: Image.asset(imagePath), // ✅ حذف 'assets/' لأنك تمرر المسار كامل
+          child: Image.asset(
+            imagePath,
+          ), // ✅ حذف 'assets/' لأنك تمرر المسار كامل
         ),
       ),
     );

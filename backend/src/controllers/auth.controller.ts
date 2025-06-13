@@ -3,9 +3,12 @@
 import { Request, Response, NextFunction } from "express";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
-import User, { IUser } from "../models/User";
+import User, { IUser, VendorServiceType } from "../models/User";
 import { asyncHandler } from "../utils/asyncHandler";
 import { uploadAvatar } from "../middleware/multer";
+import { defaultVendorAttributes } from "../utils/defaultVendorAttributes";
+import { sendNotificationToUser } from "../utils/notify";
+import admin from "../utils/firebase";
 const JWT_EXPIRES_IN = "7d";
 
 // ─── Multer setup (same as before) ───────────────────────────────────────────────
@@ -20,24 +23,23 @@ export const register = [
       return res.status(400).json({ message: "جميع الحقول مطلوبة." });
     }
 
-    // 1) Prevent duplicate emails
-    const existing = await User.findOne({ email });
-    if (existing) {
+    // Prevent duplicate emails
+    if (await User.exists({ email })) {
       return res
         .status(409)
         .json({ message: "هذا البريد الإلكتروني مستخدم بالفعل." });
     }
 
-    // 2) Hash the password
+    // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
 
-    // 3) If multer gave us a file, save its URL path
+    // Handle avatar upload
     let avatarUrl: string | undefined;
     if (req.file) {
       avatarUrl = `/uploads/avatars/${req.file.filename}`;
     }
 
-    // 4) Build the new user object
+    // Base fields
     const userFields: Partial<IUser> = {
       name,
       email,
@@ -47,27 +49,63 @@ export const register = [
       avatarUrl,
     };
 
-    // 5) If vendor, parse vendorProfile JSON‐string into an object
-    if (role === "vendor" && vendorProfile) {
+    // If vendor, build vendorProfile with seeded attributes
+    if (role === "vendor") {
+      if (!vendorProfile) {
+        return res
+          .status(400)
+          .json({ message: "vendorProfile مطلوب للبائعين." });
+      }
+
+      let parsed: any;
       try {
-        userFields.vendorProfile = JSON.parse(vendorProfile);
+        parsed =
+          typeof vendorProfile === "string"
+            ? JSON.parse(vendorProfile)
+            : vendorProfile;
       } catch {
         return res
           .status(400)
           .json({ message: "تنسيق vendorProfile غير صحيح." });
       }
+
+      const { serviceType, bio, location } = parsed as {
+        serviceType: VendorServiceType;
+        bio?: string;
+        location?: { type: "Point"; coordinates: [number, number] };
+      };
+
+      if (!serviceType) {
+        return res
+          .status(400)
+          .json({ message: "serviceType مطلوب في vendorProfile." });
+      }
+
+      // Seed attributes based on serviceType
+      const attrs = defaultVendorAttributes[serviceType] || [];
+      const attributes = attrs.map((a) => ({
+        ...a,
+        value: a.value ?? (a.type === "array" ? [] : null),
+      }));
+
+      userFields.vendorProfile = {
+        serviceType,
+        bio,
+        location,
+        attributes,
+      };
     }
 
-    // 6) Save new user in the database
+    // Save user
     const user = new User(userFields);
     await user.save();
 
-    // 7) Generate JWT
+    // Generate JWT
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
       expiresIn: JWT_EXPIRES_IN,
     });
 
-    // 8) Return token + user info. (We omit passwordHash, include phone + avatarUrl, etc.)
+    // Return user + token (including vendorProfile!)
     res.status(201).json({
       token,
       user: {
@@ -77,7 +115,7 @@ export const register = [
         role: user.role,
         phone: user.phone,
         avatarUrl: user.avatarUrl || null,
-        vendorProfile: user.vendorProfile || null, // ← include this so Flutter knows the serviceType immediately
+        vendorProfile: user.vendorProfile || null,
       },
     });
   }),
@@ -106,6 +144,16 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
     expiresIn: JWT_EXPIRES_IN,
   });
+  const payload = {
+    notification: {
+      title: "Login",
+      body: "You have logged in successfully.",
+    },
+  };
+  sendNotificationToUser(user._id.toString(), payload);
+  const firebaseToken = await admin
+    .auth()
+    .createCustomToken(user._id.toString());
 
   // 4) Return token + user info (including phone + avatarUrl + vendorProfile)
   res.json({
@@ -119,9 +167,18 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
       avatarUrl: user.avatarUrl || null,
       vendorProfile: user.vendorProfile || null,
     },
+    firebaseToken,
   });
 });
 
+export const getUserById = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const user = await User.findById(id).select("name"); // only need name
+  if (!user) {
+    return res.status(404).json({ message: "User not found." });
+  }
+  res.json({ id: user._id, name: user.name });
+});
 export const getMe = asyncHandler(async (req: Request, res: Response) => {
   const user = req.user as IUser;
   if (!user) {
@@ -186,6 +243,7 @@ export const updateMe = [
     if (!user) {
       return res.status(404).json({ message: "المستخدم غير موجود." });
     }
+    // let test notfiaction here
 
     // 3) Send back the updated user (same shape as getMe)
     res.json({

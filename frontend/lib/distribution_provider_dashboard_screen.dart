@@ -208,7 +208,7 @@ class _DistributionProviderDashboardScreenState
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.purple,
         centerTitle: true,
       ),
       backgroundColor: const Color(0xFFF7F7F7),
@@ -292,7 +292,7 @@ class _DistributionProviderDashboardScreenState
                                     style: GoogleFonts.cairo(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.deepPurple,
+                                      color: Colors.purple,
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -370,7 +370,7 @@ class _DistributionProviderDashboardScreenState
           // بعد العودة من صفحة الإضافة، نقوم بتحديث القائمة
           _refreshDistributionStores();
         },
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.purple,
         child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );

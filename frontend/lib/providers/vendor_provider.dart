@@ -1,8 +1,12 @@
 // lib/providers/vendor_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:masterevent/models/service_type.dart';
+import 'package:masterevent/models/user.dart';
+import 'package:masterevent/models/vendor_filter.dart';
 import 'package:masterevent/providers/auth_provider.dart';
 import '../services/vendor_service.dart';
 import '../models/provider_model.dart';
+import 'dart:io';
 
 final vendorServiceProvider = Provider((ref) {
   final dio = ref.watch(dioProvider);
@@ -18,8 +22,25 @@ final providerModelFamily = FutureProvider.family<ProviderModel, String>((
 });
 
 // list of vendors (for directory)
-final vendorListProvider = FutureProvider<List<dynamic>>((ref) {
-  return ref.watch(vendorServiceProvider).listVendors();
+// lib/providers/vendor_provider.dart
+
+final vendorListProvider = FutureProvider.family<List<User>, VendorFilter>(
+  (ref, filter) => ref
+      .watch(vendorServiceProvider)
+      .listVendors(
+        type: filter.type,
+        city: filter.city,
+        lat: filter.lat,
+        lng: filter.lng,
+        radiusKm: filter.radiusKm,
+        attrs: filter.attrs,
+      ),
+);
+
+final uploadAttributeImageFn = Provider((ref) {
+  final svc = ref.read(vendorServiceProvider);
+  return (String vendorId, String key, File file) =>
+      svc.uploadAttributeImage(vendorId, key, file);
 });
 
 // bookings

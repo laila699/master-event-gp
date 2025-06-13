@@ -181,7 +181,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                               },
                               child: const Text(
                                 'نسيت كلمة المرور؟',
-                                style: TextStyle(color: Colors.deepPurple),
+                                style: TextStyle(color: Colors.purple),
                               ),
                             ),
                           ),

@@ -29,7 +29,7 @@ export interface IVendorAttribute {
   options?: any[];
   required?: boolean;
   // only for array/object
-  itemType?: "string" | "number" | "object";
+  itemType?: "string" | "number" | "object" | "array" | "boolean" | "date";
   fields?: IVendorAttribute[]; // sub-fields for object or array-of-objects
 }
 

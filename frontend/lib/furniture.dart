@@ -358,7 +358,7 @@ class _FurnitureScreenState extends State<FurnitureScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('أثاث للمناسبات'), // Title reflects content
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.purple,
         foregroundColor: Colors.white,
         elevation: 2,
       ),
@@ -436,10 +436,7 @@ class _FurnitureScreenState extends State<FurnitureScreen> {
                 child: DropdownButton<String>(
                   value: selectedEventCategory,
                   isExpanded: true,
-                  icon: const Icon(
-                    Icons.chair_outlined,
-                    color: Colors.deepPurple,
-                  ),
+                  icon: const Icon(Icons.chair_outlined, color: Colors.purple),
                   onChanged: (String? newValue) {
                     if (newValue != null &&
                         newValue != selectedEventCategory &&
@@ -789,7 +786,7 @@ class _FurnitureScreenState extends State<FurnitureScreen> {
                                       onPressed: () => _handleContact(item),
                                       label: const Text('تواصل للحجز'),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.deepPurple,
+                                        backgroundColor: Colors.purple,
                                         foregroundColor: Colors.white,
                                         minimumSize: const Size(
                                           double.infinity,

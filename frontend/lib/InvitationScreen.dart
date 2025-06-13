@@ -1,17 +1,26 @@
 import 'package:flutter/material.dart';
-import 'InvitationCustomizationScreen.dart'; 
+import 'InvitationCustomizationScreen.dart';
 
 class InvitationScreen extends StatelessWidget {
   const InvitationScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    const List<String> _inviteThemePaths = [
+      'assets/f1.jpg',
+      'assets/invite1.jpeg',
+      'assets/invite1.jpeg',
+      'assets/invite1.jpeg',
+      'assets/invite1.jpeg',
+      'assets/invite1.jpeg',
+    ];
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
         appBar: AppBar(
           title: const Text("الدعوات الإلكترونية"),
-          backgroundColor: Colors.purple, 
+          backgroundColor: Colors.purple,
           foregroundColor: Colors.white,
         ),
         body: Padding(
@@ -43,6 +52,7 @@ class InvitationScreen extends StatelessWidget {
                             builder:
                                 (context) => InvitationCustomizationScreen(
                                   designIndex: index,
+                                  themeImagePath: _inviteThemePaths[index],
                                 ),
                           ),
                         );
@@ -54,17 +64,12 @@ class InvitationScreen extends StatelessWidget {
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Expanded(
-                              child: Container(
-                                color: Colors.grey[200],
-                                alignment: Alignment.center,
-                                child: Icon(
-                                  Icons.image_outlined,
-                                  size: 40,
-                                  color: Colors.grey[400],
-                                ),
+                              child: Image.asset(
+                                _inviteThemePaths[index],
+                                fit: BoxFit.cover,
+                                width: double.infinity,
                               ),
                             ),
                             Padding(
@@ -72,7 +77,7 @@ class InvitationScreen extends StatelessWidget {
                                 vertical: 8.0,
                               ),
                               child: Text(
-                                "تصميم ${index + 1}",
+                                'تصميم ${index + 1}',
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w500,
                                 ),

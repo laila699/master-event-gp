@@ -142,12 +142,16 @@ final dioProvider = Provider<Dio>((ref) {
   );
 });
 
+// return token to use it
+
 final authServiceProvider = Provider<AuthService>((ref) {
   final dio = ref.watch(dioProvider);
   final storage = ref.watch(tokenStorageProvider);
   return AuthService(dio, storage);
 });
-
+final userNameProvider = FutureProvider.family<String, String>((ref, uid) {
+  return ref.read(authServiceProvider).getUserName(uid);
+});
 final authNotifierProvider = StateNotifierProvider<AuthNotifier, AuthState>((
   ref,
 ) {

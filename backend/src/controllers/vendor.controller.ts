@@ -27,28 +27,75 @@ export const listVendorBookings = asyncHandler(
 );
 // GET /api/vendors?lat=<>&lng=<>&radius=<km>
 export const listVendors = asyncHandler(async (req: Request, res: Response) => {
-  const { lat, lng, radius } = req.query;
+  const { serviceType, city, lat, lng, radius, ...rest } = req.query;
+  const filter: any = { role: "vendor" };
+
+  // 1) serviceType filter
+  if (serviceType) {
+    filter["vendorProfile.serviceType"] = serviceType;
+  }
+
+  // 2) city filter (stored as an attribute)
+  if (city) {
+    filter["vendorProfile.attributes"] = {
+      $elemMatch: { key: "city", value: city },
+    };
+  }
+
+  // 3) geolocation
   if (lat && lng) {
     const latitude = parseFloat(lat as string);
     const longitude = parseFloat(lng as string);
     const km = radius ? parseFloat(radius as string) : 10;
-    const meters = km * 1000;
-
-    const vendors = await User.find({
-      role: "vendor",
-      "vendorProfile.location": {
-        $near: {
-          $geometry: { type: "Point", coordinates: [longitude, latitude] },
-          $maxDistance: meters,
-        },
+    filter["vendorProfile.location"] = {
+      $near: {
+        $geometry: { type: "Point", coordinates: [longitude, latitude] },
+        $maxDistance: km * 1000,
       },
-    }).select("name vendorProfile");
-
-    return res.json(vendors);
+    };
   }
-  // fallback: list all vendors
-  const all = await User.find({ role: "vendor" }).select("name vendorProfile");
-  res.json(all);
+
+  // 4) any other query‐param → attribute filter
+  //    e.g. /vendors?performanceTypes=دي%20جي
+  const extraAttrFilters = Object.entries(rest).map(([key, value]) => ({
+    "vendorProfile.attributes": {
+      // if you want to match any of many values: use $in
+      $elemMatch: {
+        key,
+        value: { $in: Array.isArray(value) ? value : [value] },
+      },
+    },
+  }));
+  if (extraAttrFilters.length) {
+    filter.$and = extraAttrFilters;
+  }
+  // lets return the id of the vendor as id not _id
+
+  const vendors = await User.find(filter)
+    .select(
+      [
+        "_id",
+        "name",
+        "email",
+        "role",
+        "location",
+        "phone",
+        "avatarUrl",
+        "vendorProfile.serviceType",
+        "vendorProfile.attributes",
+      ].join(" ")
+    )
+    .lean();
+
+  const withId = vendors.map((v) => {
+    const { _id, __v, ...keep } = v;
+    return {
+      id: _id.toString(), // <-- rename
+      ...keep,
+    };
+  });
+
+  res.json(withId);
 });
 export const getVendorDetails = asyncHandler(async (req, res) => {
   const { vendorId } = req.params;
@@ -82,11 +129,49 @@ export const updateVendorAttributes = asyncHandler(async (req, res) => {
   await user.save();
   res.json(user.vendorProfile!.attributes);
 });
-// POST to update a vendor's location
-// PUT /api/vendors/:vendorId/location
-// src/controllers/vendor.controller.ts
 
-// src/controllers/vendor.controller.ts
+export const uploadAttributeImage = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { vendorId, key } = req.params;
+    const user = req.user as IUser;
+
+    // 1) Ownership check
+    if (user._id.toString() !== vendorId) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    // 2) File presence
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+
+    // 3) Build accessible URL (ensure your Express serves /uploads/attributes statically)
+    const url = `/uploads/attributes/${req.file.filename}`;
+
+    // 4) Find the matching attribute
+    const attrs = user.vendorProfile?.attributes;
+    if (!attrs) {
+      return res
+        .status(400)
+        .json({ message: "Vendor does not have any attributes configured." });
+    }
+    const attr = attrs.find((a) => a.key === key);
+    if (!attr) {
+      return res.status(400).json({ message: `Attribute '${key}' not found.` });
+    }
+
+    // 5) Append URL to the attribute's value array
+    const list = Array.isArray(attr.value) ? [...attr.value] : [];
+    list.push(url);
+    attr.value = list;
+
+    // 6) Persist the change
+    await user.save();
+
+    // 7) Return the new URL to the client
+    res.json({ url });
+  }
+);
 
 // Note: make sure this route is protected by requireRole('vendor')
 export const updateVendorLocation = asyncHandler(
@@ -133,6 +218,8 @@ export const createOffering = asyncHandler(
   async (req: Request, res: Response) => {
     const vendorId = req.params.vendorId;
     const user = req.user as IUser;
+    console.log("user", user);
+    console.log("vendorId", vendorId);
     if (user._id.toString() !== vendorId) {
       return res.status(403).json({ message: "Forbidden" });
     }
@@ -213,6 +300,21 @@ export const updateOffering = asyncHandler(
   }
 );
 
+export const getOfferingById = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { vendorId, offeringId } = req.params;
+
+    // If you want to restrict to the owning vendor (or leave public)
+    const offering = await Offering.findOne({
+      _id: offeringId,
+      vendor: vendorId,
+    });
+    if (!offering) {
+      return res.status(404).json({ message: "Offering not found" });
+    }
+    res.json(offering);
+  }
+);
 // DELETE /api/vendors/:vendorId/offerings/:offeringId
 export const deleteOffering = asyncHandler(
   async (req: Request, res: Response) => {

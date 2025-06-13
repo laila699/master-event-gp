@@ -11,7 +11,7 @@ import vendorRoutes from "./routes/vendors";
 import bookingRoutes from "./routes/bookings";
 import notificationsRoutes from "./routes/notifications";
 import menuRoutes from "./routes/menu"; // <— your “restaurant menu” router
-import adminRoutes from "./routes/admin";
+import chatRoutes from "./routes/chat";
 // Middleware
 import { requireAuth } from "./middleware/auth";
 import { errorHandler } from "./middleware/error";
@@ -30,15 +30,17 @@ app.use(cors({ origin: "*" }));
 
 // 2) Parse JSON bodies
 app.use(express.json());
-app.use("/api/admin", adminRoutes);
-
+app.use(
+  "/uploads/attributes",
+  express.static(path.join(__dirname, "../uploads/attributes"))
+);
 // 3) Serve uploaded files under “/uploads”
 app.use("/api/uploads/", express.static(path.join(__dirname, "../uploads")));
 
 // 4) Mount public/auth routes
 app.use("/api/auth", authRoutes);
 app.use("/api/notifications", notificationsRoutes);
-
+app.use("/api/chat", requireAuth, chatRoutes);
 // 5) Mount protected routes (all require a valid JWT)
 app.use("/api/events", requireAuth, eventRoutes);
 app.use("/api/vendors", requireAuth, vendorRoutes);

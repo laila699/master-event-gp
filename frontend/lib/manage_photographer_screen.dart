@@ -20,44 +20,64 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
   late TextEditingController _priceRangeController;
   late bool _isMobilePhotographer; // للمصور المتنقل
 
-  final List<TextEditingController> _portfolioImageControllers = []; // لصور البورتفوليو
-  final List<TextEditingController> _photographyTypeControllers = []; // لأنواع التصوير
-  final List<TextEditingController> _eventTypeControllers = []; // لأنواع المناسبات
+  final List<TextEditingController> _portfolioImageControllers =
+      []; // لصور البورتفوليو
+  final List<TextEditingController> _photographyTypeControllers =
+      []; // لأنواع التصوير
+  final List<TextEditingController> _eventTypeControllers =
+      []; // لأنواع المناسبات
 
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.photographer?['name'] ?? '');
-    _cityController = TextEditingController(text: widget.photographer?['city'] ?? '');
-    _phoneController = TextEditingController(text: widget.photographer?['phone'] ?? '');
-    _priceRangeController = TextEditingController(text: widget.photographer?['priceRange'] ?? '');
+    _nameController = TextEditingController(
+      text: widget.photographer?['name'] ?? '',
+    );
+    _cityController = TextEditingController(
+      text: widget.photographer?['city'] ?? '',
+    );
+    _phoneController = TextEditingController(
+      text: widget.photographer?['phone'] ?? '',
+    );
+    _priceRangeController = TextEditingController(
+      text: widget.photographer?['priceRange'] ?? '',
+    );
     _isMobilePhotographer = widget.photographer?['mobile'] ?? false;
 
     // تعبئة حقول صور البورتفوليو
-    if (widget.photographer != null && widget.photographer!['portfolioImages'] != null) {
+    if (widget.photographer != null &&
+        widget.photographer!['portfolioImages'] != null) {
       for (var img in widget.photographer!['portfolioImages']) {
         _portfolioImageControllers.add(TextEditingController(text: img));
       }
     } else {
-      _portfolioImageControllers.add(TextEditingController()); // حقل واحد فارغ على الأقل
+      _portfolioImageControllers.add(
+        TextEditingController(),
+      ); // حقل واحد فارغ على الأقل
     }
 
     // تعبئة حقول أنواع التصوير
-    if (widget.photographer != null && widget.photographer!['photographyTypes'] != null) {
+    if (widget.photographer != null &&
+        widget.photographer!['photographyTypes'] != null) {
       for (var type in widget.photographer!['photographyTypes']) {
         _photographyTypeControllers.add(TextEditingController(text: type));
       }
     } else {
-      _photographyTypeControllers.add(TextEditingController()); // حقل واحد فارغ على الأقل
+      _photographyTypeControllers.add(
+        TextEditingController(),
+      ); // حقل واحد فارغ على الأقل
     }
 
     // تعبئة حقول أنواع المناسبات
-    if (widget.photographer != null && widget.photographer!['eventTypes'] != null) {
+    if (widget.photographer != null &&
+        widget.photographer!['eventTypes'] != null) {
       for (var event in widget.photographer!['eventTypes']) {
         _eventTypeControllers.add(TextEditingController(text: event));
       }
     } else {
-      _eventTypeControllers.add(TextEditingController()); // حقل واحد فارغ على الأقل
+      _eventTypeControllers.add(
+        TextEditingController(),
+      ); // حقل واحد فارغ على الأقل
     }
   }
 
@@ -103,27 +123,38 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
         'mobile': _isMobilePhotographer,
         'phone': _phoneController.text,
         'priceRange': _priceRangeController.text,
-        'portfolioImages': _portfolioImageControllers
-            .where((c) => c.text.isNotEmpty)
-            .map((c) => c.text)
-            .toList(),
-        'photographyTypes': _photographyTypeControllers
-            .where((c) => c.text.isNotEmpty)
-            .map((c) => c.text)
-            .toList(),
-        'eventTypes': _eventTypeControllers
-            .where((c) => c.text.isNotEmpty)
-            .map((c) => c.text)
-            .toList(),
-        'rating': widget.photographer?['rating'] ?? 0.0, // تقييم افتراضي أو الحالي
-        'customerReviews': widget.photographer?['customerReviews'] ?? [], // مراجعات افتراضية أو الحالية
+        'portfolioImages':
+            _portfolioImageControllers
+                .where((c) => c.text.isNotEmpty)
+                .map((c) => c.text)
+                .toList(),
+        'photographyTypes':
+            _photographyTypeControllers
+                .where((c) => c.text.isNotEmpty)
+                .map((c) => c.text)
+                .toList(),
+        'eventTypes':
+            _eventTypeControllers
+                .where((c) => c.text.isNotEmpty)
+                .map((c) => c.text)
+                .toList(),
+        'rating':
+            widget.photographer?['rating'] ?? 0.0, // تقييم افتراضي أو الحالي
+        'customerReviews':
+            widget.photographer?['customerReviews'] ??
+            [], // مراجعات افتراضية أو الحالية
       };
 
-      print('Photographer Data to Save: $newPhotographerData'); // للتحقق في الـ Console
+      print(
+        'Photographer Data to Save: $newPhotographerData',
+      ); // للتحقق في الـ Console
 
       // في التطبيق الحقيقي، هنا تقومين باستدعاء API لحفظ البيانات
       // وبعد نجاح الحفظ، ترجعين إلى الشاشة السابقة
-      Navigator.pop(context, true); // إرجاع true للإشارة إلى أن البيانات قد تتغير
+      Navigator.pop(
+        context,
+        true,
+      ); // إرجاع true للإشارة إلى أن البيانات قد تتغير
     }
   }
 
@@ -143,9 +174,11 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
         title: Text(
           isEditing ? 'تعديل بيانات المصور' : 'إضافة مصور جديد',
           style: GoogleFonts.cairo(
-              fontWeight: FontWeight.bold, color: Colors.white),
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.purple,
         centerTitle: true,
         actions: [
           if (isEditing) // زر الحذف يظهر فقط في وضع التعديل
@@ -155,27 +188,32 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
                 // تأكيد الحذف
                 showDialog(
                   context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text('تأكيد الحذف', style: GoogleFonts.cairo()),
-                    content: Text('هل أنت متأكد من رغبتك في حذف هذا المصور؟',
-                        style: GoogleFonts.cairo()),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                        },
-                        child: Text('إلغاء', style: GoogleFonts.cairo()),
+                  builder:
+                      (ctx) => AlertDialog(
+                        title: Text('تأكيد الحذف', style: GoogleFonts.cairo()),
+                        content: Text(
+                          'هل أنت متأكد من رغبتك في حذف هذا المصور؟',
+                          style: GoogleFonts.cairo(),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(ctx).pop();
+                            },
+                            child: Text('إلغاء', style: GoogleFonts.cairo()),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(ctx).pop();
+                              _deletePhotographer(); // استدعاء دالة الحذف
+                            },
+                            child: Text(
+                              'حذف',
+                              style: GoogleFonts.cairo(color: Colors.red),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                          _deletePhotographer(); // استدعاء دالة الحذف
-                        },
-                        child: Text('حذف',
-                            style: GoogleFonts.cairo(color: Colors.red)),
-                      ),
-                    ],
-                  ),
                 );
               },
             ),
@@ -239,7 +277,9 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
                   Text(
                     'مصور متنقل (يزور الأماكن):',
                     style: GoogleFonts.cairo(
-                        fontSize: 16, color: Colors.black87),
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
                   ),
                   Checkbox(
                     value: _isMobilePhotographer,
@@ -248,7 +288,7 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
                         _isMobilePhotographer = newValue!;
                       });
                     },
-                    activeColor: Colors.deepPurple,
+                    activeColor: Colors.purple,
                   ),
                 ],
               ),
@@ -259,7 +299,9 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
                 hint: 'assets/image_name.jpg',
                 controllers: _portfolioImageControllers,
                 onAdd: () => _addTextField(_portfolioImageControllers),
-                onRemove: (index) => _removeTextField(_portfolioImageControllers, index),
+                onRemove:
+                    (index) =>
+                        _removeTextField(_portfolioImageControllers, index),
               ),
               const SizedBox(height: 20),
 
@@ -268,7 +310,9 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
                 hint: 'مثال: كلاسيكي، سينمائي، استوديو',
                 controllers: _photographyTypeControllers,
                 onAdd: () => _addTextField(_photographyTypeControllers),
-                onRemove: (index) => _removeTextField(_photographyTypeControllers, index),
+                onRemove:
+                    (index) =>
+                        _removeTextField(_photographyTypeControllers, index),
               ),
               const SizedBox(height: 20),
 
@@ -277,7 +321,8 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
                 hint: 'مثال: زفاف، خطوبة، تخرج',
                 controllers: _eventTypeControllers,
                 onAdd: () => _addTextField(_eventTypeControllers),
-                onRemove: (index) => _removeTextField(_eventTypeControllers, index),
+                onRemove:
+                    (index) => _removeTextField(_eventTypeControllers, index),
               ),
 
               const SizedBox(height: 30),
@@ -288,16 +333,20 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
                   label: Text(
                     isEditing ? 'حفظ التعديلات' : 'إضافة المصور',
                     style: GoogleFonts.cairo(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
+                    backgroundColor: Colors.purple,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 15),
+                      horizontal: 40,
+                      vertical: 15,
+                    ),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                   ),
                 ),
               ),
@@ -325,7 +374,7 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
-          labelStyle: GoogleFonts.cairo(color: Colors.deepPurple),
+          labelStyle: GoogleFonts.cairo(color: Colors.purple),
           hintStyle: GoogleFonts.cairo(color: Colors.grey[500]),
           filled: true,
           fillColor: Colors.white,
@@ -335,7 +384,7 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.deepPurple, width: 2),
+            borderSide: const BorderSide(color: Colors.purple, width: 2),
           ),
         ),
         style: GoogleFonts.cairo(fontSize: 16, color: Colors.black87),
@@ -357,7 +406,10 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
         Text(
           label,
           style: GoogleFonts.cairo(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.purple,
+          ),
         ),
         const SizedBox(height: 10),
         ListView.builder(
@@ -376,7 +428,8 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
                       hint: hint,
                     ),
                   ),
-                  if (controllers.length > 1) // لا تعرض زر الحذف إذا كان هناك حقل واحد فقط
+                  if (controllers.length >
+                      1) // لا تعرض زر الحذف إذا كان هناك حقل واحد فقط
                     IconButton(
                       icon: const Icon(Icons.remove_circle, color: Colors.red),
                       onPressed: () => onRemove(index),
@@ -390,9 +443,11 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
           alignment: Alignment.centerRight,
           child: TextButton.icon(
             onPressed: onAdd,
-            icon: const Icon(Icons.add, color: Colors.deepPurple),
-            label: Text('أضف ${label.replaceAll(':', '')} أخرى',
-                style: GoogleFonts.cairo(color: Colors.deepPurple)),
+            icon: const Icon(Icons.add, color: Colors.purple),
+            label: Text(
+              'أضف ${label.replaceAll(':', '')} أخرى',
+              style: GoogleFonts.cairo(color: Colors.purple),
+            ),
           ),
         ),
       ],

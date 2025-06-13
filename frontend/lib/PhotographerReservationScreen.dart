@@ -4,20 +4,32 @@ import 'package:google_fonts/google_fonts.dart';
 class PhotographerReservationScreen extends StatefulWidget {
   final String photographerName;
 
-  const PhotographerReservationScreen({required this.photographerName, super.key});
+  const PhotographerReservationScreen({
+    required this.photographerName,
+    super.key,
+  });
 
   @override
-  State<PhotographerReservationScreen> createState() => _PhotographerReservationScreenState();
+  State<PhotographerReservationScreen> createState() =>
+      _PhotographerReservationScreenState();
 }
 
-class _PhotographerReservationScreenState extends State<PhotographerReservationScreen> {
+class _PhotographerReservationScreenState
+    extends State<PhotographerReservationScreen> {
   DateTime? _selectedDate;
   String? _location;
   String? _duration;
   String? _selectedEventType; // إضافة لتحديد نوع المناسبة للحجز
 
   final List<String> durations = ['نصف ساعة', 'ساعة', 'ساعتين', 'يوم كامل'];
-  final List<String> eventTypes = ['زفاف', 'خطوبة', 'عيد ميلاد', 'تخرج', 'أطفال', 'افتتاح مشروع']; // قائمة بأنواع المناسبات
+  final List<String> eventTypes = [
+    'زفاف',
+    'خطوبة',
+    'عيد ميلاد',
+    'تخرج',
+    'أطفال',
+    'افتتاح مشروع',
+  ]; // قائمة بأنواع المناسبات
 
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(
@@ -36,27 +48,27 @@ class _PhotographerReservationScreenState extends State<PhotographerReservationS
 
   void _submitReservation() {
     if (_selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('يرجى اختيار تاريخ المناسبة')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('يرجى اختيار تاريخ المناسبة')));
       return;
     }
     if (_location == null || _location!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('يرجى إدخال موقع المناسبة')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('يرجى إدخال موقع المناسبة')));
       return;
     }
     if (_duration == null || _duration!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('يرجى اختيار مدة الجلسة')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('يرجى اختيار مدة الجلسة')));
       return;
     }
     if (_selectedEventType == null || _selectedEventType!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('يرجى اختيار نوع المناسبة')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('يرجى اختيار نوع المناسبة')));
       return;
     }
 
@@ -75,8 +87,11 @@ class _PhotographerReservationScreenState extends State<PhotographerReservationS
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('حجز جلسة مع ${widget.photographerName}', style: GoogleFonts.cairo()),
-        backgroundColor: Colors.deepPurple,
+        title: Text(
+          'حجز جلسة مع ${widget.photographerName}',
+          style: GoogleFonts.cairo(),
+        ),
+        backgroundColor: Colors.purple,
       ),
       backgroundColor: Color(0xFFF7F7F7),
       body: Padding(
@@ -85,7 +100,13 @@ class _PhotographerReservationScreenState extends State<PhotographerReservationS
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('📅 تاريخ المناسبة:', style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(
+                '📅 تاريخ المناسبة:',
+                style: GoogleFonts.cairo(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
               InkWell(
                 onTap: _pickDate,
                 child: Container(
@@ -105,41 +126,78 @@ class _PhotographerReservationScreenState extends State<PhotographerReservationS
                 ),
               ),
               SizedBox(height: 20),
-              Text('📍 الموقع:', style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(
+                '📍 الموقع:',
+                style: GoogleFonts.cairo(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
               TextField(
                 onChanged: (value) => _location = value,
                 decoration: InputDecoration(
                   hintText: 'ادخل عنوان المناسبة',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   fillColor: Colors.white,
                   filled: true,
                 ),
                 style: GoogleFonts.cairo(),
               ),
               SizedBox(height: 20),
-              Text('⏱️ مدة الجلسة:', style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(
+                '⏱️ مدة الجلسة:',
+                style: GoogleFonts.cairo(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
               DropdownButtonFormField<String>(
-                items: durations
-                    .map((duration) => DropdownMenuItem(value: duration, child: Text(duration, style: GoogleFonts.cairo())))
-                    .toList(),
+                items:
+                    durations
+                        .map(
+                          (duration) => DropdownMenuItem(
+                            value: duration,
+                            child: Text(duration, style: GoogleFonts.cairo()),
+                          ),
+                        )
+                        .toList(),
                 onChanged: (value) => setState(() => _duration = value),
                 decoration: InputDecoration(
                   hintText: 'اختر المدة',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   fillColor: Colors.white,
                   filled: true,
                 ),
               ),
               SizedBox(height: 20),
-              Text('🎉 نوع المناسبة:', style: GoogleFonts.cairo(fontWeight: FontWeight.bold, fontSize: 16)),
+              Text(
+                '🎉 نوع المناسبة:',
+                style: GoogleFonts.cairo(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
               DropdownButtonFormField<String>(
-                items: eventTypes
-                    .map((type) => DropdownMenuItem(value: type, child: Text(type, style: GoogleFonts.cairo())))
-                    .toList(),
-                onChanged: (value) => setState(() => _selectedEventType = value),
+                items:
+                    eventTypes
+                        .map(
+                          (type) => DropdownMenuItem(
+                            value: type,
+                            child: Text(type, style: GoogleFonts.cairo()),
+                          ),
+                        )
+                        .toList(),
+                onChanged:
+                    (value) => setState(() => _selectedEventType = value),
                 decoration: InputDecoration(
                   hintText: 'اختر نوع المناسبة',
-                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                   fillColor: Colors.white,
                   filled: true,
                 ),
@@ -149,9 +207,11 @@ class _PhotographerReservationScreenState extends State<PhotographerReservationS
                 child: ElevatedButton(
                   onPressed: _submitReservation,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
+                    backgroundColor: Colors.purple,
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   child: Text(
                     'تأكيد الحجز',

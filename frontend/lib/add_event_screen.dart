@@ -1,61 +1,112 @@
+// lib/screens/add_event_screen.dart
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:geolocator/geolocator.dart';
+import '../models/event.dart';
+import '../services/event_service.dart';
+import '../providers/event_provider.dart';
 
-class AddEventScreen extends StatefulWidget {
-  const AddEventScreen({super.key});
+class AddEventScreen extends ConsumerStatefulWidget {
+  const AddEventScreen({Key? key}) : super(key: key);
 
   @override
-  _AddEventScreenState createState() => _AddEventScreenState();
+  ConsumerState<AddEventScreen> createState() => _AddEventScreenState();
 }
 
-class _AddEventScreenState extends State<AddEventScreen> {
+class _AddEventScreenState extends ConsumerState<AddEventScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _detailsController = TextEditingController();
+  final TextEditingController _venueController = TextEditingController();
+  final TextEditingController _coordsController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+
+  LatLng? _pickedLocation;
+  late final MapController _mapController;
+
+  @override
+  void initState() {
+    super.initState();
+    _mapController = MapController();
+    _locateUser();
+  }
+
+  Future<void> _locateUser() async {
+    try {
+      final pos = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      final latlng = LatLng(pos.latitude, pos.longitude);
+      setState(() {
+        _pickedLocation = latlng;
+        _coordsController.text =
+            '${latlng.latitude.toStringAsFixed(5)}, ${latlng.longitude.toStringAsFixed(5)}';
+      });
+      _mapController.move(latlng, 13);
+    } catch (_) {
+      // permission denied or service unavailable
+    }
+  }
 
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    final picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now().subtract(const Duration(days: 30)),
       lastDate: DateTime(DateTime.now().year + 5),
       helpText: 'اختر تاريخ المناسبة',
-      confirmText: 'اختيار',
-      cancelText: 'إلغاء',
-      builder: (context, child) {
-        return Theme(
-          data: Theme.of(context).copyWith(
-            colorScheme: const ColorScheme.light(
-              primary: Colors.purple,
-              onPrimary: Colors.white,
-              onSurface: Colors.black87,
+      builder:
+          (ctx, child) => Theme(
+            data: Theme.of(ctx).copyWith(
+              colorScheme: const ColorScheme.light(
+                primary: Color.fromRGBO(156, 39, 176, 1),
+                onPrimary: Color.fromARGB(255, 121, 92, 119),
+                onSurface: Colors.black87,
+                surface: Color.fromARGB(255, 203, 140, 209),
+                onBackground: Color.fromARGB(255, 105, 98, 98),
+              ),
             ),
-            textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: Colors.purple),
-            ),
+            child: child!,
           ),
-          child: child!,
-        );
-      },
     );
     if (picked != null) {
-      String formattedDate =
-          "${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}";
-      setState(() {
-        _dateController.text = formattedDate;
-      });
+      _dateController.text =
+          '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
     }
   }
-  // -------------------------
 
   @override
   void dispose() {
     _titleController.dispose();
     _dateController.dispose();
-    _locationController.dispose();
-    _detailsController.dispose();
+    _venueController.dispose();
+    _coordsController.dispose();
+    _descriptionController.dispose();
     super.dispose();
+  }
+
+  Future<void> _saveEvent() async {
+    if (!_formKey.currentState!.validate()) return;
+    final model = Event(
+      id: '',
+      title: _titleController.text.trim(),
+      date: DateTime.parse(_dateController.text.trim()),
+      venue: _venueController.text.trim(),
+      venueLocation: _pickedLocation,
+      description: _descriptionController.text.trim(),
+    );
+    await ref
+        .read(eventServiceProvider)
+        .createEvent(
+          title: model.title,
+          date: model.date,
+          venue: model.venue,
+          venueLocation: model.venueLocation,
+        );
+    if (!mounted) return;
+    Navigator.pop(context, true);
   }
 
   @override
@@ -63,195 +114,120 @@ class _AddEventScreenState extends State<AddEventScreen> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: AppBar(
-          title: const Text("إنشاء مناسبة جديدة"),
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context),
-          ),
-
-          backgroundColor: Colors.purple,
-          foregroundColor: Colors.white,
-          // -----------------------
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 16.0,
-            vertical: 8.0,
-          ), //
-          child: Form(
-            key: _formKey,
-
-            child: ListView(
-              children: [
-                const SizedBox(height: 10),
-                const Text(
-                  "تفاصيل المناسبة الأساسية",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.purple,
-                  ), //
-                ),
-                const SizedBox(height: 15),
-                TextFormField(
-                  controller: _titleController,
-
-                  decoration: const InputDecoration(
-                    labelText: 'اسم المناسبة *',
-                    hintText: 'مثال: حفل زفاف أحمد وفاطمة',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)), //
-                    ),
-                    prefixIcon: Icon(Icons.event_note),
+        appBar: AppBar(title: const Text('إنشاء مناسبة جديدة')),
+        body: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              // Map picker
+              SizedBox(
+                height: 200,
+                child: FlutterMap(
+                  mapController: _mapController,
+                  options: MapOptions(
+                    initialCenter: _pickedLocation ?? LatLng(24.7136, 46.6753),
+                    initialZoom: 13,
+                    onTap: (_, latlng) {
+                      setState(() {
+                        _pickedLocation = latlng;
+                        _coordsController.text =
+                            '${latlng.latitude.toStringAsFixed(5)}, ${latlng.longitude.toStringAsFixed(5)}';
+                      });
+                    },
                   ),
-                  // --------------------
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'الرجاء إدخال اسم المناسبة';
-                    }
-                    return null;
-                  },
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _dateController,
-
-                  decoration: InputDecoration(
-                    labelText: 'تاريخ المناسبة *',
-                    hintText: 'YYYY-MM-DD',
-                    border: const OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                  children: [
+                    TileLayer(
+                      urlTemplate:
+                          'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                      subdomains: const ['a', 'b', 'c'],
                     ),
-                    prefixIcon: const Icon(Icons.calendar_today),
-                    suffixIcon: IconButton(
-                      tooltip: 'اختر التاريخ',
-                      icon: const Icon(Icons.edit_calendar_outlined),
-                      onPressed: () => _selectDate(context),
-                    ),
-                  ),
-                  readOnly: true,
-                  onTap: () => _selectDate(context),
-                  // ------------------------
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'الرجاء اختيار تاريخ المناسبة';
-                    }
-
-                    return null;
-                  },
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _locationController,
-
-                  decoration: const InputDecoration(
-                    labelText: 'مكان المناسبة *',
-                    hintText: 'مثال: قاعة الفصول الأربعة، الرياض',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                    prefixIcon: Icon(Icons.location_on_outlined),
-                  ),
-                  // ----------------------
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'الرجاء إدخال مكان المناسبة';
-                    }
-                    return null;
-                  },
-                  textInputAction: TextInputAction.next,
-                ),
-                const SizedBox(height: 16),
-                TextFormField(
-                  controller: _detailsController,
-
-                  decoration: const InputDecoration(
-                    labelText: 'تفاصيل إضافية (اختياري)',
-                    hintText:
-                        'أضف ملاحظات، عدد الضيوف المتوقع، برنامج الحفل...',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                    ),
-                    alignLabelWithHint: true,
-                    prefixIcon: Icon(Icons.notes_outlined),
-                  ),
-                  // -------------------------
-                  maxLines: 4,
-
-                  textInputAction: TextInputAction.done,
-                ),
-                const SizedBox(height: 30),
-
-                ElevatedButton.icon(
-                  icon: const Icon(Icons.save_outlined),
-                  label: const Text("حفظ المناسبة"),
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-
-                    if (_formKey.currentState?.validate() ?? false) {
-                      final String title = _titleController.text;
-                      final String date = _dateController.text;
-                      final String location = _locationController.text;
-                      final String details = _detailsController.text;
-
-                      print('حفظ المناسبة: $title, $date, $location, $details');
-
-                      showDialog(
-                        context: context,
-                        barrierDismissible: false,
-                        builder:
-                            (context) => AlertDialog(
-                              title: const Row(
-                                children: [
-                                  Icon(
-                                    Icons.check_circle_outline,
-                                    color: Colors.green,
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text("تم الحفظ بنجاح"),
-                                ],
-                              ),
-                              content: Text("تم حفظ مناسبة '$title' بنجاح."),
-                              actionsAlignment: MainAxisAlignment.center,
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    Navigator.pop(context, true);
-                                  },
-                                  child: const Text("حسناً"),
-                                ),
-                              ],
+                    if (_pickedLocation != null)
+                      MarkerLayer(
+                        markers: [
+                          Marker(
+                            width: 40,
+                            height: 40,
+                            point: _pickedLocation!,
+                            child: const Icon(
+                              Icons.location_on,
+                              color: Colors.red,
+                              size: 40,
                             ),
-                      );
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('الرجاء مراجعة الحقول المطلوبة.'),
-                          backgroundColor: Colors.redAccent,
-                        ),
-                      );
-                    }
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 15),
-                    textStyle: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
+                          ),
+                        ],
+                      ),
+                  ],
                 ),
-                const SizedBox(height: 20),
-              ],
-            ),
+              ),
+
+              // Form fields
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.all(16),
+                  children: [
+                    TextFormField(
+                      controller: _titleController,
+                      decoration: const InputDecoration(
+                        labelText: 'اسم المناسبة *',
+                      ),
+                      validator:
+                          (v) =>
+                              (v?.isEmpty ?? true) ? 'أدخل اسم المناسبة' : null,
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _dateController,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                        labelText: 'تاريخ المناسبة *',
+                        fillColor: Color(0xFFF7F7F7),
+                        filled: true,
+                        border: OutlineInputBorder(),
+                      ),
+                      onTap: () => _selectDate(context),
+                      validator:
+                          (v) => (v?.isEmpty ?? true) ? 'اختر تاريخ' : null,
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _venueController,
+                      decoration: const InputDecoration(
+                        labelText: 'مكان المناسبة *',
+                      ),
+                      validator:
+                          (v) =>
+                              (v?.isEmpty ?? true) ? 'أدخل اسم المكان' : null,
+                    ),
+                    const SizedBox(height: 12),
+
+                    TextFormField(
+                      controller: _descriptionController,
+                      decoration: const InputDecoration(
+                        labelText: 'وصف المناسبة',
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    TextFormField(
+                      controller: _coordsController,
+                      readOnly: true,
+                      decoration: const InputDecoration(
+                        labelText: 'إحداثيات المكان',
+                      ),
+                      validator:
+                          (_) =>
+                              _pickedLocation == null
+                                  ? 'اختر موقعًا على الخريطة'
+                                  : null,
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: _saveEvent,
+                      child: const Text('حفظ المناسبة'),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
       ),

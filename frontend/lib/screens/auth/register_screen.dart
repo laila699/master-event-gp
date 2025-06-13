@@ -336,7 +336,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         ? Icons.person
                         : Icons.storefront,
                     size: 32,
-                    color: Colors.deepPurple,
+                    color: Colors.purple,
                   ),
                 ],
               ),

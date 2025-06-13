@@ -18,14 +18,15 @@ class SpecificDistributionController {
     String? components,
     List<String>? suitableFor,
     bool? isCustomizable,
-  })  : nameController = TextEditingController(text: name ?? ''),
-        imageController = TextEditingController(text: image ?? ''),
-        priceController = TextEditingController(text: price ?? ''),
-        componentsController = TextEditingController(text: components ?? ''),
-        suitableForControllers = suitableFor != null
-            ? suitableFor.map((e) => TextEditingController(text: e)).toList()
-            : [TextEditingController()],
-        isCustomizable = isCustomizable ?? false;
+  }) : nameController = TextEditingController(text: name ?? ''),
+       imageController = TextEditingController(text: image ?? ''),
+       priceController = TextEditingController(text: price ?? ''),
+       componentsController = TextEditingController(text: components ?? ''),
+       suitableForControllers =
+           suitableFor != null
+               ? suitableFor.map((e) => TextEditingController(text: e)).toList()
+               : [TextEditingController()],
+       isCustomizable = isCustomizable ?? false;
 
   void dispose() {
     nameController.dispose();
@@ -44,17 +45,19 @@ class SpecificDistributionController {
       'image': imageController.text,
       'price': priceController.text,
       'components': componentsController.text,
-      'suitable_for': suitableForControllers
-          .where((c) => c.text.isNotEmpty)
-          .map((c) => c.text)
-          .toList(),
+      'suitable_for':
+          suitableForControllers
+              .where((c) => c.text.isNotEmpty)
+              .map((c) => c.text)
+              .toList(),
       'is_customizable': isCustomizable,
     };
   }
 }
 
 class ManageDistributionStoreScreen extends StatefulWidget {
-  final Map<String, dynamic>? distributionStore; // المتجر المراد تعديله (اختياري)
+  final Map<String, dynamic>?
+  distributionStore; // المتجر المراد تعديله (اختياري)
 
   const ManageDistributionStoreScreen({super.key, this.distributionStore});
 
@@ -81,24 +84,39 @@ class _ManageDistributionStoreScreenState
   @override
   void initState() {
     super.initState();
-    _nameController = TextEditingController(text: widget.distributionStore?['name'] ?? '');
-    _descriptionController = TextEditingController(text: widget.distributionStore?['description'] ?? '');
-    _mainImageController = TextEditingController(text: widget.distributionStore?['main_image'] ?? '');
-    _priceRangeController = TextEditingController(text: widget.distributionStore?['price_range'] ?? '');
-    _deliveryAvailable = widget.distributionStore?['delivery_available'] ?? false;
-    _aboutController = TextEditingController(text: widget.distributionStore?['details']?['about'] ?? '');
+    _nameController = TextEditingController(
+      text: widget.distributionStore?['name'] ?? '',
+    );
+    _descriptionController = TextEditingController(
+      text: widget.distributionStore?['description'] ?? '',
+    );
+    _mainImageController = TextEditingController(
+      text: widget.distributionStore?['main_image'] ?? '',
+    );
+    _priceRangeController = TextEditingController(
+      text: widget.distributionStore?['price_range'] ?? '',
+    );
+    _deliveryAvailable =
+        widget.distributionStore?['delivery_available'] ?? false;
+    _aboutController = TextEditingController(
+      text: widget.distributionStore?['details']?['about'] ?? '',
+    );
 
     // تعبئة حقول الصور الإضافية (Gallery Images)
-    if (widget.distributionStore != null && widget.distributionStore!['details']?['gallery_images'] != null) {
+    if (widget.distributionStore != null &&
+        widget.distributionStore!['details']?['gallery_images'] != null) {
       for (var img in widget.distributionStore!['details']['gallery_images']) {
         _galleryImageControllers.add(TextEditingController(text: img));
       }
     } else {
-      _galleryImageControllers.add(TextEditingController()); // حقل واحد فارغ على الأقل
+      _galleryImageControllers.add(
+        TextEditingController(),
+      ); // حقل واحد فارغ على الأقل
     }
 
     // تعبئة حقول أنواع المناسبات
-    if (widget.distributionStore != null && widget.distributionStore!['event_types_covered'] != null) {
+    if (widget.distributionStore != null &&
+        widget.distributionStore!['event_types_covered'] != null) {
       for (var type in widget.distributionStore!['event_types_covered']) {
         _eventTypesCoveredControllers.add(TextEditingController(text: type));
       }
@@ -107,28 +125,39 @@ class _ManageDistributionStoreScreenState
     }
 
     // تعبئة حقول أنواع التوزيعات المقدمة
-    if (widget.distributionStore != null && widget.distributionStore!['distribution_types_offered'] != null) {
-      for (var type in widget.distributionStore!['distribution_types_offered']) {
-        _distributionTypesOfferedControllers.add(TextEditingController(text: type));
+    if (widget.distributionStore != null &&
+        widget.distributionStore!['distribution_types_offered'] != null) {
+      for (var type
+          in widget.distributionStore!['distribution_types_offered']) {
+        _distributionTypesOfferedControllers.add(
+          TextEditingController(text: type),
+        );
       }
     } else {
       _distributionTypesOfferedControllers.add(TextEditingController());
     }
 
     // تعبئة حقول التوزيعات المحددة (Specific Distributions)
-    if (widget.distributionStore != null && widget.distributionStore!['details']?['specific_distributions'] != null) {
-      for (var dist in widget.distributionStore!['details']['specific_distributions']) {
-        _specificDistributions.add(SpecificDistributionController(
-          name: dist['name'],
-          image: dist['image'],
-          price: dist['price'],
-          components: dist['components'],
-          suitableFor: List<String>.from(dist['suitable_for'] ?? []),
-          isCustomizable: dist['is_customizable'],
-        ));
+    if (widget.distributionStore != null &&
+        widget.distributionStore!['details']?['specific_distributions'] !=
+            null) {
+      for (var dist
+          in widget.distributionStore!['details']['specific_distributions']) {
+        _specificDistributions.add(
+          SpecificDistributionController(
+            name: dist['name'],
+            image: dist['image'],
+            price: dist['price'],
+            components: dist['components'],
+            suitableFor: List<String>.from(dist['suitable_for'] ?? []),
+            isCustomizable: dist['is_customizable'],
+          ),
+        );
       }
     } else {
-      _specificDistributions.add(SpecificDistributionController()); // إضافة توزيعة واحدة فارغة على الأقل
+      _specificDistributions.add(
+        SpecificDistributionController(),
+      ); // إضافة توزيعة واحدة فارغة على الأقل
     }
   }
 
@@ -177,39 +206,53 @@ class _ManageDistributionStoreScreenState
     if (_formKey.currentState!.validate()) {
       // هنا سيتم إرسال البيانات إلى الـ Backend
       final newStoreData = {
-        'id': widget.distributionStore?['id'] ?? UniqueKey().toString(), // افتراضي لـ ID
+        'id':
+            widget.distributionStore?['id'] ??
+            UniqueKey().toString(), // افتراضي لـ ID
         'name': _nameController.text,
         'description': _descriptionController.text,
         'main_image': _mainImageController.text,
         'price_range': _priceRangeController.text,
         'delivery_available': _deliveryAvailable,
-        'event_types_covered': _eventTypesCoveredControllers
-            .where((c) => c.text.isNotEmpty)
-            .map((c) => c.text)
-            .toList(),
-        'distribution_types_offered': _distributionTypesOfferedControllers
-            .where((c) => c.text.isNotEmpty)
-            .map((c) => c.text)
-            .toList(),
-        'overall_rating': widget.distributionStore?['overall_rating'] ?? 0.0, // تقييم افتراضي
+        'event_types_covered':
+            _eventTypesCoveredControllers
+                .where((c) => c.text.isNotEmpty)
+                .map((c) => c.text)
+                .toList(),
+        'distribution_types_offered':
+            _distributionTypesOfferedControllers
+                .where((c) => c.text.isNotEmpty)
+                .map((c) => c.text)
+                .toList(),
+        'overall_rating':
+            widget.distributionStore?['overall_rating'] ?? 0.0, // تقييم افتراضي
         'details': {
           'about': _aboutController.text,
-          'gallery_images': _galleryImageControllers
-              .where((c) => c.text.isNotEmpty)
-              .map((c) => c.text)
-              .toList(),
-          'specific_distributions': _specificDistributions
-              .where((s) => s.nameController.text.isNotEmpty) // فقط التوزيعات التي لها اسم
-              .map((s) => s.toMap())
-              .toList(),
-          'customer_reviews': widget.distributionStore?['details']?['customer_reviews'] ?? [], // مراجعات افتراضية
+          'gallery_images':
+              _galleryImageControllers
+                  .where((c) => c.text.isNotEmpty)
+                  .map((c) => c.text)
+                  .toList(),
+          'specific_distributions':
+              _specificDistributions
+                  .where(
+                    (s) => s.nameController.text.isNotEmpty,
+                  ) // فقط التوزيعات التي لها اسم
+                  .map((s) => s.toMap())
+                  .toList(),
+          'customer_reviews':
+              widget.distributionStore?['details']?['customer_reviews'] ??
+              [], // مراجعات افتراضية
         },
       };
 
       print('Distribution Store Data to Save: $newStoreData');
 
       // في التطبيق الحقيقي: استدعاء API للحفظ
-      Navigator.pop(context, true); // إرجاع true للإشارة إلى أن البيانات قد تتغير
+      Navigator.pop(
+        context,
+        true,
+      ); // إرجاع true للإشارة إلى أن البيانات قد تتغير
     }
   }
 
@@ -228,9 +271,11 @@ class _ManageDistributionStoreScreenState
         title: Text(
           isEditing ? 'تعديل بيانات متجر التوزيعات' : 'إضافة متجر توزيعات جديد',
           style: GoogleFonts.cairo(
-              fontWeight: FontWeight.bold, color: Colors.white),
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
         ),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.purple,
         centerTitle: true,
         actions: [
           if (isEditing)
@@ -239,28 +284,32 @@ class _ManageDistributionStoreScreenState
               onPressed: () {
                 showDialog(
                   context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: Text('تأكيد الحذف', style: GoogleFonts.cairo()),
-                    content: Text(
-                        'هل أنت متأكد من رغبتك في حذف متجر التوزيعات هذا؟',
-                        style: GoogleFonts.cairo()),
-                    actions: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                        },
-                        child: Text('إلغاء', style: GoogleFonts.cairo()),
+                  builder:
+                      (ctx) => AlertDialog(
+                        title: Text('تأكيد الحذف', style: GoogleFonts.cairo()),
+                        content: Text(
+                          'هل أنت متأكد من رغبتك في حذف متجر التوزيعات هذا؟',
+                          style: GoogleFonts.cairo(),
+                        ),
+                        actions: [
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(ctx).pop();
+                            },
+                            child: Text('إلغاء', style: GoogleFonts.cairo()),
+                          ),
+                          TextButton(
+                            onPressed: () {
+                              Navigator.of(ctx).pop();
+                              _deleteDistributionStore();
+                            },
+                            child: Text(
+                              'حذف',
+                              style: GoogleFonts.cairo(color: Colors.red),
+                            ),
+                          ),
+                        ],
                       ),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(ctx).pop();
-                          _deleteDistributionStore();
-                        },
-                        child: Text('حذف',
-                            style: GoogleFonts.cairo(color: Colors.red)),
-                      ),
-                    ],
-                  ),
                 );
               },
             ),
@@ -323,7 +372,9 @@ class _ManageDistributionStoreScreenState
                   Text(
                     'توصيل متاح:',
                     style: GoogleFonts.cairo(
-                        fontSize: 16, color: Colors.black87),
+                      fontSize: 16,
+                      color: Colors.black87,
+                    ),
                   ),
                   Checkbox(
                     value: _deliveryAvailable,
@@ -332,7 +383,7 @@ class _ManageDistributionStoreScreenState
                         _deliveryAvailable = newValue!;
                       });
                     },
-                    activeColor: Colors.deepPurple,
+                    activeColor: Colors.purple,
                   ),
                 ],
               ),
@@ -350,7 +401,9 @@ class _ManageDistributionStoreScreenState
                 hint: 'assets/gallery_image.jpg',
                 controllers: _galleryImageControllers,
                 onAdd: () => _addTextField(_galleryImageControllers),
-                onRemove: (index) => _removeTextField(_galleryImageControllers, index),
+                onRemove:
+                    (index) =>
+                        _removeTextField(_galleryImageControllers, index),
               ),
               const SizedBox(height: 20),
 
@@ -360,7 +413,9 @@ class _ManageDistributionStoreScreenState
                 hint: 'مثال: زفاف، خطوبة، مواليد',
                 controllers: _eventTypesCoveredControllers,
                 onAdd: () => _addTextField(_eventTypesCoveredControllers),
-                onRemove: (index) => _removeTextField(_eventTypesCoveredControllers, index),
+                onRemove:
+                    (index) =>
+                        _removeTextField(_eventTypesCoveredControllers, index),
               ),
               const SizedBox(height: 20),
 
@@ -369,8 +424,13 @@ class _ManageDistributionStoreScreenState
                 label: 'أنواع التوزيعات المقدمة:',
                 hint: 'مثال: شوكولاتة مغلفة، شموع',
                 controllers: _distributionTypesOfferedControllers,
-                onAdd: () => _addTextField(_distributionTypesOfferedControllers),
-                onRemove: (index) => _removeTextField(_distributionTypesOfferedControllers, index),
+                onAdd:
+                    () => _addTextField(_distributionTypesOfferedControllers),
+                onRemove:
+                    (index) => _removeTextField(
+                      _distributionTypesOfferedControllers,
+                      index,
+                    ),
               ),
               const SizedBox(height: 20),
 
@@ -378,9 +438,10 @@ class _ManageDistributionStoreScreenState
               Text(
                 'التوزيعات المحددة (منتجات المتجر):',
                 style: GoogleFonts.cairo(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.deepPurple),
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.purple,
+                ),
               ),
               const SizedBox(height: 15),
               ListView.builder(
@@ -393,7 +454,8 @@ class _ManageDistributionStoreScreenState
                     margin: const EdgeInsets.only(bottom: 15),
                     elevation: 2,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Column(
@@ -405,15 +467,19 @@ class _ManageDistributionStoreScreenState
                               Text(
                                 'توزيعة #${index + 1}',
                                 style: GoogleFonts.cairo(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.deepOrange),
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.deepOrange,
+                                ),
                               ),
                               if (_specificDistributions.length > 1)
                                 IconButton(
-                                  icon: const Icon(Icons.delete_forever,
-                                      color: Colors.red),
-                                  onPressed: () => _removeSpecificDistribution(index),
+                                  icon: const Icon(
+                                    Icons.delete_forever,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed:
+                                      () => _removeSpecificDistribution(index),
                                 ),
                             ],
                           ),
@@ -456,29 +522,37 @@ class _ManageDistributionStoreScreenState
                           Text(
                             'مناسبة لـ (لهذه التوزيعة):',
                             style: GoogleFonts.cairo(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey[700]),
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.grey[700],
+                            ),
                           ),
                           ListView.builder(
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
-                            itemCount: distController.suitableForControllers.length,
+                            itemCount:
+                                distController.suitableForControllers.length,
                             itemBuilder: (context, suitableIndex) {
                               return Row(
                                 children: [
                                   Expanded(
                                     child: _buildTextField(
-                                      controller: distController
-                                          .suitableForControllers[suitableIndex],
+                                      controller:
+                                          distController
+                                              .suitableForControllers[suitableIndex],
                                       label: 'مناسبة #${suitableIndex + 1}',
                                       hint: 'مثال: زفاف',
                                     ),
                                   ),
-                                  if (distController.suitableForControllers.length > 1)
+                                  if (distController
+                                          .suitableForControllers
+                                          .length >
+                                      1)
                                     IconButton(
-                                      icon: const Icon(Icons.remove_circle,
-                                          color: Colors.red),
+                                      icon: const Icon(
+                                        Icons.remove_circle,
+                                        color: Colors.red,
+                                      ),
                                       onPressed: () {
                                         setState(() {
                                           distController
@@ -498,14 +572,21 @@ class _ManageDistributionStoreScreenState
                             child: TextButton.icon(
                               onPressed: () {
                                 setState(() {
-                                  distController.suitableForControllers
-                                      .add(TextEditingController());
+                                  distController.suitableForControllers.add(
+                                    TextEditingController(),
+                                  );
                                 });
                               },
-                              icon: const Icon(Icons.add, color: Colors.blueAccent),
-                              label: Text('أضف مناسبة أخرى',
-                                  style:
-                                      GoogleFonts.cairo(color: Colors.blueAccent)),
+                              icon: const Icon(
+                                Icons.add,
+                                color: Colors.blueAccent,
+                              ),
+                              label: Text(
+                                'أضف مناسبة أخرى',
+                                style: GoogleFonts.cairo(
+                                  color: Colors.blueAccent,
+                                ),
+                              ),
                             ),
                           ),
                           Row(
@@ -513,7 +594,9 @@ class _ManageDistributionStoreScreenState
                               Text(
                                 'قابلة للتخصيص:',
                                 style: GoogleFonts.cairo(
-                                    fontSize: 16, color: Colors.black87),
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
                               ),
                               Checkbox(
                                 value: distController.isCustomizable,
@@ -522,7 +605,7 @@ class _ManageDistributionStoreScreenState
                                     distController.isCustomizable = newValue!;
                                   });
                                 },
-                                activeColor: Colors.deepPurple,
+                                activeColor: Colors.purple,
                               ),
                             ],
                           ),
@@ -535,12 +618,15 @@ class _ManageDistributionStoreScreenState
               Center(
                 child: TextButton.icon(
                   onPressed: _addSpecificDistribution,
-                  icon: const Icon(Icons.add_box, color: Colors.deepPurple),
-                  label: Text('أضف توزيعة جديدة',
-                      style: GoogleFonts.cairo(
-                          color: Colors.deepPurple,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16)),
+                  icon: const Icon(Icons.add_box, color: Colors.purple),
+                  label: Text(
+                    'أضف توزيعة جديدة',
+                    style: GoogleFonts.cairo(
+                      color: Colors.purple,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(height: 30),
@@ -551,16 +637,20 @@ class _ManageDistributionStoreScreenState
                   label: Text(
                     isEditing ? 'حفظ التعديلات' : 'إضافة المتجر',
                     style: GoogleFonts.cairo(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.deepPurple,
+                    backgroundColor: Colors.purple,
                     padding: const EdgeInsets.symmetric(
-                        horizontal: 40, vertical: 15),
+                      horizontal: 40,
+                      vertical: 15,
+                    ),
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15)),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
                   ),
                 ),
               ),
@@ -590,7 +680,7 @@ class _ManageDistributionStoreScreenState
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
-          labelStyle: GoogleFonts.cairo(color: Colors.deepPurple),
+          labelStyle: GoogleFonts.cairo(color: Colors.purple),
           hintStyle: GoogleFonts.cairo(color: Colors.grey[500]),
           filled: true,
           fillColor: Colors.white,
@@ -600,7 +690,7 @@ class _ManageDistributionStoreScreenState
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.deepPurple, width: 2),
+            borderSide: const BorderSide(color: Colors.purple, width: 2),
           ),
         ),
         style: GoogleFonts.cairo(fontSize: 16, color: Colors.black87),
@@ -622,7 +712,10 @@ class _ManageDistributionStoreScreenState
         Text(
           label,
           style: GoogleFonts.cairo(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.deepPurple),
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.purple,
+          ),
         ),
         const SizedBox(height: 10),
         ListView.builder(
@@ -655,9 +748,11 @@ class _ManageDistributionStoreScreenState
           alignment: Alignment.centerRight,
           child: TextButton.icon(
             onPressed: onAdd,
-            icon: const Icon(Icons.add, color: Colors.deepPurple),
-            label: Text('أضف ${label.replaceAll(':', '')} أخرى',
-                style: GoogleFonts.cairo(color: Colors.deepPurple)),
+            icon: const Icon(Icons.add, color: Colors.purple),
+            label: Text(
+              'أضف ${label.replaceAll(':', '')} أخرى',
+              style: GoogleFonts.cairo(color: Colors.purple),
+            ),
           ),
         ),
       ],

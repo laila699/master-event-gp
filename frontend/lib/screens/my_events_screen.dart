@@ -1,113 +1,259 @@
+// lib/screens/my_events_screen.dart
 import 'package:flutter/material.dart';
-import 'package:masterevent/EventSettingsPage.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:masterevent/InvitationScreen.dart';
 import 'package:masterevent/add_event_screen.dart';
-import 'package:masterevent/design.dart';
-import 'package:masterevent/furniture.dart';
-import 'package:masterevent/models/user.dart';
+import 'package:masterevent/models/service_type.dart';
+import 'package:masterevent/screens/chat_bot_list_screen.dart';
+import 'package:masterevent/screens/chat_list_screen.dart';
+import 'package:masterevent/screens/notifications_screen.dart';
+import 'package:masterevent/screens/vendor_list_screen.dart';
+import 'package:masterevent/services/notification_service.dart';
 import 'package:masterevent/user_profile.dart';
 
-// lib/screens/my_events_screen.dart
+import '../models/user.dart';
+import '../models/event.dart';
+import '../providers/event_provider.dart';
+import '../screens/event_details_screen.dart';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:masterevent/providers/event_provider.dart';
-
-class MyEventsScreen extends ConsumerWidget {
+/// Home screen with two tabs: "مناسباتي" and "استكشف الخدمات"
+class MyEventsScreen extends ConsumerStatefulWidget {
   final User user;
-
-  const MyEventsScreen({super.key, required this.user});
+  const MyEventsScreen({Key? key, required this.user}) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    // Watch the provider that fetches the list of events
+  ConsumerState<MyEventsScreen> createState() => _MyEventsScreenState();
+}
+
+class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(notificationServiceProvider);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final eventsAsync = ref.watch(eventListProvider);
+    final primary = Theme.of(context).colorScheme.primary;
 
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: false,
-        title: Text("مرحبًا، ${user.name} 👋"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.notifications),
-            tooltip: 'الإشعارات',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("صفحة الإشعارات قيد الإنشاء!")),
-              );
-            },
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            'مرحبًا، ${widget.user.name}',
+            style: GoogleFonts.cairo(),
           ),
-          IconButton(
-            icon: const Icon(Icons.chat),
-            tooltip: 'الدردشات',
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text("صفحة الدردشات قيد الإنشاء!")),
-              );
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.person),
-            tooltip: 'الملف الشخصي',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProfileScreen()),
-              );
-            },
-          ),
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "📆 مناسباتك القادمة",
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.notifications),
+              tooltip: 'الإشعارات',
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => NotificationsScreen()),
+                  ),
             ),
-            const SizedBox(height: 10),
-
-            // ── Event list area ──
-            Expanded(
+            IconButton(
+              icon: const Icon(Icons.chat),
+              tooltip: 'الدردشات',
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ChatListScreen()),
+                  ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.person),
+              tooltip: 'الملف الشخصي',
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                  ),
+            ),
+            // add a chat bot icon
+            IconButton(
+              icon: const Icon(Icons.smart_toy),
+              tooltip: 'مساعد الدردشة',
+              onPressed:
+                  () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const ChatBotListScreen(),
+                    ),
+                  ),
+            ),
+          ],
+          bottom: TabBar(
+            indicator: UnderlineTabIndicator(
+              borderSide: BorderSide(width: 3.0, color: Colors.white),
+              insets: const EdgeInsets.symmetric(horizontal: 24.0),
+            ),
+            tabs: [
+              Tab(
+                child: Text(
+                  'مناسباتي',
+                  style: GoogleFonts.cairo(
+                    textStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 236, 231, 231),
+                    ),
+                  ),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  'استكشف الخدمات',
+                  style: GoogleFonts.cairo(
+                    textStyle: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Color.fromARGB(255, 236, 231, 231),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            // ── Tab 1: My Events ──
+            Padding(
+              padding: const EdgeInsets.all(12),
               child: eventsAsync.when(
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error:
-                    (err, stack) => Center(
+                    (e, _) => Center(
                       child: Text(
-                        'حدث خطأ أثناء تحميل المناسبات.',
-                        style: const TextStyle(color: Colors.red),
+                        'خطأ: \$e',
+                        style: GoogleFonts.cairo(color: Colors.red),
                       ),
                     ),
                 data: (events) {
                   if (events.isEmpty) {
-                    return const Center(child: Text('لا توجد مناسبات حالياً.'));
+                    return Center(
+                      child: Text(
+                        'لا توجد مناسبات',
+                        style: GoogleFonts.cairo(fontSize: 18),
+                      ),
+                    );
                   }
-                  // Build a ListView of upcoming events
-                  return ListView.separated(
+                  return ListView.builder(
                     itemCount: events.length,
-                    separatorBuilder: (_, __) => const Divider(),
-                    itemBuilder: (context, index) {
-                      final event = events[index];
-                      return ListTile(
-                        leading: const Icon(Icons.event, color: Colors.purple),
-                        title: Text(event.title),
-                        subtitle: Text(
-                          // Format date and venue, e.g. "📅 15 أبريل 2024 | 📍 قاعة الماس"
-                          '📅 ${_formatDate(event.date)} | 📍 ${event.venue}',
-                        ),
-                        trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                        onTap: () {
-                          // Here you could navigate to an EventDetail screen
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("سيتم فتح تفاصيل الدعوة قريباً!"),
+                    itemBuilder: (ctx, i) {
+                      final ev = events[i];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 8),
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(16),
+                          onTap:
+                              () => Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder:
+                                      (_) => EventDetailsScreen(eventId: ev.id),
+                                ),
+                              ),
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
                             ),
-                          );
-                        },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                if (ev.venueLocation != null)
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                      top: Radius.circular(16),
+                                    ),
+                                    child: SizedBox(
+                                      height: 120,
+                                      child: FlutterMap(
+                                        options: MapOptions(
+                                          initialCenter: ev.venueLocation!,
+                                          initialZoom: 15,
+                                          interactionOptions:
+                                              const InteractionOptions(
+                                                flags: InteractiveFlag.none,
+                                              ),
+                                        ),
+                                        children: [
+                                          TileLayer(
+                                            urlTemplate:
+                                                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                            subdomains: const ['a', 'b', 'c'],
+                                          ),
+                                          MarkerLayer(
+                                            markers: [
+                                              Marker(
+                                                width: 36,
+                                                height: 36,
+                                                point: ev.venueLocation!,
+                                                child: Icon(
+                                                  Icons.location_pin,
+                                                  color: primary,
+                                                  size: 36,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                Padding(
+                                  padding: const EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        ev.title,
+                                        style: GoogleFonts.cairo(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.calendar_today,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Text(
+                                            _formatDate(ev.date),
+                                            style: GoogleFonts.cairo(),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          const Icon(
+                                            Icons.location_on,
+                                            size: 16,
+                                          ),
+                                          const SizedBox(width: 4),
+                                          Expanded(
+                                            child: Text(
+                                              ev.venue,
+                                              style: GoogleFonts.cairo(),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       );
                     },
                   );
@@ -115,111 +261,105 @@ class MyEventsScreen extends ConsumerWidget {
               ),
             ),
 
-            const SizedBox(height: 20),
-            Text(
-              "🎉 اكتشف خدمات المناسبات",
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            // ── Grid of service cards ──
-            SizedBox(
-              height:
-                  200, // fixed height so the grid doesn’t expand indefinitely
+            // ── Tab 2: Services ──
+            Padding(
+              padding: const EdgeInsets.all(16.0),
               child: GridView.count(
                 crossAxisCount: 2,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+                crossAxisSpacing: 12,
+                mainAxisSpacing: 12,
                 children: [
-                  ServiceCard(
-                    icon: Icons.celebration,
-                    title: "الديكورات",
-                    onTap: () {
+                  _serviceCard(context, Icons.celebration, 'الديكورات', () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => VendorListScreen(
+                              initialType: VendorServiceType.decorator,
+                            ),
+                      ),
+                    );
+                  }),
+                  _serviceCard(context, Icons.email, 'الدعوات', () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const InvitationScreen(),
+                      ),
+                    );
+                  }),
+                  _serviceCard(context, Icons.card_giftcard, 'التوزيعات', () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => VendorListScreen(
+                              initialType: VendorServiceType.giftShop,
+                            ),
+                      ),
+                    );
+                  }),
+                  _serviceCard(context, Icons.chair, 'الأثاث', () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => VendorListScreen(
+                              initialType: VendorServiceType.furnitureStore,
+                            ),
+                      ),
+                    );
+                  }),
+                  _serviceCard(context, Icons.camera_alt, 'التصوير', () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => VendorListScreen(
+                              initialType: VendorServiceType.photographer,
+                            ),
+                      ),
+                    );
+                  }),
+                  _serviceCard(context, Icons.restaurant, 'المطاعم', () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => VendorListScreen(
+                              initialType: VendorServiceType.restaurant,
+                            ),
+                      ),
+                    );
+                  }),
+                  _serviceCard(
+                    context,
+                    Icons.music_note,
+                    'الترفيه والعروض',
+                    () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const DesignScreen(),
+                          builder:
+                              (_) => VendorListScreen(
+                                initialType: VendorServiceType.entertainer,
+                              ),
                         ),
                       );
                     },
                   ),
-                  ServiceCard(
-                    icon: Icons.email,
-                    title: "الدعوات الإلكترونية",
-                    onTap: () {
+                  _serviceCard(
+                    context,
+                    Icons.design_services,
+                    'مصمم ديكور داخلي',
+                    () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const InvitationScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  ServiceCard(
-                    icon: Icons.card_giftcard,
-                    title: "التوزيعات والهدايا",
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("قسم الهدايا قيد الإنشاء!"),
-                        ),
-                      );
-                    },
-                  ),
-                  ServiceCard(
-                    icon: Icons.chair,
-                    title: "الأثاث",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const FurnitureScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                  ServiceCard(
-                    icon: Icons.menu_book,
-                    title: "إدارة الفعالية",
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => EventSettingsPage(),
-                        ),
-                      );
-                    },
-                  ),
-                  ServiceCard(
-                    icon: Icons.tv,
-                    title: "الترفيه والعروض",
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("قسم الترفيه قيد الإنشاء!"),
-                        ),
-                      );
-                    },
-                  ),
-                  ServiceCard(
-                    icon: Icons.camera_alt,
-                    title: "التصوير والفيديو",
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("قسم التصوير قيد الإنشاء!"),
-                        ),
-                      );
-                    },
-                  ),
-                  ServiceCard(
-                    icon: Icons.more_horiz,
-                    title: " قوائم الطعام",
-                    onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text("المزيد من الخدمات قريباً!"),
+                          builder:
+                              (_) => VendorListScreen(
+                                initialType: VendorServiceType.interiorDesigner,
+                              ),
                         ),
                       );
                     },
@@ -229,27 +369,55 @@ class MyEventsScreen extends ConsumerWidget {
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const AddEventScreen()),
-          );
-        },
-        icon: const Icon(Icons.add),
-        label: const Text("إضافة مناسبة جديدة"),
-        backgroundColor: Colors.purple,
-        foregroundColor: Colors.white,
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed:
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AddEventScreen()),
+              ),
+          icon: const Icon(Icons.add),
+          label: Text('إضافة مناسبة', style: GoogleFonts.cairo()),
+          backgroundColor: primary,
+        ),
       ),
     );
   }
 
-  /// Helper to format a DateTime in “DD MMMM YYYY” Arabic style.
+  Widget _serviceCard(
+    BuildContext context,
+    IconData icon,
+    String title,
+    VoidCallback onTap,
+  ) {
+    final primary = Theme.of(context).colorScheme.primary;
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      clipBehavior: Clip.antiAlias,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 40, color: primary),
+            const SizedBox(height: 10),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.cairo(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   static String _formatDate(DateTime date) {
-    // You can customize localization. For brevity, we use a simple approach.
-    // NOTE: In a real app, use intl package for proper Arabic month names.
-    final months = [
+    const months = [
       'يناير',
       'فبراير',
       'مارس',
@@ -263,55 +431,6 @@ class MyEventsScreen extends ConsumerWidget {
       'نوفمبر',
       'ديسمبر',
     ];
-    final day = date.day;
-    final month = months[date.month - 1];
-    final year = date.year;
-    return '$day $month $year';
-  }
-}
-
-/// --- ويدجت بطاقة الخدمة ---
-class ServiceCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final Function()? onTap;
-
-  const ServiceCard({
-    super.key,
-    required this.icon,
-    required this.title,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 2,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      clipBehavior: Clip.antiAlias,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 40, color: Theme.of(context).colorScheme.primary),
-            const SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(
-                title,
-                textAlign: TextAlign.center,
-                style: Theme.of(
-                  context,
-                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w500),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    return '${date.day} ${months[date.month - 1]} ${date.year}';
   }
 }

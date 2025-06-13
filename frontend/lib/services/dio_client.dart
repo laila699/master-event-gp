@@ -10,7 +10,7 @@ class DioClient {
   static Future<void> init(TokenStorage tokenStorage) async {
     // On web (Chrome), we point to localhost.
     // On Android emulator/device, we use 10.0.2.2 → host machine.
-    final host = kIsWeb ? '127.0.0.1' : '172.16.0.38';
+    final host = kIsWeb ? '127.0.0.1' : '192.168.1.122';
     print('Using host: $host');
     final baseUrl = 'http://$host:5000/api';
 

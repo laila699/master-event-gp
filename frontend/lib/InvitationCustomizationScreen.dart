@@ -4,7 +4,13 @@ import 'preview_and_share_screen.dart';
 
 class InvitationCustomizationScreen extends StatefulWidget {
   final int designIndex;
-  const InvitationCustomizationScreen({super.key, required this.designIndex});
+  final String themeImagePath;
+
+  const InvitationCustomizationScreen({
+    super.key,
+    required this.designIndex,
+    required this.themeImagePath,
+  });
 
   @override
   _InvitationCustomizationScreenState createState() =>
@@ -66,6 +72,10 @@ class _InvitationCustomizationScreenState
                   color: Colors.grey[200],
                   border: Border.all(color: Colors.grey.shade400),
                   borderRadius: BorderRadius.circular(8),
+                  image: DecorationImage(
+                    image: AssetImage(widget.themeImagePath),
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 alignment: Alignment.center,
                 child: Text(
@@ -124,6 +134,8 @@ class _InvitationCustomizationScreenState
                   designIndex: widget.designIndex,
                   eventName: _eventNameController.text.trim(),
                   hostNames: _hostNamesController.text.trim(),
+                  themeImagePath: widget.themeImagePath, // ← pass it here
+
                   date: _dateController.text.trim(),
                   time: _timeController.text.trim(),
                   location: _locationController.text.trim(),
@@ -152,6 +164,7 @@ class _InvitationCustomizationScreenState
                     builder:
                         (context) => PreviewAndShareScreen(
                           invitationData: invitationDetails,
+                          themeImagePath: widget.themeImagePath,
                         ),
                   ),
                 );

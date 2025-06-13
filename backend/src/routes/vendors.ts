@@ -10,9 +10,14 @@ import {
   listVendorBookings,
   getVendorDetails,
   updateVendorAttributes,
+  uploadAttributeImage,
+  getOfferingById,
 } from "../controllers/vendor.controller";
 import { requireAuth, requireRole } from "../middleware/auth";
-import { uploadOfferingImages } from "../middleware/multer";
+import {
+  uploadAttributeImages,
+  uploadOfferingImages,
+} from "../middleware/multer";
 
 const router = Router();
 
@@ -26,6 +31,13 @@ router.put(
   requireAuth,
   requireRole("vendor"),
   updateVendorAttributes
+);
+router.post(
+  "/:vendorId/attributes/:key/image",
+  requireAuth,
+  requireRole("vendor"),
+  uploadAttributeImages.single("file"),
+  uploadAttributeImage
 );
 router.get("/:vendorId/bookings", requireRole("vendor"), listVendorBookings);
 
@@ -42,7 +54,11 @@ router.post(
 );
 // List offerings for a vendor (authenticated users)
 router.get("/:vendorId/offerings", listOfferingsByVendor);
-
+router.get(
+  "/:vendorId/offerings/:offeringId",
+  requireAuth,
+  getOfferingById // new: single
+);
 // Update an offering (vendor only
 router.put(
   "/:vendorId/offerings/:offeringId",
