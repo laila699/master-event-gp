@@ -1,18 +1,14 @@
-// lib/screens/chat_bot_screen.dart
-import 'dart:math';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
-
-// Chat UI packages
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 
-// Your service & auth
 import '../services/chat_bot_service.dart';
 import '../providers/auth_provider.dart';
+import '../theme/colors.dart';
 
-/// Full-screen chat interface with EventBot (v1 API).
 class ChatBotScreen extends ConsumerStatefulWidget {
   const ChatBotScreen({Key? key}) : super(key: key);
 
@@ -44,9 +40,7 @@ class _ChatBotScreenState extends ConsumerState<ChatBotScreen> {
     );
   }
 
-  /// Handles sending a message: inserts user message, calls API, inserts bot reply.
   void _handleSend(types.PartialText partial) {
-    // 1️⃣ add the user's message
     final userMsg = types.TextMessage(
       author: _currentUser,
       createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -55,7 +49,6 @@ class _ChatBotScreenState extends ConsumerState<ChatBotScreen> {
     );
     setState(() => _messages.insert(0, userMsg));
 
-    // 2️⃣ send to API and add the bot's reply
     _service.sendMessage(partial.text).then((reply) {
       final botMsg = types.TextMessage(
         author: const types.User(id: 'bot', firstName: 'EventBot'),
@@ -70,15 +63,52 @@ class _ChatBotScreenState extends ConsumerState<ChatBotScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('EventBot')),
-      body: Chat(
-        messages: _messages,
-        onSendPressed: _handleSend,
-        user: _currentUser,
-        theme: DefaultChatTheme(
-          inputBackgroundColor: Theme.of(context).colorScheme.background,
-          primaryColor: Theme.of(context).colorScheme.primary,
-        ),
+      // Neon radial background + glass blur
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(-0.7, -0.7),
+                radius: 1.5,
+                colors: [AppColors.gradientStart, AppColors.background],
+              ),
+            ),
+          ),
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: Container(color: AppColors.overlay),
+          ),
+
+          Column(
+            children: [
+              AppBar(
+                backgroundColor: AppColors.overlay,
+                elevation: 0,
+                title: Text(
+                  'EventBot',
+                  style: TextStyle(color: AppColors.textOnNeon),
+                ),
+                centerTitle: true,
+              ),
+              Expanded(
+                child: Chat(
+                  messages: _messages,
+                  onSendPressed: _handleSend,
+                  user: _currentUser,
+                  theme: DefaultChatTheme(
+                    backgroundColor: Colors.transparent,
+                    inputBackgroundColor: AppColors.fieldFill,
+                    primaryColor: AppColors.gradientStart,
+                    inputTextColor: AppColors.textOnNeon,
+                    inputBorderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }

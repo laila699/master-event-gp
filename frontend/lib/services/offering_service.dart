@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:dio/dio.dart';
+import 'package:masterevent/models/service_type.dart';
 import '../models/offering.dart';
 import 'token_storage.dart';
 
@@ -15,6 +16,24 @@ class OfferingService {
   Future<List<Offering>> listOfferings({required String vendorId}) async {
     final response = await _dio.get('/vendors/$vendorId/offerings');
     final data = response.data as List<dynamic>;
+    return data
+        .map((json) => Offering.fromJson(json as Map<String, dynamic>))
+        .toList();
+  }
+
+  Future<List<Offering>> fetchAllOfferings({
+    VendorServiceType? serviceType,
+  }) async {
+    // build query-params
+    final qp = <String, dynamic>{};
+    if (serviceType != null) {
+      // our backend expects the enum key, not an ObjectId
+      qp['serviceType'] = serviceType.value;
+    }
+
+    final resp = await _dio.get('/offerings', queryParameters: qp);
+
+    final data = resp.data as List<dynamic>;
     return data
         .map((json) => Offering.fromJson(json as Map<String, dynamic>))
         .toList();

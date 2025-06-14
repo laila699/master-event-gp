@@ -1,55 +1,46 @@
 // lib/screens/auth/login_screen.dart
 
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:masterevent/providers/auth_provider.dart';
-import 'package:masterevent/screens/auth/register_screen.dart';
 import 'package:masterevent/screens/dashboard_screen.dart';
-import 'package:masterevent/screens/my_events_screen.dart';
+import 'register_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({Key? key}) : super(key: key);
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  bool _isSubmitting = false;
+  final _emailCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
+  bool _submitting = false;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
+    _emailCtrl.dispose();
+    _passCtrl.dispose();
     super.dispose();
   }
 
   Future<void> _submit() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
-    if (email.isEmpty || password.isEmpty) {
-      if (!mounted) return;
+    final email = _emailCtrl.text.trim();
+    final pass = _passCtrl.text;
+    if (email.isEmpty || pass.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('يرجى إدخال البريد الإلكتروني وكلمة المرور'),
-        ),
+        const SnackBar(content: Text('يرجى إدخال البريد وكلمة المرور')),
       );
       return;
     }
-
-    setState(() => _isSubmitting = true);
-    try {
-      await ref
-          .read(authNotifierProvider.notifier)
-          .login(email: email, password: password);
-      // Navigation handled by ref.listen below
-    } finally {
-      if (!mounted) return;
-      setState(() => _isSubmitting = false);
-    }
+    setState(() => _submitting = true);
+    await ref
+        .read(authNotifierProvider.notifier)
+        .login(email: email, password: pass);
+    setState(() => _submitting = false);
   }
 
   @override
@@ -63,230 +54,193 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     });
 
     final authState = ref.watch(authNotifierProvider);
+    final accent1 = const Color(0xFFD81B60); // magenta-pink
+    final accent2 = const Color(0xFF8E24AA); // deep purple
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        body: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-              colors: [Color(0xFF5E35B1), Color(0xFF7E57C2)],
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // 1) Neon radial background
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(-0.5, -0.5),
+                radius: 1.2,
+                colors: [accent1, Colors.black],
+              ),
             ),
           ),
-          child: SafeArea(
+          // 2) Glassmorphic blur layer
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+            child: Container(color: Colors.black.withOpacity(0.2)),
+          ),
+          // 3) Centered form
+          Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 0.0,
-                vertical: 0.0,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const SizedBox(height: 48),
-                  // App icon or logo
-                  Center(
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.event_note,
-                        size: 60,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+                  // logo
+                  Icon(Icons.event, size: 80, color: accent2.withOpacity(0.8)),
                   const SizedBox(height: 24),
-                  // Title
-                  Center(
-                    child: Text(
-                      'تسجيل الدخول',
-                      style: Theme.of(
-                        context,
-                      ).textTheme.headlineSmall?.copyWith(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
+                  Text(
+                    'Master Event ',
+                    style: GoogleFonts.orbitron(
+                      fontSize: 28,
+                      color: accent1,
+                      letterSpacing: 1.5,
                     ),
                   ),
-                  const SizedBox(height: 48),
-                  // Form card
-                  Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 8,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 24.0,
-                        vertical: 32.0,
-                      ),
+                  const SizedBox(height: 40),
+                  // Glass card
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(24),
+                    child: Container(
+                      padding: const EdgeInsets.all(24),
+                      color: Colors.white.withOpacity(0.05),
                       child: Column(
                         children: [
-                          // Email field
-                          TextField(
-                            controller: _emailController,
-                            decoration: InputDecoration(
-                              labelText: 'البريد الإلكتروني',
-                              prefixIcon: const Icon(Icons.email),
-                              filled: true,
-                              fillColor: Colors.grey.shade100,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide.none,
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 16.0,
-                              ),
-                            ),
-                            keyboardType: TextInputType.emailAddress,
+                          // Email
+                          _buildField(
+                            controller: _emailCtrl,
+                            hint: 'البريد الإلكتروني',
+                            icon: Icons.email,
+                            accent: accent2,
                           ),
                           const SizedBox(height: 16),
-                          // Password field
-                          TextField(
-                            controller: _passwordController,
-                            decoration: InputDecoration(
-                              labelText: 'كلمة المرور',
-                              prefixIcon: const Icon(Icons.lock),
-                              filled: true,
-                              fillColor: Colors.grey.shade100,
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                                borderSide: BorderSide.none,
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                vertical: 16.0,
-                              ),
-                            ),
-                            obscureText: true,
-                          ),
-                          const SizedBox(height: 16),
-                          // Forgot password link
-                          Align(
-                            alignment: Alignment.centerRight,
-                            child: TextButton(
-                              onPressed: () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                      'سيتم إضافة خاصية استعادة كلمة المرور قريباً',
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: const Text(
-                                'نسيت كلمة المرور؟',
-                                style: TextStyle(color: Colors.purple),
-                              ),
-                            ),
+                          // Password
+                          _buildField(
+                            controller: _passCtrl,
+                            hint: 'كلمة المرور',
+                            icon: Icons.lock,
+                            accent: accent2,
+                            obscure: true,
                           ),
                           const SizedBox(height: 24),
                           // Login button
                           SizedBox(
                             width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: _isSubmitting ? null : _submit,
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF5E35B1),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
+                            child: DecoratedBox(
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [accent1, accent2],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
                                 ),
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 16,
-                                ),
+                                borderRadius: BorderRadius.circular(16),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: accent2.withOpacity(0.6),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 6),
+                                  ),
+                                ],
                               ),
-                              child:
-                                  _isSubmitting
-                                      ? const SizedBox(
-                                        height: 20,
-                                        width: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          color: Colors.white,
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.transparent,
+                                  shadowColor: Colors.transparent,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 16,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                ),
+                                onPressed: _submitting ? null : _submit,
+                                child:
+                                    _submitting
+                                        ? const SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                        : Text(
+                                          'تسجيل الدخول',
+                                          style: GoogleFonts.orbitron(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700,
+                                            letterSpacing: 1.2,
+                                          ),
                                         ),
-                                      )
-                                      : const Text(
-                                        'تسجيل الدخول',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          color: Colors.white,
-                                        ),
-                                      ),
+                              ),
                             ),
                           ),
-                          if (authState.status == AuthStatus.error)
-                            Padding(
-                              padding: const EdgeInsets.only(top: 12.0),
-                              child: Text(
-                                authState.message!,
-                                style: const TextStyle(color: Colors.red),
-                                textAlign: TextAlign.center,
-                              ),
+                          const SizedBox(height: 12),
+                          // Error message
+                          if (ref.watch(authNotifierProvider).status ==
+                              AuthStatus.error)
+                            Text(
+                              ref.watch(authNotifierProvider).message!,
+                              style: const TextStyle(color: Colors.redAccent),
                             ),
                         ],
                       ),
                     ),
                   ),
                   const SizedBox(height: 32),
-                  // Divider with text
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(color: Colors.white.withOpacity(0.5)),
-                      ),
-                      const SizedBox(width: 8),
-                      const Text('أو', style: TextStyle(color: Colors.white)),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Divider(color: Colors.white.withOpacity(0.5)),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24),
-                  // Register button
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.push(
+                  // Register link
+                  TextButton(
+                    onPressed:
+                        () => Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => const RegisterScreen(),
                           ),
-                        );
-                      },
-                      style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: Colors.white),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
                         ),
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                      ),
-                      child: const Text(
-                        'إنشاء حساب جديد',
-                        style: TextStyle(fontSize: 16, color: Colors.white),
-                      ),
+                    child: Text(
+                      'إنشاء حساب جديد',
+                      style: GoogleFonts.orbitron(color: accent2, fontSize: 14),
                     ),
                   ),
                   const SizedBox(height: 16),
-                  // Terms & Privacy text
                   Text(
-                    'بالدخول أو إنشاء حساب، فإنك توافق على الشروط وسياسة الخصوصية',
+                    'بالاستمرار، أنت توافق على الشروط وسياسة الخصوصية',
+                    textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: Colors.white.withOpacity(0.7),
+                      color: Colors.white.withOpacity(0.6),
                       fontSize: 12,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                 ],
               ),
             ),
           ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildField({
+    required TextEditingController controller,
+    required String hint,
+    required IconData icon,
+    required Color accent,
+    bool obscure = false,
+  }) {
+    return TextField(
+      controller: controller,
+      obscureText: obscure,
+      style: const TextStyle(color: Colors.white),
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white.withOpacity(0.1),
+        hintText: hint,
+        hintStyle: TextStyle(color: Colors.white70),
+        prefixIcon: Icon(icon, color: accent),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: accent.withOpacity(0.6), width: 1),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: accent, width: 2),
         ),
       ),
     );

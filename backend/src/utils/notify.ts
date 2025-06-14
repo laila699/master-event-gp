@@ -22,7 +22,6 @@ export async function sendNotificationToUser(
 
   if (tokens.length === 0) {
     console.log(`[FCM] no tokens for user ${userId}`);
-    return;
   }
 
   const messaging = admin.messaging();

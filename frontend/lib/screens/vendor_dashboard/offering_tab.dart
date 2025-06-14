@@ -1,174 +1,198 @@
 // lib/screens/vendor_dashboard/offering_tab.dart
 
 import 'dart:io';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 import 'package:masterevent/providers/auth_provider.dart'
     show authNotifierProvider, AuthStatus;
-import 'package:masterevent/providers/chat_provider.dart';
-import 'package:masterevent/screens/chat_screen.dart';
 import 'package:masterevent/screens/create_booking_screen.dart';
 import 'package:masterevent/screens/offering_details_screen.dart';
-
+import 'package:masterevent/theme/colors.dart';
 import '../../models/offering.dart';
 import '../../providers/offering_provider.dart';
 
 /// Displays the vendor’s offerings in a ListView, with Add/Edit/Delete.
 class OfferingTab extends ConsumerWidget {
   final String vendorId;
-
   const OfferingTab({Key? key, required this.vendorId}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Watch offerings for this vendor
     final offeringsAsync = ref.watch(vendorOfferingsProvider(vendorId));
-
-    // Base URL for thumbnails
-    final host = '192.168.1.122';
-    final base = 'http://$host:5000/api';
-
-    // Determine current user role
     final auth = ref.watch(authNotifierProvider);
     final user = auth.status == AuthStatus.authenticated ? auth.user : null;
     final isVendor = user?.role == 'vendor' && user?.id == vendorId;
     final isAdmin = user?.role == 'admin';
     final canEdit = isVendor == true || isAdmin == true;
 
-    return offeringsAsync.when(
-      loading: () => const Center(child: CircularProgressIndicator()),
-      error: (err, st) => Center(child: Text('خطأ: $err')),
-      data: (offerings) {
-        return Stack(
-          children: [
-            ListView.separated(
-              padding: const EdgeInsets.all(8),
-              itemCount: offerings.length,
-              separatorBuilder: (_, __) => const Divider(),
-              itemBuilder: (context, index) {
-                final off = offerings[index];
-                return ListTile(
-                  leading:
-                      off.images.isEmpty
-                          ? const Icon(
-                            Icons.card_giftcard,
-                            size: 40,
-                            color: Colors.grey,
-                          )
-                          : ClipRRect(
-                            borderRadius: BorderRadius.circular(4),
-                            child: Image.network(
-                              '$base${off.images.first}',
-                              width: 40,
-                              height: 40,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                  title: Text(
-                    off.title,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                  subtitle: Text(
-                    '${off.price.toStringAsFixed(2)} ش.إ',
-                    style: TextStyle(color: Colors.purple.shade700),
-                  ),
-                  trailing:
-                      canEdit
-                          ? Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.edit,
-                                  color: Colors.purple,
-                                ),
-                                onPressed: () {
-                                  _showEditOfferingDialog(
-                                    context,
-                                    ref,
-                                    off,
-                                    vendorId,
-                                  );
-                                },
-                              ),
-                              IconButton(
-                                icon: const Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                                onPressed: () {
-                                  ref
-                                      .read(
-                                        vendorOfferingsProvider(
-                                          vendorId,
-                                        ).notifier,
-                                      )
-                                      .deleteExisting(offeringId: off.id);
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                      content: Text('تم حذف العرض'),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ],
-                          )
-                          : Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder:
-                                          (_) => CreateBookingScreen(
-                                            offering: off,
-                                          ),
-                                    ),
-                                  );
-                                  // TODO: Implement booking logic for off.id
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.purple,
-                                  foregroundColor: Colors.white,
-                                ),
-                                child: const Text('احجز'),
-                              ),
-                            ],
-                          ),
-                  onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => OfferingDetailsScreen(offering: off),
-                      ),
-                    );
-                  },
-                );
-              },
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          // Neon radial background
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(-0.7, -0.7),
+                radius: 1.5,
+                colors: [AppColors.gradientStart, AppColors.background],
+              ),
             ),
-
-            // Only vendor/admin can add new offerings:
-            if (canEdit)
-              Positioned(
-                bottom: 16,
-                right: 16,
-                child: FloatingActionButton(
-                  backgroundColor: Colors.purple,
-                  child: const Icon(Icons.add),
-                  onPressed: () {
-                    _showCreateOfferingDialog(context, ref, vendorId);
+          ),
+          // Glass blur overlay
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+            child: Container(color: AppColors.overlay),
+          ),
+          offeringsAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error:
+                (err, _) => Center(
+                  child: Text(
+                    'خطأ: $err',
+                    style: GoogleFonts.orbitron(color: AppColors.error),
+                  ),
+                ),
+            data: (offerings) {
+              return Scaffold(
+                backgroundColor: Colors.transparent,
+                body: ListView.separated(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: offerings.length,
+                  separatorBuilder: (_, __) => const SizedBox(height: 8),
+                  itemBuilder: (context, index) {
+                    final off = offerings[index];
+                    return _buildOfferingTile(context, ref, off, canEdit);
                   },
                 ),
-              ),
-          ],
-        );
-      },
+                floatingActionButton:
+                    canEdit
+                        ? FloatingActionButton(
+                          backgroundColor: AppColors.gradientEnd,
+                          child: Icon(Icons.add, color: AppColors.textOnNeon),
+                          onPressed:
+                              () => _showCreateOfferingDialog(
+                                context,
+                                ref,
+                                vendorId,
+                              ),
+                        )
+                        : null,
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
-  /// Dialog to create a new offering:
+  Widget _buildOfferingTile(
+    BuildContext context,
+    WidgetRef ref,
+    Offering off,
+    bool canEdit,
+  ) {
+    final host = '192.168.1.122';
+    final base = 'http://$host:5000/api';
+    return Card(
+      color: AppColors.glass,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: ListTile(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => OfferingDetailsScreen(offering: off),
+            ),
+          );
+        },
+        leading:
+            off.images.isEmpty
+                ? Icon(
+                  Icons.card_giftcard,
+                  size: 40,
+                  color: AppColors.textSecondary,
+                )
+                : ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.network(
+                    '$base${off.images.first}',
+                    width: 40,
+                    height: 40,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+        title: Text(
+          off.title,
+          style: GoogleFonts.orbitron(
+            color: AppColors.textOnNeon,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        subtitle: Text(
+          '${off.price.toStringAsFixed(2)} ش.إ',
+          style: GoogleFonts.orbitron(
+            color: AppColors.gradientEnd,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        trailing:
+            canEdit
+                ? _editDeleteActions(context, ref, off, off.vendorId)
+                : _bookingButton(context, off),
+      ),
+    );
+  }
+
+  Widget _editDeleteActions(
+    BuildContext context,
+    WidgetRef ref,
+    Offering off,
+    String vendorId,
+  ) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        IconButton(
+          icon: Icon(Icons.edit, color: AppColors.gradientStart),
+          onPressed: () => _showEditOfferingDialog(context, ref, off, vendorId),
+        ),
+        IconButton(
+          icon: Icon(Icons.delete, color: Colors.red),
+          onPressed: () {
+            ref
+                .read(vendorOfferingsProvider(vendorId).notifier)
+                .deleteExisting(offeringId: off.id);
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(const SnackBar(content: Text('تم حذف العرض')));
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _bookingButton(BuildContext context, Offering off) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: AppColors.gradientStart,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      ),
+      onPressed: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(builder: (_) => CreateBookingScreen(offering: off)),
+        );
+      },
+      child: Text(
+        'احجز',
+        style: GoogleFonts.orbitron(color: AppColors.textOnNeon),
+      ),
+    );
+  }
+
   Future<void> _showCreateOfferingDialog(
     BuildContext context,
     WidgetRef ref,
@@ -179,7 +203,6 @@ class OfferingTab extends ConsumerWidget {
     final _priceCtl = TextEditingController();
     List<File> _selectedImages = [];
 
-    // This helper actually brings up a bottom‐sheet to pick images:
     Future<List<File>?> _pickImages() async {
       return await showModalBottomSheet<List<File>>(
         context: context,
@@ -191,7 +214,6 @@ class OfferingTab extends ConsumerWidget {
                   leading: const Icon(Icons.photo_library),
                   title: const Text('اختيار من المعرض'),
                   onTap: () async {
-                    // Pick multiple from gallery:
                     final pickedFiles = await ImagePicker().pickMultiImage(
                       imageQuality: 75,
                     );
@@ -208,11 +230,9 @@ class OfferingTab extends ConsumerWidget {
                       source: ImageSource.camera,
                       imageQuality: 75,
                     );
-                    if (picked != null) {
-                      Navigator.of(ctx).pop([File(picked.path)]);
-                    } else {
-                      Navigator.of(ctx).pop(<File>[]);
-                    }
+                    Navigator.of(
+                      ctx,
+                    ).pop(picked != null ? [File(picked.path)] : <File>[]);
                   },
                 ),
               ],
@@ -228,6 +248,7 @@ class OfferingTab extends ConsumerWidget {
         return StatefulBuilder(
           builder: (ctx, setState) {
             return AlertDialog(
+              backgroundColor: AppColors.glass,
               title: const Text('إنشاء عرض جديد'),
               content: SingleChildScrollView(
                 child: Column(
@@ -257,9 +278,7 @@ class OfferingTab extends ConsumerWidget {
                       onPressed: () async {
                         final picked = await _pickImages();
                         if (picked != null && picked.isNotEmpty) {
-                          setState(() {
-                            _selectedImages = picked;
-                          });
+                          setState(() => _selectedImages = picked);
                         }
                       },
                     ),
@@ -268,7 +287,7 @@ class OfferingTab extends ConsumerWidget {
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
                           '${_selectedImages.length} صورة/صور مختارة',
-                          style: const TextStyle(color: Colors.black87),
+                          style: const TextStyle(color: Colors.white70),
                         ),
                       ),
                   ],
@@ -276,7 +295,7 @@ class OfferingTab extends ConsumerWidget {
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
+                  onPressed: () => Navigator.of(dialogCtx).pop(),
                   child: const Text('إلغاء'),
                 ),
                 ElevatedButton(
@@ -296,7 +315,7 @@ class OfferingTab extends ConsumerWidget {
                             price: price,
                             images: _selectedImages,
                           );
-                      Navigator.of(ctx).pop();
+                      Navigator.of(dialogCtx).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('جارٍ إنشاء العرض...')),
                       );
@@ -312,7 +331,6 @@ class OfferingTab extends ConsumerWidget {
     );
   }
 
-  /// Dialog to edit an existing offering:
   Future<void> _showEditOfferingDialog(
     BuildContext context,
     WidgetRef ref,
@@ -351,11 +369,9 @@ class OfferingTab extends ConsumerWidget {
                       source: ImageSource.camera,
                       imageQuality: 75,
                     );
-                    if (img != null) {
-                      Navigator.of(ctx).pop([File(img.path)]);
-                    } else {
-                      Navigator.of(ctx).pop(<File>[]);
-                    }
+                    Navigator.of(
+                      ctx,
+                    ).pop(img != null ? [File(img.path)] : <File>[]);
                   },
                 ),
               ],
@@ -371,6 +387,7 @@ class OfferingTab extends ConsumerWidget {
         return StatefulBuilder(
           builder: (ctx, setState) {
             return AlertDialog(
+              backgroundColor: AppColors.glass,
               title: const Text('تعديل العرض'),
               content: SingleChildScrollView(
                 child: Column(
@@ -400,9 +417,7 @@ class OfferingTab extends ConsumerWidget {
                       onPressed: () async {
                         final picked = await _pickNewImages();
                         if (picked != null && picked.isNotEmpty) {
-                          setState(() {
-                            _newImages = picked;
-                          });
+                          setState(() => _newImages = picked);
                         }
                       },
                     ),
@@ -411,7 +426,7 @@ class OfferingTab extends ConsumerWidget {
                         padding: const EdgeInsets.only(top: 8.0),
                         child: Text(
                           '${_newImages.length} صورة/صور مختارة',
-                          style: const TextStyle(color: Colors.black87),
+                          style: const TextStyle(color: Colors.white70),
                         ),
                       ),
                   ],
@@ -419,7 +434,7 @@ class OfferingTab extends ConsumerWidget {
               ),
               actions: [
                 TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
+                  onPressed: () => Navigator.of(dialogCtx).pop(),
                   child: const Text('إلغاء'),
                 ),
                 ElevatedButton(
@@ -441,7 +456,7 @@ class OfferingTab extends ConsumerWidget {
                             price: price,
                             newImages: _newImages,
                           );
-                      Navigator.of(ctx).pop();
+                      Navigator.of(dialogCtx).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('جارٍ تحديث العرض...')),
                       );

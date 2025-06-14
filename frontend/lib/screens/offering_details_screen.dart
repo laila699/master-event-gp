@@ -1,206 +1,240 @@
+// lib/screens/vendor_dashboard/offering_details_screen.dart
+
+import 'dart:ui';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:masterevent/theme/colors.dart';
 
 import '../../models/offering.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/offering_provider.dart';
 
-/// Shows a single Offering in detail:
-///  • Carousel of images (if any)
-///  • Title, Price, Description
-///  • If current user is the vendor who owns it (or an admin), show “Edit” / “Delete”
-///    otherwise read-only.
 class OfferingDetailsScreen extends ConsumerWidget {
   final Offering offering;
-
   const OfferingDetailsScreen({Key? key, required this.offering})
     : super(key: key);
 
+  Widget _buildStack(BuildContext context, Widget child) {
+    return Stack(
+      children: [
+        // Background blur or color
+        Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [AppColors.gradientStart, AppColors.gradientEnd],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
+        BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+          child: Container(color: AppColors.overlay.withOpacity(0.2)),
+        ),
+        child,
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final accent1 = AppColors.gradientStart;
+    final background = AppColors.background;
+    final overlay = AppColors.overlay;
     final authState = ref.watch(authNotifierProvider);
     final user =
         authState.status == AuthStatus.authenticated ? authState.user! : null;
     if (user == null) {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('تفاصيل العرض'),
-          backgroundColor: Colors.purple,
-        ),
-        body: const Center(child: Text('يجب تسجيل الدخول أولاً')),
-      );
+      return Scaffold(body: _buildStack(context, _buildLoginRequired()));
     }
     final vendorId = user.id;
-    final isVendorOwner =
-        user.role == 'vendor' && vendorId == offering.vendorId;
+    final isOwner = user.role == 'vendor' && vendorId == offering.vendorId;
     final isAdmin = user.role == 'admin';
-
-    // Base URL for loading “offering.images[ ]” (adjust host if needed)
     final host = kIsWeb ? 'localhost' : '192.168.1.122';
     final base = 'http://$host:5000/api';
 
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('تفاصيل العرض'),
-        backgroundColor: Colors.purple,
+        backgroundColor: overlay,
+        elevation: 0,
+        title: Text(
+          'تفاصيل العرض',
+          style: GoogleFonts.orbitron(color: AppColors.textOnNeon),
+        ),
+        iconTheme: IconThemeData(color: AppColors.textOnNeon),
         actions: [
-          if (isVendorOwner || isAdmin)
+          if (isOwner || isAdmin)
             IconButton(
-              icon: const Icon(Icons.delete),
+              icon: Icon(Icons.delete, color: accent1),
               onPressed: () async {
                 final confirm = await showDialog<bool>(
                   context: context,
                   builder:
                       (ctx) => AlertDialog(
-                        title: const Text('تأكيد الحذف'),
-                        content: const Text(
+                        backgroundColor: AppColors.glass,
+                        title: Text(
+                          'تأكيد الحذف',
+                          style: GoogleFonts.orbitron(
+                            color: AppColors.textOnNeon,
+                          ),
+                        ),
+                        content: Text(
                           'هل أنت متأكد أنك تريد حذف هذا العرض؟',
+                          style: GoogleFonts.orbitron(
+                            color: AppColors.textOnNeon,
+                          ),
                         ),
                         actions: [
                           TextButton(
                             onPressed: () => Navigator.of(ctx).pop(false),
-                            child: const Text('إلغاء'),
+                            child: Text(
+                              'إلغاء',
+                              style: TextStyle(color: AppColors.gradientEnd),
+                            ),
                           ),
                           ElevatedButton(
                             onPressed: () => Navigator.of(ctx).pop(true),
-                            child: const Text('حذف'),
+                            child: Text('حذف'),
                           ),
                         ],
                       ),
                 );
-
                 if (confirm == true) {
-                  // Call delete from notifier, then pop back to list
                   await ref
                       .read(vendorOfferingsProvider(vendorId).notifier)
                       .deleteExisting(offeringId: offering.id);
-                  Navigator.of(context).pop(); // back to list
+                  Navigator.of(context).pop();
                   ScaffoldMessenger.of(
                     context,
-                  ).showSnackBar(const SnackBar(content: Text('تم حذف العرض')));
+                  ).showSnackBar(SnackBar(content: Text('تم حذف العرض')));
                 }
               },
             ),
-          if (isVendorOwner || isAdmin)
+          if (isOwner || isAdmin)
             IconButton(
-              icon: const Icon(Icons.edit),
+              icon: Icon(Icons.edit, color: accent1),
               onPressed: () async {
-                // Reuse your existing edit dialog logic
                 await _showEditOfferingDialog(context, ref, vendorId, offering);
-                // After editing, rebuild so that updated data is shown
               },
             ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // 1) Images carousel (if any)
-            if (offering.images.isNotEmpty)
-              SizedBox(
-                height: 250,
-                child: PageView.builder(
-                  itemCount: offering.images.length,
-                  itemBuilder: (ctx, i) {
-                    final imgPath = offering.images[i];
-                    return ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.network(
-                        '$base$imgPath',
-                        fit: BoxFit.cover,
-                        errorBuilder: (ctx, err, stack) {
-                          return const Center(
-                            child: Icon(
-                              Icons.broken_image,
-                              size: 80,
-                              color: Colors.grey,
-                            ),
-                          );
-                        },
-                      ),
-                    );
-                  },
+      body: _buildStack(
+        context,
+        SingleChildScrollView(
+          padding: const EdgeInsets.only(top: kToolbarHeight + 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Image carousel
+              if (offering.images.isNotEmpty)
+                SizedBox(
+                  height: 250,
+                  child: PageView.builder(
+                    itemCount: offering.images.length,
+                    itemBuilder: (ctx, i) {
+                      final img = offering.images[i];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(16),
+                          child: Image.network('$base$img', fit: BoxFit.cover),
+                        ),
+                      );
+                    },
+                  ),
+                )
+              else
+                Container(
+                  height: 250,
+                  margin: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.glass,
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Center(
+                    child: Icon(
+                      Icons.card_giftcard,
+                      size: 80,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
                 ),
-              )
-            else
-              Container(
-                height: 250,
-                color: Colors.grey.shade200,
-                child: const Center(
-                  child: Icon(
-                    Icons.card_giftcard,
-                    color: Colors.grey,
-                    size: 80,
+
+              const SizedBox(height: 24),
+              // Title & Price
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Text(
+                  offering.title,
+                  style: GoogleFonts.orbitron(
+                    fontSize: 28,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.textOnNeon,
                   ),
                 ),
               ),
-
-            const SizedBox(height: 16),
-
-            // 2) Title & Price
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: Text(
-                offering.title,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16.0,
-                vertical: 8.0,
-              ),
-              child: Text(
-                '${offering.price.toStringAsFixed(2)} ش.إ',
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.purple.shade700,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-
-            // 3) Description (if any)
-            if (offering.description != null &&
-                offering.description!.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 8.0,
+                  horizontal: 16,
+                  vertical: 8,
                 ),
                 child: Text(
-                  offering.description!,
-                  style: const TextStyle(fontSize: 16),
+                  '${offering.price.toStringAsFixed(2)} ش.إ',
+                  style: GoogleFonts.orbitron(
+                    fontSize: 24,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.gradientEnd,
+                  ),
                 ),
               ),
-
-            const SizedBox(height: 32),
-          ],
+              // Description
+              if (offering.description?.isNotEmpty ?? false)
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 8,
+                  ),
+                  child: Text(
+                    offering.description!,
+                    style: GoogleFonts.audiowide(
+                      color: AppColors.textOnNeon,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              const SizedBox(height: 32),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  /// Exactly the same edit‐dialog you already have in OfferingTab.
+  Widget _buildLoginRequired() => Center(
+    child: Text(
+      'يجب تسجيل الدخول أولاً',
+      style: GoogleFonts.orbitron(color: AppColors.textOnNeon),
+    ),
+  );
+
   Future<void> _showEditOfferingDialog(
     BuildContext context,
     WidgetRef ref,
     String vendorId,
     Offering off,
   ) async {
-    final _titleCtl = TextEditingController(text: off.title);
-    final _descCtl = TextEditingController(text: off.description);
-    final _priceCtl = TextEditingController(text: off.price.toString());
-    List<File> _newImages = [];
+    final titleCtl = TextEditingController(text: off.title);
+    final descCtl = TextEditingController(text: off.description);
+    final priceCtl = TextEditingController(text: off.price.toString());
+    List<File> newImages = [];
 
-    Future<List<File>?> _pickNewImages() async {
+    Future<List<File>?> pickImages() async {
       return await showModalBottomSheet<List<File>>(
         context: context,
         builder: (ctx) {
@@ -208,30 +242,39 @@ class OfferingDetailsScreen extends ConsumerWidget {
             child: Wrap(
               children: [
                 ListTile(
-                  leading: const Icon(Icons.photo_library),
-                  title: const Text('اختيار من المعرض'),
+                  leading: Icon(
+                    Icons.photo_library,
+                    color: AppColors.gradientEnd,
+                  ),
+                  title: Text(
+                    'اختيار من المعرض',
+                    style: TextStyle(color: AppColors.textOnNeon),
+                  ),
                   onTap: () async {
                     final imgs = await ImagePicker().pickMultiImage(
                       imageQuality: 75,
                     );
-                    final result =
-                        (imgs ?? []).map((e) => File(e.path)).toList();
-                    Navigator.of(ctx).pop(result);
+                    Navigator.pop(ctx, imgs?.map((e) => File(e.path)).toList());
                   },
                 ),
                 ListTile(
-                  leading: const Icon(Icons.photo_camera),
-                  title: const Text('التقاط صورة جديدة'),
+                  leading: Icon(
+                    Icons.photo_camera,
+                    color: AppColors.gradientEnd,
+                  ),
+                  title: Text(
+                    'التقاط صورة جديدة',
+                    style: TextStyle(color: AppColors.textOnNeon),
+                  ),
                   onTap: () async {
                     final img = await ImagePicker().pickImage(
                       source: ImageSource.camera,
                       imageQuality: 75,
                     );
-                    if (img != null) {
-                      Navigator.of(ctx).pop([File(img.path)]);
-                    } else {
-                      Navigator.of(ctx).pop(<File>[]);
-                    }
+                    Navigator.pop(
+                      ctx,
+                      img != null ? [File(img.path)] : <File>[],
+                    );
                   },
                 ),
               ],
@@ -244,92 +287,126 @@ class OfferingDetailsScreen extends ConsumerWidget {
     await showDialog(
       context: context,
       builder: (dialogCtx) {
-        return StatefulBuilder(
-          builder: (ctx, setState) {
-            return AlertDialog(
-              title: const Text('تعديل العرض'),
-              content: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      controller: _titleCtl,
-                      decoration: const InputDecoration(labelText: 'العنوان'),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: _descCtl,
-                      decoration: const InputDecoration(
-                        labelText: 'الوصف (اختياري)',
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    TextField(
-                      controller: _priceCtl,
-                      decoration: const InputDecoration(labelText: 'السعر'),
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 8),
-                    ElevatedButton.icon(
-                      icon: const Icon(Icons.photo_library),
-                      label: const Text('تغيير / إضافة صور'),
-                      onPressed: () async {
-                        final picked = await _pickNewImages();
-                        if (picked != null && picked.isNotEmpty) {
-                          setState(() {
-                            _newImages = picked;
-                          });
-                        }
-                      },
-                    ),
-                    if (_newImages.isNotEmpty)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Text(
-                          '${_newImages.length} صورة/صور مختارة',
-                          style: const TextStyle(color: Colors.black87),
-                        ),
-                      ),
-                  ],
+        return AlertDialog(
+          backgroundColor: AppColors.glass,
+          title: Text(
+            'تعديل العرض',
+            style: GoogleFonts.orbitron(color: AppColors.textOnNeon),
+          ),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _dialogField(
+                  controller: titleCtl,
+                  label: 'العنوان',
+                  accent: AppColors.gradientStart,
                 ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(ctx).pop(),
-                  child: const Text('إلغاء'),
+                const SizedBox(height: 8),
+                _dialogField(
+                  controller: descCtl,
+                  label: 'الوصف (اختياري)',
+                  accent: AppColors.gradientStart,
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    final title = _titleCtl.text.trim();
-                    final desc =
-                        _descCtl.text.trim().isEmpty
-                            ? null
-                            : _descCtl.text.trim();
-                    final price =
-                        double.tryParse(_priceCtl.text.trim()) ?? off.price;
-                    if (title.isNotEmpty && price > 0) {
-                      ref
-                          .read(vendorOfferingsProvider(vendorId).notifier)
-                          .updateExisting(
-                            offeringId: off.id,
-                            title: title,
-                            description: desc,
-                            price: price,
-                            newImages: _newImages,
-                          );
-                      Navigator.of(ctx).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('جارٍ تحديث العرض...')),
-                      );
-                    }
+                const SizedBox(height: 8),
+                _dialogField(
+                  controller: priceCtl,
+                  label: 'السعر',
+                  accent: AppColors.gradientStart,
+                  keyboardType: TextInputType.number,
+                ),
+                const SizedBox(height: 8),
+                ElevatedButton.icon(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.gradientEnd,
+                  ),
+                  icon: Icon(Icons.photo_library, color: Colors.white),
+                  label: Text(
+                    'تغيير / إضافة صور',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    final picked = await pickImages();
+                    if (picked != null && picked.isNotEmpty) newImages = picked;
                   },
-                  child: const Text('حفظ'),
                 ),
+                if (newImages.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8),
+                    child: Text(
+                      '${newImages.length} صورة/صور مختارة',
+                      style: TextStyle(color: AppColors.textOnNeon),
+                    ),
+                  ),
               ],
-            );
-          },
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dialogCtx),
+              child: Text(
+                'إلغاء',
+                style: TextStyle(color: AppColors.gradientStart),
+              ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.gradientEnd,
+              ),
+              onPressed: () {
+                final t = titleCtl.text.trim();
+                final pr = double.tryParse(priceCtl.text.trim()) ?? off.price;
+                final d =
+                    descCtl.text.trim().isEmpty ? null : descCtl.text.trim();
+                if (t.isNotEmpty && pr > 0) {
+                  ref
+                      .read(vendorOfferingsProvider(vendorId).notifier)
+                      .updateExisting(
+                        offeringId: off.id,
+                        title: t,
+                        description: d,
+                        price: pr,
+                        newImages: newImages,
+                      );
+                  Navigator.pop(dialogCtx);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('جارٍ تحديث العرض...')),
+                  );
+                }
+              },
+              child: Text('حفظ', style: TextStyle(color: Colors.white)),
+            ),
+          ],
         );
       },
+    );
+  }
+
+  Widget _dialogField({
+    required TextEditingController controller,
+    required String label,
+    required Color accent,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      style: TextStyle(color: AppColors.textOnNeon),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: AppColors.textSecondary),
+        filled: true,
+        fillColor: AppColors.fieldFill,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: accent.withOpacity(0.6)),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: accent, width: 2),
+        ),
+      ),
     );
   }
 }

@@ -129,6 +129,7 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
 
   // 1) Find user by email
   const user = await User.findOne({ email });
+  console.log("user", user);
   if (!user) {
     return res.status(401).json({ message: "بيانات الاعتماد غير صحيحة." });
   }

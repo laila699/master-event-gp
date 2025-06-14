@@ -1,12 +1,9 @@
-// lib/models/offering.dart
-
 class Offering {
   final String id;
   final String title;
   final String? description;
-  final String vendorId; // ← new field so we know the owner
-
-  final List<String> images; // list of image URLs
+  final String vendorId;
+  final List<String> images;
   final double price;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -15,7 +12,6 @@ class Offering {
     required this.id,
     required this.title,
     required this.vendorId,
-
     this.description,
     required this.images,
     required this.price,
@@ -24,12 +20,20 @@ class Offering {
   });
 
   factory Offering.fromJson(Map<String, dynamic> json) {
+    // vendor can be a string ID or a populated object (map)
+    final vendorRaw = json['vendor'];
+    final vendorId =
+        vendorRaw is String
+            ? vendorRaw
+            : vendorRaw is Map<String, dynamic>
+            ? (vendorRaw['_id'] as String)
+            : '';
+
     return Offering(
       id: json['_id'] as String,
       title: json['title'] as String,
       description: json['description'] as String?,
-      vendorId: (json['vendor'] as String), // assume backend populates “vendor”
-
+      vendorId: vendorId,
       images:
           ((json['images'] as List<dynamic>?) ?? [])
               .map((e) => e as String)
