@@ -7,6 +7,13 @@ export const getAllUsers = async (req: Request, res: Response) => {
     const users = await User.find({ role: { $ne: "admin" } })
       .select("-passwordHash") // omit sensitive fields
       .lean();
+    users.forEach((user: any) => {
+      user.id = user._id;
+      delete user._id;
+      console.log("id", user);
+    });
+
+    console.log("id", users);
 
     res.json(users);
   } catch (err: any) {

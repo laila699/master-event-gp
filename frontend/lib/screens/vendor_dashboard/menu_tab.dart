@@ -1,6 +1,7 @@
 // lib/screens/vendor_dashboard/menu_tab.dart
 
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -17,7 +18,7 @@ class MenuTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final menuAsync = ref.watch(restaurantMenuProvider(vendorId));
-    final host = '192.168.1.122';
+    final host = kIsWeb ? 'localhost' : '192.168.1.122';
     final base = 'http://$host:5000/api';
 
     // Determine roles
@@ -430,6 +431,8 @@ class MenuTab extends ConsumerWidget {
     await showDialog(
       context: context,
       builder: (ctx) {
+        final host = kIsWeb ? 'localhost' : '192.168.1.122';
+        final base = 'http://$host:5000/api';
         return StatefulBuilder(
           builder: (ctx, setState) {
             return AlertDialog(
@@ -443,7 +446,7 @@ class MenuTab extends ConsumerWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(4),
                         child: Image.network(
-                          dish.imageUrl!,
+                          '${base}${dish.imageUrl!}',
                           width: 120,
                           height: 80,
                           fit: BoxFit.cover,

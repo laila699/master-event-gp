@@ -138,3 +138,21 @@ export const uploadAttributeImages = multer({
     cb(null, true);
   },
 });
+// WRITE ONE FOR THEME
+const themesDir = path.join(__dirname, "../../uploads/invitation-themes");
+if (!fs.existsSync(themesDir)) fs.mkdirSync(themesDir, { recursive: true });
+
+export const uploadThemeImages = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, themesDir),
+    filename: (_req, file, cb) => {
+      const ext = path.extname(file.originalname);
+      const base = path.basename(file.originalname, ext);
+      cb(null, `${base}-${Date.now()}${ext}`);
+    },
+  }),
+  limits: { fileSize: 5 * 1024 * 1024 },
+  fileFilter: (_req, file, cb) => {
+    cb(null, true);
+  },
+});

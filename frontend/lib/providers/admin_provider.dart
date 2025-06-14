@@ -1,26 +1,21 @@
 // lib/providers/admin_providers.dart
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:masterevent/providers/auth_provider.dart';
 import '../models/user.dart';
 import '../models/invitation_theme.dart';
 import '../services/admin_service.dart';
 
-/// Exposes a singleton AdminService
+/// Exposes a singleton AdminService that uses DioClient.dio under the hood
 final adminServiceProvider = Provider<AdminService>((ref) {
-  final dio = ref.watch(dioProvider);
-
-  return AdminService(dio);
+  return AdminService();
 });
 
 /// Fetches all non-admin users
-final adminUsersProvider = FutureProvider<List<User>>((ref) async {
-  final svc = ref.watch(adminServiceProvider);
-  return svc.fetchUsers();
+final adminUsersProvider = FutureProvider<List<User>>((ref) {
+  return ref.read(adminServiceProvider).fetchUsers();
 });
 
 /// Fetches all invitation themes
-final adminThemesProvider = FutureProvider<List<InvitationTheme>>((ref) async {
-  final svc = ref.watch(adminServiceProvider);
-  return svc.fetchThemes();
+final adminThemesProvider = FutureProvider<List<InvitationTheme>>((ref) {
+  return ref.read(adminServiceProvider).fetchThemes();
 });

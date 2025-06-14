@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/event_service.dart';
@@ -18,6 +19,9 @@ class _EventLogisticsPageState extends ConsumerState<EventLogisticsPage> {
   DateTime? _selectedDate;
   bool _inited = false;
 
+  final accent1 = const Color(0xFFD81B60); // magenta-pink
+  final accent2 = const Color(0xFF8E24AA); // deep purple
+
   @override
   void dispose() {
     _locationCtl.dispose();
@@ -35,12 +39,15 @@ class _EventLogisticsPageState extends ConsumerState<EventLogisticsPage> {
       builder:
           (ctx, child) => Theme(
             data: Theme.of(ctx).copyWith(
-              colorScheme: const ColorScheme.light(
-                primary: Colors.purple,
-                onPrimary: Colors.white,
+              colorScheme: ColorScheme.dark(
+                primary: accent2,
+                onPrimary: Colors.black,
+                surface: Colors.black.withOpacity(0.05),
+                background: Colors.black,
+                onBackground: Colors.white70,
               ),
               textButtonTheme: TextButtonThemeData(
-                style: TextButton.styleFrom(foregroundColor: Colors.purple),
+                style: TextButton.styleFrom(foregroundColor: accent2),
               ),
             ),
             child: child!,
@@ -89,111 +96,179 @@ class _EventLogisticsPageState extends ConsumerState<EventLogisticsPage> {
   @override
   Widget build(BuildContext context) {
     final evAsync = ref.watch(eventDetailProvider(widget.eventId));
-    return evAsync.when(
-      loading:
-          () =>
-              const Scaffold(body: Center(child: CircularProgressIndicator())),
-      error:
-          (e, _) => Scaffold(
-            body: Center(child: Text('خطأ: $e', style: GoogleFonts.cairo())),
-          ),
-      data: (event) {
-        // init from settings once
-        if (!_inited) {
-          final lg = event.settings?.logistics as Map<String, dynamic>?;
-          if (lg != null) {
-            _locationCtl.text = lg['location'] ?? '';
-            _scheduleCtl.text = lg['scheduleDescription'] ?? '';
-            if (lg['scheduleDate'] != null) {
-              _selectedDate = DateTime.tryParse(lg['scheduleDate']);
-            }
-          }
-          _inited = true;
-        }
 
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: Scaffold(
-            appBar: AppBar(
-              title: const Text('الترتيبات اللوجستية'),
-              backgroundColor: Colors.purple,
-            ),
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  TextField(
-                    controller: _locationCtl,
-                    decoration: InputDecoration(
-                      labelText: 'مكان الفعالية',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(
-                          color: Colors.purple,
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          _selectedDate == null
-                              ? 'لم يتم اختيار التاريخ'
-                              : 'التاريخ المختار: ${_selectedDate!.toLocal().toIso8601String().split('T')[0]}',
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      ElevatedButton(
-                        onPressed: () => _selectDate(context),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.purple.shade300,
-                        ),
-                        child: const Text('اختر التاريخ'),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: _scheduleCtl,
-                    decoration: InputDecoration(
-                      labelText: 'الجدول الزمني للتوصيل',
-                      hintText: 'مثال: الساعة 8 صباحًا - المعدات الصوتية',
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: const BorderSide(
-                          color: Colors.purple,
-                          width: 2,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: _save,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.purple,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 32,
-                        vertical: 12,
-                      ),
-                    ),
-                    child: const Text('حفظ الترتيبات'),
-                  ),
-                ],
+    // Neon radial + glassmorphic backdrop for the page
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          DecoratedBox(
+            decoration: BoxDecoration(
+              gradient: RadialGradient(
+                center: const Alignment(-0.5, -0.5),
+                radius: 1.3,
+                colors: [accent1, Colors.black],
               ),
             ),
           ),
-        );
-      },
+          BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(color: Colors.black.withOpacity(0.3)),
+          ),
+          evAsync.when(
+            loading: () => const Center(child: CircularProgressIndicator()),
+            error:
+                (e, _) => Scaffold(
+                  backgroundColor: Colors.transparent,
+                  body: Center(
+                    child: Text(
+                      'خطأ: $e',
+                      style: GoogleFonts.orbitron(color: Colors.redAccent),
+                    ),
+                  ),
+                ),
+            data: (event) {
+              if (!_inited) {
+                final lg = event.settings?.logistics as Map<String, dynamic>?;
+                if (lg != null) {
+                  _locationCtl.text = lg['location'] ?? '';
+                  _scheduleCtl.text = lg['scheduleDescription'] ?? '';
+                  if (lg['scheduleDate'] != null) {
+                    _selectedDate = DateTime.tryParse(lg['scheduleDate']);
+                  }
+                }
+                _inited = true;
+              }
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      'الترتيبات اللوجستية',
+                      style: GoogleFonts.audiowide(
+                        color: accent2,
+                        fontSize: 26,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Location field
+                    TextField(
+                      controller: _locationCtl,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        labelText: 'مكان الفعالية',
+                        labelStyle: const TextStyle(color: Colors.white70),
+                        filled: true,
+                        fillColor: Colors.white.withOpacity(0.1),
+                        prefixIcon: Icon(Icons.location_on, color: accent2),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: accent2.withOpacity(0.6),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(color: accent2, width: 2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Date selector row
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            _selectedDate == null
+                                ? 'لم يتم اختيار التاريخ'
+                                : 'التاريخ: ${_selectedDate!.toLocal().toIso8601String().split('T')[0]}',
+                            style: const TextStyle(color: Colors.white70),
+                          ),
+                        ),
+                        ElevatedButton(
+                          onPressed: () => _selectDate(context),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: accent1,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                          ),
+                          child: const Text('اختر التاريخ'),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+
+                    // Schedule description
+                    TextField(
+                      controller: _scheduleCtl,
+                      style: const TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        labelText: 'الجدول الزمني للتوصيل',
+                        labelStyle: const TextStyle(color: Colors.white70),
+                        hintText: 'مثال: 8 صباحًا - معدات صوت',
+                        hintStyle: const TextStyle(color: Colors.white38),
+                        filled: true,
+                        fillColor: Colors.white.withOpacity(0.1),
+                        prefixIcon: Icon(Icons.schedule, color: accent2),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(
+                            color: accent2.withOpacity(0.6),
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          borderSide: BorderSide(color: accent2, width: 2),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Save button
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(colors: [accent1, accent2]),
+                        borderRadius: BorderRadius.circular(20),
+                        boxShadow: [
+                          BoxShadow(
+                            color: accent2.withOpacity(0.6),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.transparent,
+                          shadowColor: Colors.transparent,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        onPressed: _save,
+                        child: Text(
+                          'حفظ الترتيبات',
+                          style: GoogleFonts.orbitron(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w700,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

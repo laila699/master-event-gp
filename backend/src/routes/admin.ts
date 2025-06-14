@@ -8,29 +8,29 @@ import {
   deleteInvitationTheme,
 } from "../controllers/invitationThemeController";
 import { requireRole } from "../middleware/auth";
+import { uploadThemeImages } from "../middleware/multer";
 
 const router = express.Router();
 
 // simple disk storage – you can swap for Cloudinary, S3, etc.
-const upload = multer({ dest: "uploads/invitation-themes/" });
 
 // all admin routes should require the admin role
-router.use(requireRole("admin"));
 
 // ---- User management ----
 router.get("/users", getAllUsers);
+
 router.delete("/users/:id", deleteUser);
 
 // ---- Invitation themes ----
 router.post(
   "/invitation-themes",
-  upload.single("image"),
+  uploadThemeImages.single("image"),
   createInvitationTheme
 );
 router.get("/invitation-themes", getInvitationThemes);
 router.put(
   "/invitation-themes/:id",
-  upload.single("image"),
+  uploadThemeImages.single("image"),
   updateInvitationTheme
 );
 router.delete("/invitation-themes/:id", deleteInvitationTheme);

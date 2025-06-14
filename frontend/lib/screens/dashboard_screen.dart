@@ -1,6 +1,7 @@
 // lib/screens/dashboard_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:masterevent/screens/admin_dashboard_screen.dart';
 import '../models/user.dart';
 import '../screens/my_events_screen.dart';
 import '../screens/vendor_dashboard/dashboard_screen.dart'
@@ -38,7 +39,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
       case 'vendor':
         return const VendorDashboardScreen();
       case 'admin':
-      // return const AdminDashboardScreen();
+        return const AdminDashboardScreen();
       default:
         return _GenericHomeScreen(user: widget.user);
     }

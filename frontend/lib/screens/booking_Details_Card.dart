@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
@@ -25,7 +28,8 @@ class BookingDetailCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final dfDate = DateFormat('yyyy-MM-dd');
     final dfDateTime = DateFormat('yyyy-MM-dd HH:mm');
-
+    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final base = 'http://$host:5000/api';
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 4,
@@ -127,7 +131,7 @@ class BookingDetailCard extends StatelessWidget {
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(
-                          booking.offeringImages[i],
+                          "${host}${booking.offeringImages[i]}",
                           width: 120,
                           height: 120,
                           fit: BoxFit.cover,

@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:masterevent/models/service_type.dart';
 import '../models/offering.dart';
 import '../services/offering_service.dart';
 import 'auth_provider.dart';
@@ -135,3 +136,11 @@ final offeringServiceProvider = Provider<OfferingService>((ref) {
   final storage = ref.watch(tokenStorageProvider);
   return OfferingService(dio, storage);
 });
+final allOfferingsProvider =
+    FutureProvider.family<List<Offering>, VendorServiceType?>((
+      ref,
+      serviceType,
+    ) {
+      final svc = ref.watch(offeringServiceProvider);
+      return svc.fetchAllOfferings(serviceType: serviceType);
+    });
