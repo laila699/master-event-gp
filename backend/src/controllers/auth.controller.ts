@@ -7,7 +7,6 @@ import User, { IUser, VendorServiceType } from "../models/User";
 import { asyncHandler } from "../utils/asyncHandler";
 import { uploadAvatar } from "../middleware/multer";
 import { defaultVendorAttributes } from "../utils/defaultVendorAttributes";
-import { sendNotificationToUser } from "../utils/notify";
 import admin from "../utils/firebase";
 const JWT_EXPIRES_IN = "7d";
 
@@ -150,7 +149,6 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
       body: "You have logged in successfully.",
     },
   };
-  sendNotificationToUser(user._id.toString(), payload);
   const firebaseToken = await admin
     .auth()
     .createCustomToken(user._id.toString());
