@@ -65,13 +65,18 @@ class User {
   final String phone;
   final String? avatarUrl;
   final VendorProfile? vendorProfile;
-
+  final bool? active;
+  final double? averageRating; // ← NEW
+  final int? ratingsCount;
   User({
     required this.id,
     required this.name,
     required this.email,
     required this.role,
     required this.phone,
+    required this.ratingsCount,
+    required this.averageRating,
+    this.active,
     this.avatarUrl,
     this.vendorProfile,
   });
@@ -84,6 +89,9 @@ class User {
       role: json['role'] as String? ?? '',
       phone: json['phone'] as String? ?? '',
       avatarUrl: json['avatarUrl'] as String?,
+      active: json['active'] as bool?,
+      averageRating: (json['averageRating'] as num?)?.toDouble(),
+      ratingsCount: (json['ratingsCount'] as num?)?.toInt(),
       vendorProfile:
           json['vendorProfile'] != null
               ? VendorProfile.fromJson(
@@ -100,8 +108,11 @@ class User {
       'email': email,
       'role': role,
       'phone': phone,
+      'active': active,
     };
     if (avatarUrl != null) m['avatarUrl'] = avatarUrl;
+    if (averageRating != null) m['averageRating'] = averageRating;
+    if (ratingsCount != null) m['ratingsCount'] = ratingsCount;
     if (vendorProfile != null) {
       // assign the Map directly, don't cast to String
       m['vendorProfile'] = vendorProfile!.toJson();

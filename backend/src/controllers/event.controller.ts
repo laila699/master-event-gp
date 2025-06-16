@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from "express";
 import Event from "../models/Event";
 import { asyncHandler } from "../utils/asyncHandler";
 import mongoose from "mongoose";
+import { sendInvitationEmail } from "../utils/email";
 
 // POST /api/events
 export const createEvent = asyncHandler(async (req: Request, res: Response) => {
@@ -105,11 +106,23 @@ export const deleteEvent = asyncHandler(async (req: Request, res: Response) => {
 export const addGuest = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, email } = req.body;
+
   const event = await Event.findById(id);
   if (!event) return res.status(404).json({ message: "Event not found" });
+
+  // 1) push guest
   event.guests.push({ name, email, status: "pending" } as any);
   await event.save();
-  res.status(201).json(event);
+
+  // 2) fire-and-forget e-mail (don’t await to keep API snappy)
+  // void sendInvitationEmail(
+  //   email,
+  //   event.title,
+  //   req.user?.name ?? "منظّم المناسبة",
+  //   event.date
+  // ).catch((err) => console.error("E-mail error →", err));
+
+  res.status(201).json({ message: "Guest added & e-mail queued" });
 });
 
 // PUT /api/events/:id/guests/:guestId

@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -24,7 +25,8 @@ class _AllOffersScreenState extends ConsumerState<AllOffersScreen> {
   Widget build(BuildContext context) {
     final accent1 = AppColors.gradientStart;
     final accent2 = AppColors.gradientEnd;
-
+    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final base = 'http://$host:5000/api';
     // watch all offerings, optionally filtered by service type
     final offersAsync = ref.watch(allOfferingsProvider(_selectedType));
 
@@ -188,7 +190,7 @@ class _AllOffersScreenState extends ConsumerState<AllOffersScreen> {
                                       ? ClipRRect(
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.network(
-                                          o.images.first,
+                                          "${base}${o.images.first}",
                                           width: 40,
                                           height: 40,
                                           fit: BoxFit.cover,

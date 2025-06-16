@@ -2,6 +2,7 @@
 
 import 'package:dio/dio.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:masterevent/models/recommended_offers.dart';
 import '../models/event.dart';
 import '../models/guest.dart';
 
@@ -25,6 +26,20 @@ class EventService {
           .toList();
     }
     throw Exception('Unexpected /events response: $data');
+  }
+
+  Future<List<RecBucket>> fetchRecommendedOffers(
+    String eventId, {
+    int limit = 5,
+  }) async {
+    final resp = await _dio.get(
+      '/events/$eventId/recommended-offerings',
+      queryParameters: {'limit': limit},
+    );
+
+    return (resp.data as List)
+        .map((e) => RecBucket.fromJson(e as Map<String, dynamic>))
+        .toList();
   }
 
   Future<Event> fetchEventById(String eventId) async {

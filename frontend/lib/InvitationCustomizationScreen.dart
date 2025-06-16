@@ -1,216 +1,202 @@
-// InvitationCustomizationScreen.dart
+// lib/screens/invitation/invitation_customisation_screen.dart
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../models/invitation_theme.dart';
 import 'preview_and_share_screen.dart';
+import '../../theme/colors.dart';
 
 class InvitationCustomizationScreen extends StatefulWidget {
-  final int designIndex;
-  final String themeImagePath;
-
-  const InvitationCustomizationScreen({
-    super.key,
-    required this.designIndex,
-    required this.themeImagePath,
-  });
+  final InvitationTheme theme;
+  const InvitationCustomizationScreen({super.key, required this.theme});
 
   @override
-  _InvitationCustomizationScreenState createState() =>
+  State<InvitationCustomizationScreen> createState() =>
       _InvitationCustomizationScreenState();
 }
 
 class _InvitationCustomizationScreenState
     extends State<InvitationCustomizationScreen> {
-  final TextEditingController _eventNameController = TextEditingController();
-  final TextEditingController _hostNamesController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
-  final TextEditingController _timeController = TextEditingController();
-  final TextEditingController _locationController = TextEditingController();
-  final TextEditingController _notesController = TextEditingController();
+  final _eventCtl = TextEditingController();
+  final _hostsCtl = TextEditingController();
+  final _dateCtl = TextEditingController();
+  final _timeCtl = TextEditingController();
+  final _locCtl = TextEditingController();
+  final _notesCtl = TextEditingController();
 
   @override
   void dispose() {
-    _eventNameController.dispose();
-    _hostNamesController.dispose();
-    _dateController.dispose();
-    _timeController.dispose();
-    _locationController.dispose();
-    _notesController.dispose();
+    _eventCtl.dispose();
+    _hostsCtl.dispose();
+    _dateCtl.dispose();
+    _timeCtl.dispose();
+    _locCtl.dispose();
+    _notesCtl.dispose();
     super.dispose();
   }
+
+  InvitationData _buildData() => InvitationData(
+    designIndex: 0, // not used any more
+    themeImageUrl: widget.theme.imageUrl,
+    eventName: _eventCtl.text.trim(),
+    hostNames: _hostsCtl.text.trim(),
+    date: _dateCtl.text.trim(),
+    time: _timeCtl.text.trim(),
+    location: _locCtl.text.trim(),
+    notes: _notesCtl.text.trim(),
+  );
 
   @override
   Widget build(BuildContext context) {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        appBar: AppBar(
-          title: Text("تخصيص الدعوة (تصميم ${widget.designIndex + 1})"),
-          backgroundColor: Colors.purple,
-          foregroundColor: Colors.white,
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.preview_outlined),
-              tooltip: 'معاينة الدعوة',
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('سيتم إضافة المعاينة الحية قريباً!'),
-                  ),
-                );
-              },
-            ),
-          ],
+        floatingActionButton: FloatingActionButton.extended(
+          backgroundColor: AppColors.gradientEnd,
+          icon: const Icon(Icons.visibility),
+          label: const Text('معاينة & مشاركة'),
+          onPressed: () {
+            final d = _buildData();
+            if ([
+              d.eventName,
+              d.hostNames,
+              d.date,
+              d.time,
+              d.location,
+            ].any((s) => s.isEmpty)) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('يرجى ملء الحقول الأساسية')),
+              );
+              return;
+            }
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => PreviewAndShareScreen(data: d)),
+            );
+          },
         ),
-        body: ListView(
-          padding: const EdgeInsets.all(16.0),
-          children: [
-            Center(
-              child: Container(
-                height: 180,
-                width: 120,
-                margin: const EdgeInsets.only(bottom: 24),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  border: Border.all(color: Colors.grey.shade400),
-                  borderRadius: BorderRadius.circular(8),
-                  image: DecorationImage(
-                    image: AssetImage(widget.themeImagePath),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  "تصميم ${widget.designIndex + 1}",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(color: Colors.grey[600]),
-                ),
+        appBar: AppBar(
+          title: Text(widget.theme.name),
+          backgroundColor: AppColors.gradientStart,
+          foregroundColor: Colors.white,
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              _LivePreview(
+                themeUrl: widget.theme.imageUrl,
+                dataGetter: _buildData,
               ),
-            ),
-            _buildTextField(
-              controller: _eventNameController,
-              label: 'اسم المناسبة',
-              icon: Icons.event_seat_outlined,
-              hint: 'مثال: حفل زفاف ليلى وأحمد',
-            ),
-            _buildTextField(
-              controller: _hostNamesController,
-              label: 'أسماء الداعين (أصحاب الدعوة)',
-              icon: Icons.groups_outlined,
-              hint: 'مثال: عائلتي العروسين',
-            ),
-            _buildTextField(
-              controller: _dateController,
-              label: 'التاريخ',
-              icon: Icons.calendar_today_outlined,
-              hint: 'مثال: الجمعة، 10 مايو 2024',
-              keyboardType: TextInputType.datetime,
-            ),
-            _buildTextField(
-              controller: _timeController,
-              label: 'الوقت',
-              icon: Icons.access_time_outlined,
-              hint: 'مثال: الساعة 8:00 مساءً',
-              keyboardType: TextInputType.datetime,
-            ),
-            _buildTextField(
-              controller: _locationController,
-              label: 'المكان',
-              icon: Icons.location_on_outlined,
-              hint: 'مثال: قاعة النخيل، الرياض',
-              maxLines: 2,
-            ),
-            _buildTextField(
-              controller: _notesController,
-              label: 'ملاحظات إضافية (اختياري)',
-              icon: Icons.note_alt_outlined,
-              hint: 'مثال: نعتذر عن اصطحاب الأطفال...',
-              maxLines: 3,
-            ),
-            const SizedBox(height: 30),
-            ElevatedButton.icon(
-              icon: const Icon(Icons.visibility_outlined),
-              label: const Text('معاينة ومشاركة الدعوة'),
-              onPressed: () {
-                final invitationDetails = InvitationData(
-                  designIndex: widget.designIndex,
-                  eventName: _eventNameController.text.trim(),
-                  hostNames: _hostNamesController.text.trim(),
-                  themeImagePath: widget.themeImagePath, // ← pass it here
-
-                  date: _dateController.text.trim(),
-                  time: _timeController.text.trim(),
-                  location: _locationController.text.trim(),
-                  notes: _notesController.text.trim(),
-                );
-
-                if (invitationDetails.eventName.isEmpty ||
-                    invitationDetails.hostNames.isEmpty ||
-                    invitationDetails.date.isEmpty ||
-                    invitationDetails.time.isEmpty ||
-                    invitationDetails.location.isEmpty) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text(
-                        'يرجى تعبئة جميع الحقول الأساسية (باستثناء الملاحظات)',
-                      ),
-                      backgroundColor: Colors.orange,
-                    ),
-                  );
-                  return;
-                }
-
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder:
-                        (context) => PreviewAndShareScreen(
-                          invitationData: invitationDetails,
-                          themeImagePath: widget.themeImagePath,
-                        ),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.purple,
-                foregroundColor: Colors.white,
-                minimumSize: const Size(double.infinity, 50),
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
+              const SizedBox(height: 24),
+              _field(_eventCtl, 'اسم المناسبة', Icons.event),
+              _field(_hostsCtl, 'أسماء الداعين', Icons.group),
+              _field(
+                _dateCtl,
+                'التاريخ',
+                Icons.calendar_today,
+                kb: TextInputType.datetime,
               ),
-            ),
-            const SizedBox(height: 20),
-          ],
+              _field(
+                _timeCtl,
+                'الوقت',
+                Icons.access_time,
+                kb: TextInputType.datetime,
+              ),
+              _field(_locCtl, 'المكان', Icons.location_on, maxLines: 2),
+              _field(_notesCtl, 'ملاحظات (اختياري)', Icons.note, maxLines: 3),
+              const SizedBox(height: 80), // space for FAB
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildTextField({
-    required TextEditingController controller,
-    required String label,
-    required IconData icon,
-    String? hint,
+  Widget _field(
+    TextEditingController c,
+    String lbl,
+    IconData ic, {
     int maxLines = 1,
-    TextInputType keyboardType = TextInputType.text,
+    TextInputType kb = TextInputType.text,
   }) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16.0),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextField(
-        controller: controller,
+        controller: c,
         maxLines: maxLines,
-        keyboardType: keyboardType,
+        keyboardType: kb,
         decoration: InputDecoration(
-          labelText: label,
-          hintText: hint,
-          prefixIcon: Icon(icon, color: Colors.grey.shade600),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8.0)),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.0),
-            borderSide: const BorderSide(color: Colors.purple, width: 2),
-          ),
-          floatingLabelBehavior: FloatingLabelBehavior.auto,
+          labelText: lbl,
+          prefixIcon: Icon(ic),
+          filled: true,
+          fillColor: Colors.white,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         ),
+        onChanged: (_) => setState(() {}), // refresh live preview
+      ),
+    );
+  }
+}
+
+/* -------------------------------------------------------------------------- */
+/* Live, inline preview that updates as the organiser types                   */
+/* -------------------------------------------------------------------------- */
+class _LivePreview extends StatelessWidget {
+  final String themeUrl;
+  final InvitationData Function() dataGetter;
+  const _LivePreview({required this.themeUrl, required this.dataGetter});
+
+  @override
+  Widget build(BuildContext context) {
+    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final base = 'http://$host:5000/api';
+    final d = dataGetter();
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          Image.network(
+            '${base}${themeUrl}',
+            height: 220,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+          Container(height: 220, color: Colors.black45),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  d.eventName.isEmpty ? 'اسم المناسبة' : d.eventName,
+                  style: GoogleFonts.scheherazadeNew(
+                    color: Colors.white,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  d.hostNames.isEmpty ? 'أصحاب الدعوة' : d.hostNames,
+                  style: const TextStyle(color: Colors.white70),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  d.date.isEmpty ? 'التاريخ' : d.date,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                Text(
+                  d.time.isEmpty ? 'الوقت' : d.time,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

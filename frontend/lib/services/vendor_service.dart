@@ -38,6 +38,29 @@ class VendorService {
     return (resp.data as List).map((json) => User.fromJson(json)).toList();
   }
 
+  /// Rate a vendor **once** per booking.
+  ///
+  /// Returns `{averageRating, ratingsCount}` from the API.
+  Future<Map<String, dynamic>> rateVendor({
+    required String vendorId,
+    required String bookingId,
+    required int value, // 1–5
+    String? review,
+    required String eventId,
+  }) async {
+    assert(value >= 1 && value <= 5);
+    final resp = await _dio.post<Map<String, dynamic>>(
+      '/vendors/$vendorId/ratings',
+      data: {
+        'bookingId': bookingId,
+        'value': value,
+        'eventId': eventId,
+        if (review != null) 'review': review,
+      },
+    );
+    return resp.data!;
+  }
+
   Future<ProviderModel> fetchProviderModel(String vendorId) async {
     final resp = await _dio.get('/vendors/$vendorId');
     return ProviderModel.fromJson(resp.data as Map<String, dynamic>);

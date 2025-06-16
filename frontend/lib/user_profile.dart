@@ -127,8 +127,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
     final user = authState.user;
-    final host = '192.168.1.122';
-    // On iOS Simulator, localhost will work; on Android emulator you must use 10.0.2.2
+    final host = kIsWeb ? 'localhost' : '192.168.1.122';
     final base = 'http://$host:5000/api';
     ref.listen<AuthState>(authNotifierProvider, (prev, next) {
       if (prev?.status != AuthStatus.unauthenticated &&

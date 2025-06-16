@@ -25,6 +25,53 @@ export const listVendorBookings = asyncHandler(
     res.json(bookings);
   }
 );
+export const createVendorRating = asyncHandler(
+  async (req: Request, res: Response) => {
+    const vendorId = req.params.vendorId;
+    const { bookingId, value, review, eventId } = req.body;
+    console.log("user", req.user);
+    console.log("eventId", eventId);
+    // ── 1. quick sanity ───────────────────────────────────────────────
+    if (!value || value < 1 || value > 5) {
+      return res.status(400).json({ message: "value must be 1-5" });
+    }
+
+    // ── 2. booking must exist, belong to this organizer, match vendor & be over ──
+    const booking = await Booking.findOne({
+      _id: bookingId,
+      event: eventId,
+      rated: false,
+    }).populate("offering", "vendor scheduledAt");
+    console.log("offering in booking", booking);
+    if (!booking || booking.scheduledAt > new Date()) {
+      return res.status(403).json({ message: "Booking not eligible" });
+    }
+
+    // ── 3. push rating into vendor user doc ───────────────────────────
+    const vendor = await User.findOne({ _id: vendorId, role: "vendor" });
+    if (!vendor) return res.status(404).json({ message: "Vendor not found" });
+
+    await (vendor as any).addRating({
+      organizerId: (req.user as any)._id, // ← add this line
+
+      eventId,
+      bookingId,
+      value,
+      review,
+      ratedAt: new Date(),
+    });
+
+    // ── 4. mark booking as rated ──────────────────────────────────────
+    booking.rated = true;
+    await booking.save();
+
+    // ── 5. send back fresh aggregates ─────────────────────────────────
+    res.json({
+      averageRating: vendor.averageRating,
+      ratingsCount: vendor.ratingsCount,
+    });
+  }
+);
 // GET /api/vendors?lat=<>&lng=<>&radius=<km>
 export const listVendors = asyncHandler(async (req: Request, res: Response) => {
   const { serviceType, city, lat, lng, radius, ...rest } = req.query;
@@ -83,6 +130,8 @@ export const listVendors = asyncHandler(async (req: Request, res: Response) => {
         "avatarUrl",
         "vendorProfile.serviceType",
         "vendorProfile.attributes",
+        "averageRating",
+        "ratingsCount",
       ].join(" ")
     )
     .lean();
@@ -100,7 +149,7 @@ export const listVendors = asyncHandler(async (req: Request, res: Response) => {
 export const getVendorDetails = asyncHandler(async (req, res) => {
   const { vendorId } = req.params;
   const vendor = await User.findById(vendorId).select(
-    "name vendorProfile.attributes role vendorProfile.serviceType"
+    "name vendorProfile.attributes role vendorProfile.serviceType averageRating ratingsCount"
   );
   console.log("vendor:", vendor);
 

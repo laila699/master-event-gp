@@ -1,5 +1,6 @@
 // src/models/Event.ts
 import mongoose, { Document, Schema } from "mongoose";
+import Booking from "./Booking";
 
 // ── GUEST SUB‐SCHEMA ───────────────────────────────────────────────────────────
 export interface IGuest {
@@ -147,5 +148,59 @@ const EventSchema = new Schema<IEvent>(
 
 // Create a sparse 2dsphere index so only docs with coordinates are indexed
 EventSchema.index({ venueLocation: "2dsphere" }, { sparse: true });
+
+EventSchema.virtual("remainingBudget").get(async function () {
+  /* -------------------------------------------------------------
+   * Builds { "<categoryName>": remainingCash, … }
+   * -----------------------------------------------------------*/
+  const byCat: Record<string, number> = {};
+
+  // 1) sum spent so far PER category
+  //    (Category = vendor.serviceType, e.g. "photographer", OR the
+  //     exact category name you stored in settings.budget.categories)
+  const agg = await Booking.aggregate([
+    { $match: { event: this._id } },
+    {
+      $lookup: {
+        // join offering
+        from: "offerings",
+        localField: "offering",
+        foreignField: "_id",
+        pipeline: [{ $project: { price: 1, vendor: 1 } }],
+        as: "off",
+      },
+    },
+    { $unwind: "$off" },
+    {
+      $lookup: {
+        // join vendor to get serviceType
+        from: "users",
+        localField: "off.vendor",
+        foreignField: "_id",
+        pipeline: [{ $project: { "vendorProfile.serviceType": 1 } }],
+        as: "vendor",
+      },
+    },
+    { $unwind: "$vendor" },
+    {
+      $group: {
+        _id: "$vendor.vendorProfile.serviceType",
+        spent: { $sum: { $multiply: ["$off.price", "$quantity"] } },
+      },
+    },
+  ]);
+
+  agg.forEach((r) => (byCat[r._id] = r.spent));
+
+  // 2) subtract from allocated
+  const remaining: Record<string, number> = {};
+  const budget = (this as any).settings?.budget;
+  if (!budget) return remaining;
+
+  for (const cat of budget.categories as IBudgetCategory[]) {
+    remaining[cat.name] = Math.max(0, cat.amount - (byCat[cat.name] || 0));
+  }
+  return remaining;
+});
 
 export default mongoose.model<IEvent>("Event", EventSchema);

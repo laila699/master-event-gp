@@ -140,17 +140,17 @@ export const login = asyncHandler(async (req: Request, res: Response) => {
   if (!valid) {
     return res.status(401).json({ message: "بيانات الاعتماد غير صحيحة." });
   }
+  if (user.role === "vendor" && !user.active) {
+    return res
+      .status(403)
+      .json({ message: "حسابك قيد المراجعة حالياً، سيتم تفعيله قريباً." });
+  }
 
   // 3) Generate JWT
   const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
     expiresIn: JWT_EXPIRES_IN,
   });
-  const payload = {
-    notification: {
-      title: "Login",
-      body: "You have logged in successfully.",
-    },
-  };
+
   const firebaseToken = await admin
     .auth()
     .createCustomToken(user._id.toString());

@@ -12,6 +12,7 @@ import {
   updateVendorAttributes,
   uploadAttributeImage,
   getOfferingById,
+  createVendorRating,
 } from "../controllers/vendor.controller";
 import { requireAuth, requireRole } from "../middleware/auth";
 import {
@@ -39,6 +40,8 @@ router.post(
   uploadAttributeImages.single("file"),
   uploadAttributeImage
 );
+router.post("/:vendorId/ratings", requireAuth, createVendorRating);
+
 router.get("/:vendorId/bookings", requireRole("vendor"), listVendorBookings);
 
 // Vendor updates their location

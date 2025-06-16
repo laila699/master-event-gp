@@ -15,6 +15,7 @@ class BookingDetail {
   final DateTime scheduledAt;
   final String? note;
   final String status;
+  final bool rated; // ⭐ NEW
 
   BookingDetail({
     required this.id,
@@ -30,6 +31,7 @@ class BookingDetail {
     required this.scheduledAt,
     this.note,
     required this.status,
+    required this.rated,
   });
 
   factory BookingDetail.fromJson(Map<String, dynamic> json) {
@@ -56,6 +58,7 @@ class BookingDetail {
               : DateTime.parse(json['createdAt'] as String),
       note: json['note'] as String?,
       status: json['status'] as String,
+      rated: (json['rated'] as bool?) ?? false,
     );
   }
 }

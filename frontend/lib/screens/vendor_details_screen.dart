@@ -178,6 +178,38 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
                   initialZoom: 15,
                 ),
                 children: [
+                  if (provider.averageRating != null) ...[
+                    Row(
+                      children: [
+                        Icon(
+                          Icons.star,
+                          color: AppColors.gradientEnd,
+                          size: 24,
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          provider.averageRating!.toStringAsFixed(1),
+                          style: GoogleFonts.orbitron(
+                            color: AppColors.textOnNeon,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 18,
+                          ),
+                        ),
+                        if (provider.ratingsCount != null &&
+                            provider.ratingsCount! > 0) ...[
+                          const SizedBox(width: 4),
+                          Text(
+                            '(${provider.ratingsCount})',
+                            style: GoogleFonts.orbitron(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
                   TileLayer(
                     urlTemplate:
                         'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',

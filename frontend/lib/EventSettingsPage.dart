@@ -3,8 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:masterevent/EventBudgetPage.dart';
-import 'package:masterevent/EventLogisticsPage.dart';
-import 'package:masterevent/EventReviewsPage.dart';
+
 import 'package:masterevent/EventToDoListPage.dart';
 import '../models/event.dart';
 import '../providers/event_provider.dart';
@@ -21,20 +20,11 @@ class EventSettingsPage extends ConsumerWidget {
         'icon': Icons.attach_money,
         'builder': (_) => EventBudgetPage(eventId: event.id),
       },
-      {
-        'title': 'الترتيبات اللوجستية',
-        'icon': Icons.local_shipping,
-        'builder': (_) => EventLogisticsPage(eventId: event.id),
-      },
+
       {
         'title': 'تنظيم المهام',
         'icon': Icons.checklist_rtl,
         'builder': (_) => EventToDoListPage(eventId: event.id),
-      },
-      {
-        'title': 'المراجعات والتقييمات',
-        'icon': Icons.star_rate,
-        'builder': (_) => EventReviewsPage(),
       },
     ];
 

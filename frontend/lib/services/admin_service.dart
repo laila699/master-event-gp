@@ -30,6 +30,11 @@ class AdminService {
     await _dio.delete(path);
   }
 
+  Future<void> approveUser(String id) async {
+    if (id.isEmpty) throw Exception('Invalid user id: "$id"');
+    await _dio.put('/admin/users/$id/approve');
+  }
+
   // ─── Invitation Themes ─────────────────────────────────────────────────
 
   Future<List<InvitationTheme>> fetchThemes() async {
