@@ -110,19 +110,30 @@ export const addGuest = asyncHandler(async (req: Request, res: Response) => {
   const event = await Event.findById(id);
   if (!event) return res.status(404).json({ message: "Event not found" });
 
-  // 1) push guest
+  // Check if email already exists in guests
+  const emailExists = event.guests.some(
+    (g: any) => g.email.toLowerCase() === email.toLowerCase()
+  );
+  if (emailExists) {
+    return res
+      .status(400)
+      .json({ message: "This email is already added as a guest." });
+  }
+
   event.guests.push({ name, email, status: "pending" } as any);
   await event.save();
 
-  // 2) fire-and-forget e-mail (don’t await to keep API snappy)
-  // void sendInvitationEmail(
-  //   email,
-  //   event.title,
-  //   req.user?.name ?? "منظّم المناسبة",
-  //   event.date
-  // ).catch((err) => console.error("E-mail error →", err));
+  try {
+    console.log(`Sending invitation email to ${email}...`);
+    const mailSent = await sendInvitationEmail(email, event.title, event.date);
+    console.log(
+      `Email sent successfully to ${email}. Accepted count: ${mailSent}`
+    );
+  } catch (err) {
+    console.error("E-mail sending error →", err);
+  }
 
-  res.status(201).json({ message: "Guest added & e-mail queued" });
+  res.status(201).json({ message: "Guest added & email processed" });
 });
 
 // PUT /api/events/:id/guests/:guestId

@@ -51,7 +51,6 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
     final nameAsync = ref.watch(userNameProvider(widget.vendorId));
 
     return Scaffold(
-      extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: AppColors.overlay,
         elevation: 0,
@@ -243,6 +242,25 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
   }
 
   Widget _buildAttributeCard(ProviderAttribute attr) {
+    final value = attr.value;
+
+    bool _isImagePath(String v) {
+      return v.endsWith('.png') ||
+          v.endsWith('.jpg') ||
+          v.endsWith('.jpeg') ||
+          v.endsWith('.webp');
+    }
+
+    List<String> _extractImagePaths(dynamic value) {
+      if (value is List) {
+        return value.whereType<String>().where(_isImagePath).toList();
+      }
+      return [];
+    }
+
+    final images = _extractImagePaths(value);
+    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final base = 'http://$host:5000/api';
     return Card(
       color: AppColors.glass,
       margin: const EdgeInsets.only(bottom: 12),
@@ -259,11 +277,42 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
                 fontWeight: FontWeight.w600,
               ),
             ),
-            const SizedBox(height: 4),
-            Text(
-              attr.value?.toString() ?? '-',
-              style: GoogleFonts.orbitron(color: AppColors.textSecondary),
-            ),
+            const SizedBox(height: 8),
+            if (images.isNotEmpty)
+              SizedBox(
+                height: 100,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: images.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 12),
+                  itemBuilder: (_, i) {
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(12),
+                      child: Image.network(
+                        '${base}${images[i]}',
+                        height: 100,
+                        width: 100,
+                        fit: BoxFit.cover,
+                        errorBuilder:
+                            (_, __, ___) => Container(
+                              color: Colors.black26,
+                              width: 100,
+                              height: 100,
+                              child: Icon(
+                                Icons.broken_image,
+                                color: Colors.white,
+                              ),
+                            ),
+                      ),
+                    );
+                  },
+                ),
+              )
+            else
+              Text(
+                value?.toString() ?? '-',
+                style: GoogleFonts.orbitron(color: AppColors.textSecondary),
+              ),
           ],
         ),
       ),

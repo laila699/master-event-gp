@@ -169,74 +169,7 @@ class _AllOffersScreenState extends ConsumerState<AllOffersScreen> {
                         itemCount: filtered.length,
                         itemBuilder: (ctx, i) {
                           final o = filtered[i];
-                          return Card(
-                            color: AppColors.glass,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            child: ListTile(
-                              onTap: () {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder:
-                                        (_) =>
-                                            OfferingDetailsScreen(offering: o),
-                                  ),
-                                );
-                              },
-                              leading:
-                                  o.images.isNotEmpty
-                                      ? ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.network(
-                                          "${base}${o.images.first}",
-                                          width: 40,
-                                          height: 40,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      )
-                                      : Icon(
-                                        Icons.card_giftcard,
-                                        size: 40,
-                                        color: AppColors.textSecondary,
-                                      ),
-                              title: Text(
-                                o.title,
-                                style: GoogleFonts.orbitron(
-                                  color: AppColors.textOnNeon,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                              subtitle: Text(
-                                '${o.price.toStringAsFixed(2)} ش.إ',
-                                style: GoogleFonts.orbitron(color: accent2),
-                              ),
-                              trailing: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.gradientStart,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.of(context).push(
-                                    MaterialPageRoute(
-                                      builder:
-                                          (_) =>
-                                              CreateBookingScreen(offering: o),
-                                    ),
-                                  );
-                                },
-                                child: Text(
-                                  'احجز',
-                                  style: GoogleFonts.orbitron(
-                                    color: AppColors.textOnNeon,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
+                          return _buildMagicalOfferCard(o, base);
                         },
                       );
                     },
@@ -246,6 +179,106 @@ class _AllOffersScreenState extends ConsumerState<AllOffersScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildMagicalOfferCard(Offering o, String baseUrl) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Color(0xFF9B5DE5), Color(0xFFF15BB5)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.purple.withOpacity(0.3),
+            blurRadius: 12,
+            offset: Offset(0, 6),
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: Stack(
+          children: [
+            // Background blur image (if exists)
+            if (o.images.isNotEmpty)
+              Positioned.fill(
+                child: Opacity(
+                  opacity: 0.15,
+                  child: Image.network(
+                    "$baseUrl${o.images.first}",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
+
+            // Glass overlay content
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.3),
+                backgroundBlendMode: BlendMode.overlay,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    o.title,
+                    style: GoogleFonts.amiri(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    "${o.price.toStringAsFixed(2)} ش.إ",
+                    style: GoogleFonts.orbitron(
+                      fontSize: 16,
+                      color: Colors.yellowAccent,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    o.description ?? '',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.white.withOpacity(0.85)),
+                  ),
+                  const SizedBox(height: 12),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white,
+                        foregroundColor: Colors.deepPurple,
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      icon: const Icon(Icons.favorite),
+                      label: const Text("احجز الآن"),
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => CreateBookingScreen(offering: o),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
