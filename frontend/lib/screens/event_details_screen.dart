@@ -283,6 +283,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                                         itemBuilder:
                                             (context, i) => BookingDetailCard(
                                               booking: bookings[i],
+                                              eventId: widget.eventId,
                                             ),
                                       ),
                         );
@@ -442,20 +443,11 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
         'icon': Icons.attach_money,
         'page': EventBudgetPage(eventId: event.id),
       },
-      {
-        'title': 'الترتيبات اللوجستية',
-        'icon': Icons.local_shipping,
-        'page': EventLogisticsPage(eventId: event.id),
-      },
+
       {
         'title': 'تنظيم المهام',
         'icon': Icons.checklist_rtl,
         'page': EventToDoListPage(eventId: event.id),
-      },
-      {
-        'title': 'المراجعات والتقييمات',
-        'icon': Icons.star_rate,
-        'page': EventReviewsPage(),
       },
     ];
     return ListView.separated(

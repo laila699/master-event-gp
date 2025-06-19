@@ -9,6 +9,7 @@ import {
 } from "../controllers/invitationThemeController";
 import { requireRole } from "../middleware/auth";
 import { uploadThemeImages } from "../middleware/multer";
+import User from "../models/User";
 
 const router = express.Router();
 
@@ -20,7 +21,19 @@ const router = express.Router();
 router.get("/users", getAllUsers);
 
 router.delete("/users/:id", deleteUser);
-
+router.put("/users/:id/approve", async (req, res): Promise<any> => {
+  try {
+    const u = await User.findByIdAndUpdate(
+      req.params.id,
+      { active: true },
+      { new: true }
+    );
+    if (!u) return res.status(404).send({ message: "User not found" });
+    res.send(u);
+  } catch (err: any) {
+    res.status(500).send({ message: err.message });
+  }
+});
 // ---- Invitation themes ----
 router.post(
   "/invitation-themes",

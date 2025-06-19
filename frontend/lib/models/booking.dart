@@ -7,6 +7,7 @@ class Booking {
   final int quantity;
   final DateTime scheduledAt;
   final String? note;
+  final bool rated;
   final String status; // “pending” | “confirmed” | “declined”
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -17,6 +18,7 @@ class Booking {
     required this.offeringId,
     required this.quantity,
     required this.scheduledAt,
+    required this.rated,
     this.note,
     required this.status,
     required this.createdAt,
@@ -57,6 +59,8 @@ class Booking {
       quantity: (json['quantity'] as num).toInt(),
       scheduledAt: DateTime.parse(_extractIso(json['scheduledAt'])),
       note: json['note'] as String?,
+      rated: (json['rated'] as bool?) ?? false,
+
       status: json['status'] as String,
       createdAt: DateTime.parse(_extractIso(json['createdAt'])),
       updatedAt: DateTime.parse(_extractIso(json['updatedAt'])),

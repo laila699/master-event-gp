@@ -2,6 +2,7 @@
 
 import 'dart:io';
 import 'dart:ui';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -96,7 +97,7 @@ class OfferingTab extends ConsumerWidget {
     Offering off,
     bool canEdit,
   ) {
-    final host = '192.168.1.122';
+    final host = kIsWeb ? 'localhost' : '192.168.1.122';
     final base = 'http://$host:5000/api';
     return Card(
       color: AppColors.glass,

@@ -132,16 +132,37 @@ class GuestTab extends ConsumerWidget {
         nameCtl.text.trim().isNotEmpty &&
         emailCtl.text.trim().isNotEmpty) {
       // 5) call addGuestProvider
-      await ref.read(
-        addGuestProvider({
-          'eventId': eventId,
-          'name': nameCtl.text.trim(),
-          'email': emailCtl.text.trim(),
-        }).future,
-      );
-
-      // 6) re-fetch event details
-      ref.invalidate(eventDetailProvider(eventId));
+      try {
+        await ref.read(
+          addGuestProvider({
+            'eventId': eventId,
+            'name': nameCtl.text.trim(),
+            'email': emailCtl.text.trim(),
+          }).future,
+        );
+        // 6) re-fetch event details
+        ref.invalidate(eventDetailProvider(eventId));
+        // Show toast/snackbar on success
+        ScaffoldMessenger.of(ctx).showSnackBar(
+          SnackBar(
+            content: Text(
+              'تم إرسال الدعوة للضيف عبر البريد الإلكتروني',
+              style: GoogleFonts.cairo(),
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
+      } catch (e) {
+        ScaffoldMessenger.of(ctx).showSnackBar(
+          SnackBar(
+            content: Text(
+              'حدث خطأ أثناء إرسال الدعوة: $e',
+              style: GoogleFonts.cairo(),
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 }

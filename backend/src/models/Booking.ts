@@ -7,6 +7,8 @@ export interface IBooking extends Document {
   // ← new fields
   scheduledAt: Date;
   note?: string;
+  rated: Boolean;
+
   status: "pending" | "confirmed" | "declined";
   createdAt: Date;
   updatedAt: Date;
@@ -17,7 +19,7 @@ const BookingSchema = new Schema<IBooking>(
     event: { type: Schema.Types.ObjectId, ref: "Event", required: true },
     offering: { type: Schema.Types.ObjectId, ref: "Offering", required: true },
     quantity: { type: Number, default: 1 },
-    // ← scheduled date/time
+    rated: { type: Boolean, default: false }, // ← scheduled date/time
     scheduledAt: { type: Date, required: true },
     // ← optional organizer note
     note: { type: String },

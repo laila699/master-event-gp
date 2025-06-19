@@ -53,14 +53,27 @@ class AuthNotifier extends StateNotifier<AuthState> {
     state = AuthState.loading();
     try {
       final user = await _authService.login(email: email, password: password);
+
+      // ←── here’s our new “guard clause”
+      if (user.role == 'vendor' && user.active == false) {
+        // show a nice message and bail out
+        state = AuthState.error(
+          'حسابك قيد المراجعة حالياً، سيتم تفعيله قريباً.',
+        );
+        return;
+      }
+
+      // normal path
       state = AuthState.authenticated(user);
     } on DioError catch (e) {
       if (e.response?.statusCode == 401) {
         state = AuthState.error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+      } else if (e.response?.statusCode == 403) {
+        state = AuthState.error('ليس لديك صلاحية لتسجيل الدخول');
       } else {
         state = AuthState.error('حدث خطأ أثناء تسجيل الدخول');
       }
-    } catch (e) {
+    } catch (_) {
       state = AuthState.error('حدث خطأ غير متوقع');
     }
   }
@@ -87,6 +100,12 @@ class AuthNotifier extends StateNotifier<AuthState> {
         profileImage: profileImage,
         vendorProfile: vendorProfile,
       );
+      if (user.role == 'vendor' && user.active != true) {
+        state = AuthState.error(
+          'شكراً للتسجيل! حسابك قيد المراجعة وسيتم تفعيله قريباً.',
+        );
+        return;
+      }
       state = AuthState.authenticated(user);
     } on DioError catch (e) {
       if (e.response?.statusCode == 400) {

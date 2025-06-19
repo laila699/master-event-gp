@@ -23,6 +23,23 @@ final providerModelFamily = FutureProvider.family<ProviderModel, String>((
 
 // list of vendors (for directory)
 // lib/providers/vendor_provider.dart
+/// One-shot mutation provider – call inside a button handler.
+final rateVendorProvider = Provider((ref) {
+  final svc = ref.read(vendorServiceProvider);
+  return ({
+    required String vendorId,
+    required String bookingId,
+    required int value,
+    required String eventId,
+    String? review,
+  }) => svc.rateVendor(
+    vendorId: vendorId,
+    bookingId: bookingId,
+    value: value,
+    eventId: eventId,
+    review: review,
+  );
+});
 
 final vendorListProvider = FutureProvider.family<List<User>, VendorFilter>(
   (ref, filter) => ref

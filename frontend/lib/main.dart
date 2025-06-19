@@ -62,7 +62,7 @@ class MyApp extends ConsumerWidget {
 }
 
 ThemeData _buildFutureTheme() {
-  // 1) Deep purple background + neon-green accents
+  // 1) Deep purple background  neon-green accents
   final base = ColorScheme.dark(
     primary: AppColors.gradientStart, // neon magenta
     onPrimary: AppColors.textOnNeon, // white
@@ -160,6 +160,19 @@ ThemeData _buildFutureTheme() {
     ),
 
     // 9) Page transitions: quick fade
+    snackBarTheme: SnackBarThemeData(
+      backgroundColor: Colors.black.withOpacity(0.85), // deep glass
+      elevation: 12,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      behavior: SnackBarBehavior.floating,
+      contentTextStyle: GoogleFonts.audiowide(
+        // neon font
+        color: base.secondary,
+        fontSize: 14,
+        letterSpacing: 0.8,
+      ),
+      actionTextColor: base.primary, // magenta
+    ),
     pageTransitionsTheme: const PageTransitionsTheme(
       builders: {
         TargetPlatform.android: FadeUpwardsPageTransitionsBuilder(),

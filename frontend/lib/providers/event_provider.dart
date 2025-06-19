@@ -1,6 +1,7 @@
 // lib/providers/event_provider.dart
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:masterevent/models/recommended_offers.dart';
 import '../models/event.dart';
 import '../models/guest.dart';
 import '../services/event_service.dart';
@@ -22,6 +23,14 @@ final eventListProvider = FutureProvider<List<Event>>((ref) async {
 final eventDetailProvider = FutureProvider.family<Event, String>(
   (ref, id) => ref.read(eventServiceProvider).fetchEventById(id),
 );
+final recommendedOffersFamily = FutureProvider.family<List<RecBucket>, String>((
+  ref,
+  eventId,
+) {
+  return ref
+      .read(eventServiceProvider)
+      .fetchRecommendedOffers(eventId, limit: 5);
+});
 
 /// 3) Create
 final createEventProvider = FutureProvider.family<Event, Map<String, dynamic>>((

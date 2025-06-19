@@ -348,8 +348,11 @@ class _VendorCard extends StatelessWidget {
     } catch (_) {}
     String rating = '-';
     try {
-      rating =
-          attrs.firstWhere((a) => a.key == 'rating').value?.toString() ?? '-';
+      final ratingVal =
+          vendor.averageRating != null
+              ? vendor.averageRating!.toStringAsFixed(1)
+              : '-';
+      final ratingCount = vendor.ratingsCount ?? 0;
     } catch (_) {}
     final accent2 = AppColors.gradientEnd;
 
@@ -395,8 +398,21 @@ class _VendorCard extends StatelessWidget {
             Icon(Icons.star, size: 16, color: accent2),
             const SizedBox(width: 4),
             Text(
-              rating,
-              style: GoogleFonts.orbitron(color: AppColors.textSecondary),
+              vendor.averageRating != null
+                  ? vendor.averageRating!.toStringAsFixed(1)
+                  : '-',
+              style: GoogleFonts.orbitron(
+                color: accent2,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 4),
+            Text(
+              '(${vendor.ratingsCount ?? 0})',
+              style: GoogleFonts.orbitron(
+                color: AppColors.textSecondary,
+                fontSize: 12,
+              ),
             ),
           ],
         ),
