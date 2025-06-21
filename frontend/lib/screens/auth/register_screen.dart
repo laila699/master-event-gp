@@ -15,7 +15,6 @@ import 'package:masterevent/theme/colors.dart';
 /// These must match exactly the backend enum values:
 const List<String> _allVendorTypes = [
   'decorator',
-  'interior_designer',
   'furniture_store',
   'photographer',
   'restaurant',
@@ -25,12 +24,11 @@ const List<String> _allVendorTypes = [
 
 const Map<String, String> _vendorTypeLabels = {
   'decorator': 'ديكور',
-  'interior_designer': 'مصمم داخلي',
   'furniture_store': 'متجر أثاث',
   'photographer': 'مصور',
   'restaurant': 'مطعم',
   'gift_shop': 'متجر هدايا',
-  'entertainer': 'منشط',
+  'entertainer': 'الترفيه و العروض',
 };
 
 class RegisterScreen extends ConsumerStatefulWidget {

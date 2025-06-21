@@ -125,7 +125,7 @@ class MenuTab extends ConsumerWidget {
                                             context,
                                           ).showSnackBar(
                                             const SnackBar(
-                                              content: Text('تم حذف الوجبة'),
+                                              content: Text('تم حذف العنصر'),
                                             ),
                                           );
                                         },
@@ -142,7 +142,7 @@ class MenuTab extends ConsumerWidget {
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: TextButton.icon(
                             icon: const Icon(Icons.add),
-                            label: const Text('إضافة وجبة جديدة'),
+                            label: const Text('إضافة عنصر جديدة'),
                             style: TextButton.styleFrom(
                               foregroundColor: Colors.purple,
                               textStyle: const TextStyle(fontSize: 16),
@@ -286,7 +286,7 @@ class MenuTab extends ConsumerWidget {
         return StatefulBuilder(
           builder: (ctx, setState) {
             return AlertDialog(
-              title: const Text('إضافة وجبة جديدة'),
+              title: const Text('إضافة عنصر جديدة'),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -327,7 +327,7 @@ class MenuTab extends ConsumerWidget {
                     TextField(
                       controller: _nameCtl,
                       decoration: const InputDecoration(
-                        labelText: 'اسم الوجبة',
+                        labelText: 'اسم العنصر',
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -361,7 +361,7 @@ class MenuTab extends ConsumerWidget {
                           );
                       Navigator.of(ctx).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('جارٍ إضافة الوجبة...')),
+                        const SnackBar(content: Text('جارٍ إضافة العنصر...')),
                       );
                     }
                   },
@@ -436,7 +436,7 @@ class MenuTab extends ConsumerWidget {
         return StatefulBuilder(
           builder: (ctx, setState) {
             return AlertDialog(
-              title: const Text('تعديل الوجبة'),
+              title: const Text('تعديل العنصر'),
               content: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -497,7 +497,7 @@ class MenuTab extends ConsumerWidget {
                     TextField(
                       controller: _nameCtl,
                       decoration: const InputDecoration(
-                        labelText: 'اسم الوجبة',
+                        labelText: 'اسم العنصر',
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -532,7 +532,7 @@ class MenuTab extends ConsumerWidget {
                           );
                       Navigator.of(ctx).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('جارٍ تحديث الوجبة...')),
+                        const SnackBar(content: Text('جارٍ تحديث العنصر...')),
                       );
                     }
                   },

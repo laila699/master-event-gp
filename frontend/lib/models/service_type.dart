@@ -2,7 +2,7 @@
 
 enum VendorServiceType {
   decorator,
-  interiorDesigner,
+
   furnitureStore,
   photographer,
   restaurant,
@@ -16,8 +16,7 @@ extension VendorServiceTypeExt on VendorServiceType {
     switch (this) {
       case VendorServiceType.decorator:
         return 'decorator';
-      case VendorServiceType.interiorDesigner:
-        return 'interior_designer';
+
       case VendorServiceType.furnitureStore:
         return 'furniture_store';
       case VendorServiceType.photographer:
@@ -38,8 +37,7 @@ extension VendorServiceTypeExt on VendorServiceType {
     switch (this) {
       case VendorServiceType.decorator:
         return 'الديكورات';
-      case VendorServiceType.interiorDesigner:
-        return 'مصمم ديكور داخلي';
+
       case VendorServiceType.furnitureStore:
         return 'متجر أثاث';
       case VendorServiceType.photographer:

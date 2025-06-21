@@ -7,6 +7,7 @@ import '../screens/my_events_screen.dart';
 import '../screens/vendor_dashboard/dashboard_screen.dart'
     show VendorDashboardScreen;
 import '../services/notification_service.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   final User user;
@@ -20,8 +21,23 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize FCM listener & register token
     ref.read(notificationServiceProvider);
+    _requestLocationPermission(); // 👈 Add this
+  }
+
+  Future<void> _requestLocationPermission() async {
+    final status = await Permission.location.request();
+
+    if (status.isGranted) {
+      print("📍 Location permission granted.");
+    } else if (status.isDenied) {
+      print("❗ Location permission denied.");
+    } else if (status.isPermanentlyDenied) {
+      print(
+        "❌ Location permission permanently denied. Please enable it in settings.",
+      );
+      openAppSettings();
+    }
   }
 
   @override

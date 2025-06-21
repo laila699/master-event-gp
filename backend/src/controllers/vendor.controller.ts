@@ -245,7 +245,7 @@ export const updateVendorLocation = asyncHandler(
     if (!user.vendorProfile) {
       user.vendorProfile = {
         // we know this is a vendor, so serviceType must be defined
-        serviceType: VendorServiceType.InteriorDesigner,
+        serviceType: VendorServiceType.Decorator,
         bio: "",
         location: { type: "Point", coordinates: [longitude, latitude] },
       };

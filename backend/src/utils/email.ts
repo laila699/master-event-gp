@@ -39,3 +39,33 @@ export async function sendInvitationEmail(
     `,
   });
 }
+export async function sendApprovalEmail(to: string, name: string) {
+  await sgMail.send({
+    to,
+    from: process.env.SENDGRID_FROM!,
+    subject: `تمت الموافقة على حسابك في Master Event`,
+    html: `
+      <div style="background-color:#f9f9f9; padding:30px; font-family:'Tahoma', sans-serif; color:#333;">
+        <div style="max-width:600px; margin:auto; background:white; border-radius:8px; overflow:hidden; box-shadow:0 0 10px rgba(0,0,0,0.05);">
+          <div style="background-color:#4CAF50; color:white; padding:20px; text-align:center;">
+            <h1 style="margin:0;">✔ تم تفعيل حسابك</h1>
+          </div>
+          <div style="padding:30px;">
+            <p style="font-size:18px;">مرحباً ${name || "المستخدم"},</p>
+            <p style="font-size:16px;">
+              تمت الموافقة على حسابك بنجاح! يمكنك الآن الدخول إلى تطبيق Master Event والاستفادة من جميع الميزات.
+            </p>
+            <p style="font-size:16px;">
+              نحن سعداء بانضمامك إلينا. 🎉
+            </p>
+            <hr style="border:none; border-top:1px solid #eee; margin:20px 0;">
+            <p style="font-size:14px; color:#888;">يرجى عدم الرد على هذا البريد. لأي استفسار، تواصل معنا عبر التطبيق.</p>
+          </div>
+          <div style="background-color:#f1f1f1; text-align:center; padding:15px; font-size:12px; color:#999;">
+            © ${new Date().getFullYear()} Master Event — جميع الحقوق محفوظة.
+          </div>
+        </div>
+      </div>
+    `,
+  });
+}

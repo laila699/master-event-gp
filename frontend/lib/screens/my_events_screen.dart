@@ -424,23 +424,6 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                             );
                           },
                         ),
-                        _serviceCard(
-                          context,
-                          Icons.design_services,
-                          'مصمم داخلي',
-                          () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (_) => VendorListScreen(
-                                      initialType:
-                                          VendorServiceType.interiorDesigner,
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
                       ],
                     ),
                   ),
