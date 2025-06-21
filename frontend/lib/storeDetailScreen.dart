@@ -32,7 +32,7 @@ class StoreDetailScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
       ),
       backgroundColor: const Color(0xFFF7F7F7),
       body: SafeArea(
@@ -105,7 +105,7 @@ class StoreDetailScreen extends StatelessWidget {
                 style: GoogleFonts.cairo(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  color: Colors.purple,
+                  color: const Color.fromARGB(255, 244, 168, 196),
                 ),
               ),
               const SizedBox(height: 8),
@@ -252,7 +252,12 @@ class StoreDetailScreen extends StatelessWidget {
                                       Text(
                                         '✨ قابل للتخصيص',
                                         style: GoogleFonts.cairo(
-                                          color: Colors.purple,
+                                          color: const Color.fromARGB(
+                                            255,
+                                            244,
+                                            168,
+                                            196,
+                                          ),
                                           fontSize: 13,
                                         ),
                                       ),
@@ -360,7 +365,7 @@ class StoreDetailScreen extends StatelessWidget {
               Center(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
+                    backgroundColor: const Color.fromARGB(255, 244, 168, 196),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 50,
                       vertical: 16,

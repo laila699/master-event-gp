@@ -24,7 +24,7 @@ class PhotographerDetailScreen extends StatelessWidget {
           photographer['name'],
           style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
       ),
       backgroundColor: Color(0xFFF7F7F7),
       body: Padding(
@@ -87,7 +87,7 @@ class PhotographerDetailScreen extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
+                  backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

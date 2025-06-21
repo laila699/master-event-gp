@@ -162,7 +162,7 @@ class _EntertainmentScreenState extends State<EntertainmentScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
       ),
       backgroundColor: const Color(0xFFF7F7F7),
       body: Column(
@@ -235,7 +235,10 @@ class _EntertainmentScreenState extends State<EntertainmentScreen> {
                   },
                   style: GoogleFonts.cairo(fontSize: 16),
                   dropdownColor: Colors.white,
-                  icon: const Icon(Icons.arrow_drop_down, color: Colors.purple),
+                  icon: const Icon(
+                    Icons.arrow_drop_down,
+                    color: Color.fromARGB(255, 244, 168, 196),
+                  ),
                 ),
               ],
             ),
@@ -325,7 +328,12 @@ class _EntertainmentScreenState extends State<EntertainmentScreen> {
                                           style: GoogleFonts.cairo(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.purple,
+                                            color: const Color.fromARGB(
+                                              255,
+                                              244,
+                                              168,
+                                              196,
+                                            ),
                                           ),
                                           maxLines: 1,
                                           overflow: TextOverflow.ellipsis,

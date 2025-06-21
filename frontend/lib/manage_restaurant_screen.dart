@@ -132,7 +132,7 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
         centerTitle: true,
         actions: [
           if (isEditing) // زر الحذف يظهر فقط في وضع التعديل
@@ -243,7 +243,7 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
                 style: GoogleFonts.cairo(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
-                  color: Colors.purple,
+                  color: const Color.fromARGB(255, 244, 168, 196),
                 ),
               ),
               const SizedBox(height: 10),
@@ -282,10 +282,15 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
                 alignment: Alignment.centerRight,
                 child: TextButton.icon(
                   onPressed: _addFoodImageField,
-                  icon: const Icon(Icons.add_a_photo, color: Colors.purple),
+                  icon: const Icon(
+                    Icons.add_a_photo,
+                    color: Color.fromARGB(255, 244, 168, 196),
+                  ),
                   label: Text(
                     'أضف صورة أخرى',
-                    style: GoogleFonts.cairo(color: Colors.purple),
+                    style: GoogleFonts.cairo(
+                      color: const Color.fromARGB(255, 244, 168, 196),
+                    ),
                   ),
                 ),
               ),
@@ -303,7 +308,7 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
+                    backgroundColor: const Color.fromARGB(255, 244, 168, 196),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 40,
                       vertical: 15,
@@ -337,7 +342,9 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
-          labelStyle: GoogleFonts.cairo(color: Colors.purple),
+          labelStyle: GoogleFonts.cairo(
+            color: const Color.fromARGB(255, 244, 168, 196),
+          ),
           hintStyle: GoogleFonts.cairo(color: Colors.grey[500]),
           filled: true,
           fillColor: Colors.white,
@@ -347,7 +354,10 @@ class _ManageRestaurantScreenState extends State<ManageRestaurantScreen> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.purple, width: 2),
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 244, 168, 196),
+              width: 2,
+            ),
           ),
         ),
         style: GoogleFonts.cairo(fontSize: 16, color: Colors.black87),

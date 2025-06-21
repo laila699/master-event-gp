@@ -114,7 +114,7 @@ class _RestaurantListScreenState extends State<RestaurantListScreen> {
                 style: GoogleFonts.cairo(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Colors.purple,
+                  color: const Color.fromARGB( 255, 244, 168, 196),
                 ),
               ),
             ),

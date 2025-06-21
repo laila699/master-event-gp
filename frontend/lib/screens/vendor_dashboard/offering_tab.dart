@@ -73,7 +73,12 @@ class OfferingTab extends ConsumerWidget {
                 floatingActionButton:
                     canEdit
                         ? FloatingActionButton(
-                          backgroundColor: AppColors.gradientEnd,
+                          backgroundColor: const Color.fromARGB(
+                            255,
+                            244,
+                            168,
+                            196,
+                          ),
                           child: Icon(Icons.add, color: AppColors.textOnNeon),
                           onPressed:
                               () => _showCreateOfferingDialog(
@@ -97,7 +102,7 @@ class OfferingTab extends ConsumerWidget {
     Offering off,
     bool canEdit,
   ) {
-    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
     return Card(
       color: AppColors.glass,
@@ -136,7 +141,7 @@ class OfferingTab extends ConsumerWidget {
         subtitle: Text(
           '${off.price.toStringAsFixed(2)} ش.إ',
           style: GoogleFonts.orbitron(
-            color: AppColors.gradientEnd,
+            color: const Color.fromARGB(255, 244, 168, 196),
             fontWeight: FontWeight.w500,
           ),
         ),

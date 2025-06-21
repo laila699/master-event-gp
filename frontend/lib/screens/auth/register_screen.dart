@@ -82,7 +82,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ListTile(
                 leading: const Icon(
                   Icons.photo_library,
-                  color: AppColors.gradientEnd,
+                  color: Color.fromARGB( 255, 244, 168, 196),
                 ),
                 title: const Text('اختيار من المعرض'),
                 onTap: () {
@@ -93,7 +93,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ListTile(
                 leading: const Icon(
                   Icons.photo_camera,
-                  color: AppColors.gradientEnd,
+                  color: Color.fromARGB( 255, 244, 168, 196),
                 ),
                 title: const Text('التقاط صورة'),
                 onTap: () {
@@ -152,7 +152,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     });
 
     final accent1 = AppColors.gradientStart;
-    final accent2 = AppColors.gradientEnd;
+    final accent2 = const Color.fromARGB( 255, 244, 168, 196);
 
     return Scaffold(
       body: Stack(

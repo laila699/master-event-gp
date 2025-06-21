@@ -357,7 +357,7 @@ class _DesignScreenState extends State<DesignScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('اختر الديكور المناسب'),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
         foregroundColor: Colors.white,
         elevation: 2,
       ),
@@ -394,7 +394,7 @@ class _DesignScreenState extends State<DesignScreen> {
                 focusedBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8.0),
                   borderSide: BorderSide(
-                    color: Colors.purple.shade200,
+                    color: const Color.fromARGB(255, 244, 168, 196),
                     width: 1.5,
                   ),
                 ),
@@ -423,7 +423,10 @@ class _DesignScreenState extends State<DesignScreen> {
                 child: DropdownButton<String>(
                   value: selectedFilter,
                   isExpanded: true,
-                  icon: const Icon(Icons.filter_list, color: Colors.purple),
+                  icon: const Icon(
+                    Icons.filter_list,
+                    color: Color.fromARGB(255, 244, 168, 196),
+                  ),
                   onChanged: (String? newValue) {
                     if (newValue != null) {
                       setState(() {
@@ -738,7 +741,12 @@ class _DesignScreenState extends State<DesignScreen> {
                                           ), // Use shared handler
                                       label: const Text('تواصل'),
                                       style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.purple,
+                                        backgroundColor: const Color.fromARGB(
+                                          255,
+                                          244,
+                                          168,
+                                          196,
+                                        ),
                                         foregroundColor: Colors.white,
                                         minimumSize: const Size(
                                           double.infinity,

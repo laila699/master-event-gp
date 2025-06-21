@@ -18,7 +18,7 @@ class MenuTab extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final menuAsync = ref.watch(restaurantMenuProvider(vendorId));
-    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
 
     // Determine roles
@@ -83,7 +83,9 @@ class MenuTab extends ConsumerWidget {
                           ),
                           subtitle: Text(
                             '${dish.price} ش.إ',
-                            style: TextStyle(color: Colors.purple.shade600),
+                            style: TextStyle(
+                              color: const Color.fromARGB(255, 244, 168, 196),
+                            ),
                           ),
                           trailing:
                               canEdit
@@ -93,7 +95,12 @@ class MenuTab extends ConsumerWidget {
                                       IconButton(
                                         icon: const Icon(
                                           Icons.edit,
-                                          color: Colors.purple,
+                                          color: Color.fromARGB(
+                                            255,
+                                            244,
+                                            168,
+                                            196,
+                                          ),
                                         ),
                                         onPressed: () {
                                           _showEditDishDialog(
@@ -144,7 +151,12 @@ class MenuTab extends ConsumerWidget {
                             icon: const Icon(Icons.add),
                             label: const Text('إضافة وجبة جديدة'),
                             style: TextButton.styleFrom(
-                              foregroundColor: Colors.purple,
+                              foregroundColor: const Color.fromARGB(
+                                255,
+                                244,
+                                168,
+                                196,
+                              ),
                               textStyle: const TextStyle(fontSize: 16),
                             ),
                             onPressed: () {
@@ -171,7 +183,7 @@ class MenuTab extends ConsumerWidget {
                 bottom: 16,
                 right: 16,
                 child: FloatingActionButton(
-                  backgroundColor: Colors.purple,
+                  backgroundColor: const Color.fromARGB(255, 244, 168, 196),
                   child: const Icon(Icons.add_business),
                   onPressed: () {
                     _showAddSectionDialog(context, ref, vendorId);
@@ -310,7 +322,12 @@ class MenuTab extends ConsumerWidget {
                       icon: const Icon(Icons.photo_library),
                       label: const Text('اختيار / التقاط صورة'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple.shade200,
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          244,
+                          168,
+                          196,
+                        ),
                         foregroundColor: Colors.white,
                       ),
                       onPressed: () async {
@@ -431,7 +448,7 @@ class MenuTab extends ConsumerWidget {
     await showDialog(
       context: context,
       builder: (ctx) {
-        final host = kIsWeb ? 'localhost' : '192.168.1.122';
+        final host = kIsWeb ? 'localhost' : '192.168.1.107';
         final base = 'http://$host:5000/api';
         return StatefulBuilder(
           builder: (ctx, setState) {
@@ -480,7 +497,12 @@ class MenuTab extends ConsumerWidget {
                       icon: const Icon(Icons.photo_library),
                       label: const Text('استبدال الصورة'),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.purple.shade200,
+                        backgroundColor: const Color.fromARGB(
+                          255,
+                          244,
+                          168,
+                          196,
+                        ),
                         foregroundColor: Colors.white,
                       ),
                       onPressed: () async {

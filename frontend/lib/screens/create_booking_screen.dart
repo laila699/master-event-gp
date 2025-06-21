@@ -111,7 +111,7 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
   Widget build(BuildContext context) {
     final eventsAsync = ref.watch(eventListProvider);
     final accent1 = AppColors.gradientStart;
-    final accent2 = AppColors.gradientEnd;
+    final accent2 = const Color.fromARGB(255, 244, 168, 196);
 
     return Scaffold(
       body: Stack(

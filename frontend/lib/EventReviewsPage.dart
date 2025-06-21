@@ -140,7 +140,7 @@ class _EventReviewsPageState extends State<EventReviewsPage> {
           style: const TextStyle(color: Colors.white),
           cursorColor: Colors.white,
         ),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
         actions: [
           IconButton(
             icon: const Icon(Icons.clear, color: Colors.white),
@@ -155,7 +155,7 @@ class _EventReviewsPageState extends State<EventReviewsPage> {
     } else {
       return AppBar(
         title: const Text('المراجعات والتقييمات'),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
         foregroundColor: Colors.white,
         actions: [
           IconButton(
@@ -188,7 +188,7 @@ class _EventReviewsPageState extends State<EventReviewsPage> {
             child: DropdownButton<String>(
               value: _selectedProvider,
               icon: const Icon(Icons.filter_alt, color: Colors.white), //
-              dropdownColor: Colors.purple[700],
+              dropdownColor: const Color.fromARGB(255, 244, 168, 196),
               style: const TextStyle(color: Colors.white), //
               onChanged: (String? newValue) {
                 setState(() {
@@ -302,7 +302,7 @@ class _EventReviewsPageState extends State<EventReviewsPage> {
         floatingActionButton: FloatingActionButton.extended(
           icon: const Icon(Icons.add_comment_outlined),
           label: const Text('إضافة مراجعة'),
-          backgroundColor: Colors.purple,
+          backgroundColor: const Color.fromARGB(255, 244, 168, 196),
           foregroundColor: Colors.white,
           onPressed: () {
             if (_isSearching) {
@@ -402,7 +402,10 @@ class _EventReviewsPageState extends State<EventReviewsPage> {
                     padding: const EdgeInsets.all(4.0),
                     child: Icon(
                       isHelpful ? Icons.thumb_up : Icons.thumb_up_alt_outlined,
-                      color: isHelpful ? Colors.purple : Colors.grey.shade600,
+                      color:
+                          isHelpful
+                              ? const Color.fromARGB(255, 244, 168, 196)
+                              : Colors.grey.shade600,
                       size: 20,
                     ),
                   ),
@@ -438,7 +441,7 @@ class _EventReviewsPageState extends State<EventReviewsPage> {
                               leading: Icon(
                                 Icons.storefront,
                                 size: 18,
-                                color: Colors.purple.shade300,
+                                color: const Color.fromARGB(255, 244, 168, 196),
                               ),
                               title: Text(
                                 comment["commenter"] ?? "مقدم الخدمة",
@@ -469,10 +472,22 @@ class _EventReviewsPageState extends State<EventReviewsPage> {
     bool hasHalfStar = (rating - fullStars) >= 0.5;
 
     for (int i = 0; i < fullStars; i++) {
-      stars.add(const Icon(Icons.star, color: Colors.purple, size: 18));
+      stars.add(
+        const Icon(
+          Icons.star,
+          color: Color.fromARGB(255, 244, 168, 196),
+          size: 18,
+        ),
+      );
     }
     if (hasHalfStar) {
-      stars.add(const Icon(Icons.star_half, color: Colors.purple, size: 18));
+      stars.add(
+        const Icon(
+          Icons.star_half,
+          color: Color.fromARGB(255, 244, 168, 196),
+          size: 18,
+        ),
+      );
     }
     int emptyStars = 5 - stars.length;
     for (int i = 0; i < emptyStars; i++) {
@@ -490,7 +505,7 @@ class AddReviewPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("إضافة مراجعة"),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
         foregroundColor: Colors.white,
       ),
       body: const Center(

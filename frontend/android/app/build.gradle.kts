@@ -45,7 +45,8 @@ android {
 
     defaultConfig {
         applicationId = "com.example.masterevent" // تأكد من أن هذا هو applicationId الصحيح
-        minSdk = flutterMinSdkVersion          // Use the value read from properties or the default
+//   minSdk = flutterMinSdkVersion          // Use the value read from properties or the default
+ minSdk = 23;
         targetSdk = flutterTargetSdkVersion    // Use the value read from properties or the default
         versionCode = flutterVersionCode       // Use the value read from properties or the default
         versionName = flutterVersionName       // Use the value read from properties or the default

@@ -84,7 +84,7 @@ class _PhotographerProviderDashboardScreenState
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
         centerTitle: true,
       ),
       backgroundColor: const Color(0xFFF7F7F7),
@@ -168,7 +168,7 @@ class _PhotographerProviderDashboardScreenState
                                     style: GoogleFonts.cairo(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.purple,
+                                      color: const Color.fromARGB( 255, 244, 168, 196),
                                     ),
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
@@ -266,7 +266,7 @@ class _PhotographerProviderDashboardScreenState
           // بعد العودة من صفحة الإضافة، نقوم بتحديث القائمة
           _refreshPhotographers();
         },
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
         child: const Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );

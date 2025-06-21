@@ -335,7 +335,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
   }
 
   Widget _themeTile(InvitationTheme t, Color accent1, Color accent2) {
-    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
     return ListTile(
       leading: Container(

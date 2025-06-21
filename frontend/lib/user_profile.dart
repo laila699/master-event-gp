@@ -71,7 +71,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ListTile(
                   leading: const Icon(
                     Icons.photo_library,
-                    color: AppColors.gradientEnd,
+                    color: Color.fromARGB(255, 244, 168, 196),
                   ),
                   title: const Text('اختيار من المعرض'),
                   onTap: () {
@@ -82,7 +82,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ListTile(
                   leading: const Icon(
                     Icons.photo_camera,
-                    color: AppColors.gradientEnd,
+                    color: Color.fromARGB(255, 244, 168, 196),
                   ),
                   title: const Text('التقاط صورة'),
                   onTap: () {
@@ -127,7 +127,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Widget build(BuildContext context) {
     final authState = ref.watch(authNotifierProvider);
     final user = authState.user;
-    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
     ref.listen<AuthState>(authNotifierProvider, (prev, next) {
       if (prev?.status != AuthStatus.unauthenticated &&
@@ -231,7 +231,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                 right: 0,
                                 bottom: 0,
                                 child: Material(
-                                  color: AppColors.gradientEnd,
+                                  color: const Color.fromARGB(
+                                    255,
+                                    244,
+                                    168,
+                                    196,
+                                  ),
                                   shape: const CircleBorder(),
                                   elevation: 2,
                                   child: InkWell(

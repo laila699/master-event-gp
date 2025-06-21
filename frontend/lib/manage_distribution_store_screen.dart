@@ -275,7 +275,7 @@ class _ManageDistributionStoreScreenState
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
         centerTitle: true,
         actions: [
           if (isEditing)
@@ -383,7 +383,7 @@ class _ManageDistributionStoreScreenState
                         _deliveryAvailable = newValue!;
                       });
                     },
-                    activeColor: Colors.purple,
+                    activeColor: const Color.fromARGB(255, 244, 168, 196),
                   ),
                 ],
               ),
@@ -440,7 +440,7 @@ class _ManageDistributionStoreScreenState
                 style: GoogleFonts.cairo(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.purple,
+                  color: const Color.fromARGB(255, 244, 168, 196),
                 ),
               ),
               const SizedBox(height: 15),
@@ -605,7 +605,12 @@ class _ManageDistributionStoreScreenState
                                     distController.isCustomizable = newValue!;
                                   });
                                 },
-                                activeColor: Colors.purple,
+                                activeColor: const Color.fromARGB(
+                                  255,
+                                  244,
+                                  168,
+                                  196,
+                                ),
                               ),
                             ],
                           ),
@@ -618,11 +623,14 @@ class _ManageDistributionStoreScreenState
               Center(
                 child: TextButton.icon(
                   onPressed: _addSpecificDistribution,
-                  icon: const Icon(Icons.add_box, color: Colors.purple),
+                  icon: const Icon(
+                    Icons.add_box,
+                    color: Color.fromARGB(255, 244, 168, 196),
+                  ),
                   label: Text(
                     'أضف توزيعة جديدة',
                     style: GoogleFonts.cairo(
-                      color: Colors.purple,
+                      color: const Color.fromARGB(255, 244, 168, 196),
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
@@ -643,7 +651,7 @@ class _ManageDistributionStoreScreenState
                     ),
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.purple,
+                    backgroundColor: const Color.fromARGB(255, 244, 168, 196),
                     padding: const EdgeInsets.symmetric(
                       horizontal: 40,
                       vertical: 15,
@@ -680,7 +688,9 @@ class _ManageDistributionStoreScreenState
         decoration: InputDecoration(
           labelText: label,
           hintText: hint,
-          labelStyle: GoogleFonts.cairo(color: Colors.purple),
+          labelStyle: GoogleFonts.cairo(
+            color: const Color.fromARGB(255, 244, 168, 196),
+          ),
           hintStyle: GoogleFonts.cairo(color: Colors.grey[500]),
           filled: true,
           fillColor: Colors.white,
@@ -690,7 +700,10 @@ class _ManageDistributionStoreScreenState
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),
-            borderSide: const BorderSide(color: Colors.purple, width: 2),
+            borderSide: const BorderSide(
+              color: Color.fromARGB(255, 244, 168, 196),
+              width: 2,
+            ),
           ),
         ),
         style: GoogleFonts.cairo(fontSize: 16, color: Colors.black87),
@@ -714,7 +727,7 @@ class _ManageDistributionStoreScreenState
           style: GoogleFonts.cairo(
             fontSize: 18,
             fontWeight: FontWeight.bold,
-            color: Colors.purple,
+            color: const Color.fromARGB(255, 244, 168, 196),
           ),
         ),
         const SizedBox(height: 10),
@@ -748,10 +761,15 @@ class _ManageDistributionStoreScreenState
           alignment: Alignment.centerRight,
           child: TextButton.icon(
             onPressed: onAdd,
-            icon: const Icon(Icons.add, color: Colors.purple),
+            icon: const Icon(
+              Icons.add,
+              color: Color.fromARGB(255, 244, 168, 196),
+            ),
             label: Text(
               'أضف ${label.replaceAll(':', '')} أخرى',
-              style: GoogleFonts.cairo(color: Colors.purple),
+              style: GoogleFonts.cairo(
+                color: const Color.fromARGB(255, 244, 168, 196),
+              ),
             ),
           ),
         ),

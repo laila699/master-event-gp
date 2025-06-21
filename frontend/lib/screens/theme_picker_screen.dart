@@ -47,7 +47,7 @@ class _ThemeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
     return InkWell(
       onTap:

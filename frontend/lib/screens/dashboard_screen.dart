@@ -55,7 +55,7 @@ class _GenericHomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('مرحبًا، ${user.name}'),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
       ),
       body: Center(
         child: Text(

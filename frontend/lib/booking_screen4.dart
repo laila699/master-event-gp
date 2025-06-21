@@ -47,13 +47,13 @@ class _BookingScreenState extends State<BookingScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Colors.purple,
+              primary: Color.fromARGB(255, 244, 168, 196),
               onPrimary: Colors.white,
               onSurface: Colors.black87,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: Colors.purple,
+                foregroundColor: const Color.fromARGB(255, 244, 168, 196),
                 textStyle: GoogleFonts.cairo(),
               ),
             ),
@@ -78,13 +78,13 @@ class _BookingScreenState extends State<BookingScreen> {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: const ColorScheme.light(
-              primary: Colors.purple,
+              primary: Color.fromARGB(255, 244, 168, 196),
               onPrimary: Colors.white,
               onSurface: Colors.black87,
             ),
             textButtonTheme: TextButtonThemeData(
               style: TextButton.styleFrom(
-                foregroundColor: Colors.purple,
+                foregroundColor: const Color.fromARGB(255, 244, 168, 196),
                 textStyle: GoogleFonts.cairo(),
               ),
             ),
@@ -222,7 +222,9 @@ class _BookingScreenState extends State<BookingScreen> {
               },
               child: Text(
                 'حسناً',
-                style: GoogleFonts.cairo(color: Colors.purple),
+                style: GoogleFonts.cairo(
+                  color: const Color.fromARGB(255, 244, 168, 196),
+                ),
               ),
             ),
           ],
@@ -249,7 +251,7 @@ class _BookingScreenState extends State<BookingScreen> {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
       ),
       backgroundColor: const Color(0xFFF7F7F7),
       body: SingleChildScrollView(
@@ -262,7 +264,7 @@ class _BookingScreenState extends State<BookingScreen> {
               style: GoogleFonts.cairo(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.purple,
+                color: const Color.fromARGB(255, 244, 168, 196),
               ),
             ),
             const SizedBox(height: 20),
@@ -304,7 +306,10 @@ class _BookingScreenState extends State<BookingScreen> {
                                 : Colors.black87,
                       ),
                     ),
-                    const Icon(Icons.calendar_today, color: Colors.purple),
+                    const Icon(
+                      Icons.calendar_today,
+                      color: Color.fromARGB(255, 244, 168, 196),
+                    ),
                   ],
                 ),
               ),
@@ -350,7 +355,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     ),
                     const Icon(
                       Icons.access_time_outlined,
-                      color: Colors.purple,
+                      color: Color.fromARGB(255, 244, 168, 196),
                     ),
                   ],
                 ),
@@ -381,7 +386,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 ),
                 prefixIcon: const Icon(
                   Icons.location_on_outlined,
-                  color: Colors.purple,
+                  color: Color.fromARGB(255, 244, 168, 196),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 15,
@@ -465,7 +470,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 ),
                 prefixIcon: const Icon(
                   Icons.group_outlined,
-                  color: Colors.purple,
+                  color: Color.fromARGB(255, 244, 168, 196),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   vertical: 15,
@@ -488,7 +493,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 children: [
                   const Icon(
                     Icons.info_outline,
-                    color: Colors.purple,
+                    color: Color.fromARGB(255, 244, 168, 196),
                     size: 24,
                   ),
                   const SizedBox(width: 10),
@@ -497,7 +502,7 @@ class _BookingScreenState extends State<BookingScreen> {
                       '🌟 يُنصح بالحجز قبل أسبوعين على الأقل لضمان توفر الفرقة/العرض في الموعد المطلوب.',
                       style: GoogleFonts.cairo(
                         fontSize: 14,
-                        color: Colors.purple.shade800,
+                        color: const Color.fromARGB(255, 244, 168, 196),
                       ),
                     ),
                   ),
@@ -510,7 +515,7 @@ class _BookingScreenState extends State<BookingScreen> {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
+                  backgroundColor: const Color.fromARGB(255, 244, 168, 196),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 60,
                     vertical: 18,

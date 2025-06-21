@@ -4,8 +4,7 @@
     "build": "tsc",
     "seeder": "ts-node-dev --respawn --transpile-only src/scripts/createAdmin.ts",
     "start": "node dist/app.js",
-    "seed:vendors": "ts-node --project tsconfig.json scripts/seedVendorAttributes.ts",
-    "seeder": "ts-node-dev --respawn --transpile-only src/scripts/createAdmin.ts"
+    "seed:vendors": "ts-node --project tsconfig.json scripts/seedVendorAttributes.ts"
   },
   "dependencies": {
     "@sendgrid/mail": "^8.1.5",

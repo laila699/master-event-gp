@@ -55,7 +55,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     final authState = ref.watch(authNotifierProvider);
     final accent1 = const Color(0xFFD81B60); // magenta-pink
-    final accent2 = const Color(0xFF8E24AA); // deep purple
+    final accent2 = const Color.fromARGB(255, 244, 168, 196); // deep purple
 
     return Scaffold(
       body: Stack(

@@ -65,7 +65,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
           (ctx, child) => Theme(
             data: Theme.of(ctx).copyWith(
               colorScheme: ColorScheme.dark(
-                primary: AppColors.gradientStart,
+                primary: const Color.fromARGB(255, 244, 168, 196),
                 onPrimary: AppColors.textOnNeon,
                 surface: AppColors.glass,
                 onSurface: AppColors.textOnNeon,
@@ -115,7 +115,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
   @override
   Widget build(BuildContext context) {
     final primary = Theme.of(context).colorScheme.primary;
-    final accent1 = AppColors.gradientStart;
+    final accent1 = const Color.fromARGB(255, 244, 168, 196);
 
     return Scaffold(
       // Background + blur

@@ -31,7 +31,7 @@ class EventSettingsPage extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('إدارة الفعالية'),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
         foregroundColor: Colors.white,
       ),
       backgroundColor: const Color(0xFFF7F7F7),

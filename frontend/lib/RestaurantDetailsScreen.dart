@@ -142,7 +142,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                     style: GoogleFonts.cairo(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.purple,
+                      color: const Color.fromARGB(255, 244, 168, 196),
                     ),
                   ),
                   SizedBox(height: 10),
@@ -192,7 +192,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
                     style: GoogleFonts.cairo(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.purple,
+                      color: const Color.fromARGB(255, 244, 168, 196),
                     ),
                   ),
                   SizedBox(height: 10),
@@ -254,7 +254,7 @@ class RestaurantDetailsScreen extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
+                  backgroundColor: const Color.fromARGB(255, 244, 168, 196),
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   textStyle: TextStyle(fontSize: 16),
                   shape: RoundedRectangleBorder(

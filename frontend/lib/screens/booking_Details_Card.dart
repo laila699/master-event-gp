@@ -120,7 +120,7 @@ class _BookingDetailCardState extends ConsumerState<BookingDetailCard> {
   Widget build(BuildContext context) {
     final dfDate = DateFormat('yyyy-MM-dd');
     final dfDateTm = DateFormat('yyyy-MM-dd HH:mm');
-    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
 
     final b = widget.booking;

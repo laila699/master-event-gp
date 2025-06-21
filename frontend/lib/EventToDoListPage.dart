@@ -69,7 +69,7 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: AppColors.gradientEnd, width: 2),
+          borderSide: BorderSide(color: const Color.fromARGB( 255, 244, 168, 196), width: 2),
         ),
       ),
     );
@@ -146,7 +146,7 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
                                           colorScheme: ColorScheme.dark(
                                             primary: AppColors.gradientStart,
                                             onPrimary: Colors.black,
-                                            surface: AppColors.gradientEnd,
+                                            surface: const Color.fromARGB( 255, 244, 168, 196),
                                             onSurface: AppColors.textOnNeon,
                                           ),
                                         ),
@@ -158,7 +158,7 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
                               child: Text(
                                 'اختر تاريخ',
                                 style: GoogleFonts.orbitron(
-                                  color: AppColors.gradientEnd,
+                                  color: const Color.fromARGB( 255, 244, 168, 196),
                                 ),
                               ),
                             ),
@@ -180,7 +180,7 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: AppColors.gradientEnd,
+                                color: const Color.fromARGB( 255, 244, 168, 196),
                                 width: 2,
                               ),
                             ),
@@ -211,13 +211,13 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
                             gradient: const LinearGradient(
                               colors: [
                                 AppColors.gradientStart,
-                                AppColors.gradientEnd,
+                                Color.fromARGB( 255, 244, 168, 196),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: AppColors.gradientEnd.withOpacity(0.6),
+                                color: const Color.fromARGB( 255, 244, 168, 196).withOpacity(0.6),
                                 blurRadius: 12,
                                 offset: const Offset(0, 6),
                               ),
@@ -304,7 +304,7 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
               gradient: RadialGradient(
                 center: const Alignment(-0.8, -0.8),
                 radius: 1.5,
-                colors: [AppColors.gradientStart, AppColors.gradientEnd],
+                colors: [AppColors.gradientStart, const Color.fromARGB( 255, 244, 168, 196)],
               ),
             ),
           ),
@@ -366,7 +366,7 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
                     actions: [
                       IconButton(
                         icon: const Icon(Icons.save),
-                        color: AppColors.gradientEnd,
+                        color: const Color.fromARGB( 255, 244, 168, 196),
                         onPressed: _saveSettings,
                       ),
                     ],
@@ -389,7 +389,7 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
                                   ),
                                 ),
                                 selected: _filterCategory == null,
-                                selectedColor: AppColors.gradientEnd,
+                                selectedColor: const Color.fromARGB( 255, 244, 168, 196),
                                 onSelected:
                                     (_) =>
                                         setState(() => _filterCategory = null),

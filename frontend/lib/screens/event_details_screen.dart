@@ -156,7 +156,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
             tabBarTheme: TabBarThemeData(
               indicator: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.gradientStart, AppColors.gradientEnd],
+                  colors: [AppColors.gradientStart, const Color.fromARGB( 255, 244, 168, 196)],
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -357,7 +357,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
           label: const Text('حفظ التعديلات'),
           onPressed: _saveChanges,
           style: ElevatedButton.styleFrom(
-            backgroundColor: AppColors.gradientEnd,
+            backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
             padding: const EdgeInsets.symmetric(vertical: 14),
           ),
         ),

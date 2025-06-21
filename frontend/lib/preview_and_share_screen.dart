@@ -62,7 +62,7 @@ class PreviewAndShareScreen extends StatelessWidget {
                     icon: const Icon(Icons.share),
                     label: const Text('مشاركة الدعوة'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.gradientEnd,
+                      backgroundColor: const Color.fromARGB(255, 244, 168, 196),
                       minimumSize: const Size(double.infinity, 48),
                     ),
                     onPressed: () => Share.share(txt),
@@ -132,7 +132,7 @@ class PreviewAndShareScreen extends StatelessWidget {
     padding: const EdgeInsets.symmetric(vertical: 2),
     child: Row(
       children: [
-        Icon(ic, size: 18, color: AppColors.gradientEnd),
+        Icon(ic, size: 18, color: const Color.fromARGB(255, 244, 168, 196)),
         const SizedBox(width: 6),
         Expanded(child: Text(txt, softWrap: true)),
       ],

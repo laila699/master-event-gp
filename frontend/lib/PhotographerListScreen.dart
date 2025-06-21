@@ -121,7 +121,7 @@ class _PhotographerListScreenState extends State<PhotographerListScreen> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
       ),
       backgroundColor: Color(0xFFF7F7F7), // لون الخلفية من فرونت المطاعم
       body: SingleChildScrollView(

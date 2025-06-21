@@ -182,7 +182,7 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
                       children: [
                         Icon(
                           Icons.star,
-                          color: AppColors.gradientEnd,
+                          color: const Color.fromARGB(255, 244, 168, 196),
                           size: 24,
                         ),
                         const SizedBox(width: 4),
@@ -223,7 +223,7 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
                         child: Icon(
                           Icons.location_on,
                           size: 32,
-                          color: AppColors.gradientEnd,
+                          color: const Color.fromARGB(255, 244, 168, 196),
                         ),
                       ),
                     ],
@@ -259,7 +259,7 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
     }
 
     final images = _extractImagePaths(value);
-    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
     return Card(
       color: AppColors.glass,

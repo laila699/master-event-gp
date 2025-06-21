@@ -24,7 +24,7 @@ class _EventBudgetPageState extends ConsumerState<EventBudgetPage> {
   final _catAmountCtl = TextEditingController();
 
   final accent1 = AppColors.gradientStart;
-  final accent2 = AppColors.gradientEnd;
+  final accent2 = const Color.fromARGB(255, 244, 168, 196);
 
   List<Map<String, dynamic>> _categories = [];
   bool _initDone = false;

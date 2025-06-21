@@ -24,8 +24,8 @@ class _AllOffersScreenState extends ConsumerState<AllOffersScreen> {
   @override
   Widget build(BuildContext context) {
     final accent1 = AppColors.gradientStart;
-    final accent2 = AppColors.gradientEnd;
-    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final accent2 = const Color.fromARGB(255, 244, 168, 196);
+    final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
     // watch all offerings, optionally filtered by service type
     final offersAsync = ref.watch(allOfferingsProvider(_selectedType));
@@ -195,7 +195,7 @@ class _AllOffersScreenState extends ConsumerState<AllOffersScreen> {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.purple.withOpacity(0.3),
+            color: const Color.fromARGB(255, 244, 168, 196).withOpacity(0.3),
             blurRadius: 12,
             offset: Offset(0, 6),
           ),
@@ -257,7 +257,12 @@ class _AllOffersScreenState extends ConsumerState<AllOffersScreen> {
                     child: ElevatedButton.icon(
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,
-                        foregroundColor: Colors.deepPurple,
+                        foregroundColor: const Color.fromARGB(
+                          255,
+                          244,
+                          168,
+                          196,
+                        ),
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

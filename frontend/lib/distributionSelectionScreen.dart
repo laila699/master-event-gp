@@ -272,7 +272,7 @@ class _DistributionSelectionScreenState
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
         actions: [
           IconButton(
             icon: const Icon(Icons.person, color: Colors.white),
@@ -492,7 +492,7 @@ class _DistributionSelectionScreenState
                             ),
                             trailing: const Icon(
                               Icons.arrow_forward_ios,
-                              color: Colors.purple,
+                              color: Color.fromARGB(255, 244, 168, 196),
                             ),
                             onTap: () {
                               // هذا هو الجزء الذي تم تعديله ليعمل الانتقال للصفحة

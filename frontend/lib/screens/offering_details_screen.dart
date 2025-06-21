@@ -25,7 +25,10 @@ class OfferingDetailsScreen extends ConsumerWidget {
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.gradientStart, AppColors.gradientEnd],
+              colors: [
+                AppColors.gradientStart,
+                const Color.fromARGB(255, 244, 168, 196),
+              ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -54,7 +57,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
     final vendorId = user.id;
     final isOwner = user.role == 'vendor' && vendorId == offering.vendorId;
     final isAdmin = user.role == 'admin';
-    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
 
     return Scaffold(
@@ -94,7 +97,9 @@ class OfferingDetailsScreen extends ConsumerWidget {
                             onPressed: () => Navigator.of(ctx).pop(false),
                             child: Text(
                               'إلغاء',
-                              style: TextStyle(color: AppColors.gradientEnd),
+                              style: TextStyle(
+                                color: const Color.fromARGB(255, 244, 168, 196),
+                              ),
                             ),
                           ),
                           ElevatedButton(
@@ -189,7 +194,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
                   style: GoogleFonts.orbitron(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.gradientEnd,
+                    color: const Color.fromARGB(255, 244, 168, 196),
                   ),
                 ),
               ),
@@ -244,7 +249,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
                 ListTile(
                   leading: Icon(
                     Icons.photo_library,
-                    color: AppColors.gradientEnd,
+                    color: const Color.fromARGB(255, 244, 168, 196),
                   ),
                   title: Text(
                     'اختيار من المعرض',
@@ -260,7 +265,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
                 ListTile(
                   leading: Icon(
                     Icons.photo_camera,
-                    color: AppColors.gradientEnd,
+                    color: const Color.fromARGB(255, 244, 168, 196),
                   ),
                   title: Text(
                     'التقاط صورة جديدة',
@@ -318,7 +323,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
                 const SizedBox(height: 8),
                 ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.gradientEnd,
+                    backgroundColor: const Color.fromARGB(255, 244, 168, 196),
                   ),
                   icon: Icon(Icons.photo_library, color: Colors.white),
                   label: Text(
@@ -351,7 +356,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.gradientEnd,
+                backgroundColor: const Color.fromARGB(255, 244, 168, 196),
               ),
               onPressed: () {
                 final t = titleCtl.text.trim();

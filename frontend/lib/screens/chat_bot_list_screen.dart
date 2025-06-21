@@ -60,7 +60,7 @@ class ChatBotListScreen extends ConsumerWidget {
                           child: ListTile(
                             leading: Icon(
                               Icons.chat,
-                              color: AppColors.gradientEnd,
+                              color: const Color.fromARGB(255, 244, 168, 196),
                             ),
                             title: Text(
                               'EventBot',

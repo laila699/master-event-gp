@@ -54,7 +54,7 @@ class _InvitationCustomizationScreenState
       textDirection: TextDirection.rtl,
       child: Scaffold(
         floatingActionButton: FloatingActionButton.extended(
-          backgroundColor: AppColors.gradientEnd,
+          backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
           icon: const Icon(Icons.visibility),
           label: const Text('معاينة & مشاركة'),
           onPressed: () {
@@ -151,7 +151,7 @@ class _LivePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
     final d = dataGetter();
     return ClipRRect(

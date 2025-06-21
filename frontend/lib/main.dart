@@ -64,12 +64,12 @@ class MyApp extends ConsumerWidget {
 ThemeData _buildFutureTheme() {
   // 1) Deep purple background  neon-green accents
   final base = ColorScheme.dark(
-    primary: AppColors.gradientStart, // neon magenta
+    primary: const Color.fromARGB(255, 171, 160, 164), // neon magenta
     onPrimary: AppColors.textOnNeon, // white
-    secondary: AppColors.gradientEnd, // deep purple
+    secondary: const Color.fromARGB(255, 244, 168, 196), // deep purple
     onSecondary: AppColors.textOnNeon,
-    surface: AppColors.glass, // light glass effect
-    background: AppColors.background, // pure black canvas
+    surface: const Color.fromARGB(13, 231, 231, 231), // light glass effect
+    background: const Color.fromARGB(255, 255, 255, 255), // pure black canvas
     onBackground: AppColors.textSecondary, // soft white
   );
 

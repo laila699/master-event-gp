@@ -106,7 +106,7 @@ class _ManageProviderScreenState extends ConsumerState<ManageProviderScreen> {
 
   Widget _buildField(ProviderAttribute attr) {
     final theme = Theme.of(context);
-    final host = '192.168.1.122';
+    final host = '192.168.1.107';
     final base = 'http://$host:5000';
     // STRING & NUMBER
     if (attr.type == AttrType.string || attr.type == AttrType.number) {

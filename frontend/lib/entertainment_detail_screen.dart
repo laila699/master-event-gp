@@ -30,7 +30,7 @@ class EntertainmentDetailScreen extends StatelessWidget {
             color: Colors.white,
           ),
         ),
-        backgroundColor: Colors.purple,
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
       ),
       backgroundColor: const Color(0xFFF7F7F7),
       body: SingleChildScrollView(
@@ -106,7 +106,7 @@ class EntertainmentDetailScreen extends StatelessWidget {
               style: GoogleFonts.cairo(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
-                color: Colors.purple,
+                color: const Color.fromARGB(255, 244, 168, 196),
               ),
             ),
             const SizedBox(height: 8),
@@ -265,7 +265,7 @@ class EntertainmentDetailScreen extends StatelessWidget {
                           ),
                           backgroundColor: Colors.purple.shade100,
                           labelStyle: GoogleFonts.cairo(
-                            color: Colors.purple.shade800,
+                            color: const Color.fromARGB(255, 244, 168, 196),
                           ),
                         ),
                       )
@@ -276,7 +276,7 @@ class EntertainmentDetailScreen extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.purple,
+                  backgroundColor: const Color.fromARGB(255, 244, 168, 196),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 50,
                     vertical: 16,

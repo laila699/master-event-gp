@@ -84,7 +84,7 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
   @override
   Widget build(BuildContext context) {
     final accent1 = AppColors.gradientStart;
-    final accent2 = AppColors.gradientEnd;
+    final accent2 = const Color.fromARGB(255, 244, 168, 196);
     final filter = VendorFilter(
       type: _selectedType,
       attrs: Map.from(_selectedFilters),
@@ -321,7 +321,7 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
   ) {
     return TextField(
       decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: AppColors.gradientEnd),
+        prefixIcon: Icon(icon, color: const Color.fromARGB(255, 244, 168, 196)),
         labelText: label,
         labelStyle: TextStyle(color: AppColors.textSecondary),
         filled: true,
@@ -341,7 +341,7 @@ class _VendorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final attrs = vendor.vendorProfile?.attributes ?? <ProviderAttribute>[];
     String city = '—';
-    final host = kIsWeb ? 'localhost' : '192.168.1.122';
+    final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
     try {
       city = attrs.firstWhere((a) => a.key == 'city').value?.toString() ?? '—';
@@ -354,7 +354,7 @@ class _VendorCard extends StatelessWidget {
               : '-';
       final ratingCount = vendor.ratingsCount ?? 0;
     } catch (_) {}
-    final accent2 = AppColors.gradientEnd;
+    final accent2 = const Color.fromARGB(255, 244, 168, 196);
 
     return Card(
       color: AppColors.glass,

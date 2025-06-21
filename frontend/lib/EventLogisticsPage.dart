@@ -20,7 +20,7 @@ class _EventLogisticsPageState extends ConsumerState<EventLogisticsPage> {
   bool _inited = false;
 
   final accent1 = const Color(0xFFD81B60); // magenta-pink
-  final accent2 = const Color(0xFF8E24AA); // deep purple
+  final accent2 = const Color.fromARGB(255, 244, 168, 196); // deep purple
 
   @override
   void dispose() {
