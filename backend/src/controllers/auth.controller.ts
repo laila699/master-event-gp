@@ -98,7 +98,18 @@ export const register = [
     // Save user
     const user = new User(userFields);
     await user.save();
-
+    if (role === "vendor") {
+      const admins = await User.find({ role: "admin" }).select("_id name");
+      const payload = {
+        notification: {
+          title: "🧾 مقدم خدمة جديد",
+          body: `${name} قام بالتسجيل كمقدم خدمة جديد.`,
+        },
+      };
+      for (const admin of admins) {
+        await sendNotificationToUser(admin._id.toString(), payload);
+      }
+    }
     // Generate JWT
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
       expiresIn: JWT_EXPIRES_IN,

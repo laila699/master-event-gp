@@ -35,29 +35,6 @@ const defaultAttributes: Record<VendorServiceType, IVendorAttribute[]> = {
     { key: "city", label: "المدينة", type: "string" },
   ],
 
-  [VendorServiceType.InteriorDesigner]: [
-    { key: "name", label: "الاسم", type: "string", required: true },
-    { key: "bio", label: "نبذة عن الخدمة", type: "string" },
-    {
-      key: "specialties",
-      label: "مجالات التخصص",
-      type: "multiSelect",
-      options: ["صالون", "مطبخ", "حمام", "غرف نوم", "مكاتب"],
-      value: [],
-    },
-    {
-      key: "portfolioImages",
-      label: "معرض الصور",
-      type: "array",
-      itemType: "string",
-      value: [],
-    },
-    { key: "experienceYears", label: "سنوات الخبرة", type: "number", value: 0 },
-    { key: "priceRange", label: "نطاق السعر", type: "string" },
-    { key: "phone", label: "الهاتف", type: "string", required: true },
-    { key: "city", label: "المدينة", type: "string" },
-  ],
-
   [VendorServiceType.FurnitureStore]: [
     { key: "name", label: "اسم المتجر", type: "string", required: true },
     { key: "description", label: "الوصف", type: "string" },

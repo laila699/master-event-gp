@@ -20,7 +20,6 @@ import 'vendor_details_screen.dart';
 /// Which multiSelect keys can we filter by, for each service?
 const Map<VendorServiceType, List<String>> _filterKeys = {
   VendorServiceType.decorator: ['styles', 'eventTypes'],
-  VendorServiceType.interiorDesigner: ['specialties'],
   VendorServiceType.furnitureStore: ['productCategories'],
   VendorServiceType.photographer: ['photographyTypes', 'eventTypes'],
   VendorServiceType.restaurant: [],

@@ -62,52 +62,6 @@ export const defaultVendorAttributes: Record<
     },
   ],
 
-  [VendorServiceType.InteriorDesigner]: [
-    { key: "name", label: "الاسم", type: "string", required: true },
-    { key: "bio", label: "نبذة عن الخدمة", type: "string", value: "" },
-    {
-      key: "specialties",
-      label: "مجالات التخصص",
-      type: "multiSelect",
-      options: ["صالون", "مطبخ", "حمام", "غرف نوم", "مكاتب"],
-      value: [],
-    },
-    {
-      key: "portfolioImages",
-      label: "معرض الصور",
-      type: "array",
-      itemType: "string",
-      value: [],
-    },
-    { key: "experienceYears", label: "سنوات الخبرة", type: "number", value: 0 },
-    { key: "priceRange", label: "نطاق السعر", type: "string", value: "" },
-
-    { key: "city", label: "المدينة", type: "string", value: "" },
-    {
-      key: "location",
-      label: "الموقع",
-      type: "object",
-      value: {},
-      required: true,
-      fields: [
-        {
-          key: "lat",
-          label: "خط العرض",
-          type: "number",
-          value: 0,
-          required: true,
-        },
-        {
-          key: "lng",
-          label: "خط الطول",
-          type: "number",
-          value: 0,
-          required: true,
-        },
-      ],
-    },
-  ],
-
   [VendorServiceType.FurnitureStore]: [
     { key: "name", label: "اسم المتجر", type: "string", required: true },
     { key: "description", label: "الوصف", type: "string", value: "" },

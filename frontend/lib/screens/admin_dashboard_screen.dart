@@ -19,7 +19,6 @@ const Map<String, IconData> _roleIcons = {
 
 const Map<String, IconData> _vendorTypeIcons = {
   'decorator': Icons.brush,
-  'interior_designer': Icons.design_services,
   'furniture_store': Icons.chair,
   'photographer': Icons.camera_alt,
   'restaurant': Icons.restaurant,
@@ -29,7 +28,6 @@ const Map<String, IconData> _vendorTypeIcons = {
 
 const Map<String, String> _vendorTypeLabels = {
   'decorator': 'منسق ديكور',
-  'interior_designer': 'مصمم داخلي',
   'furniture_store': 'محل أثاث',
   'photographer': 'مصور',
   'restaurant': 'مطعم',
@@ -75,7 +73,6 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
 
     const Map<String, IconData> _vendorTypeIcons = {
       'decorator': Icons.brush,
-      'interior_designer': Icons.design_services,
       'furniture_store': Icons.chair,
       'photographer': Icons.camera_alt,
       'restaurant': Icons.restaurant,

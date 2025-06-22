@@ -80,7 +80,7 @@ class _VendorDashboardScreenState extends ConsumerState<VendorDashboardScreen>
       ),
       Tab(
         child: Text(
-          'قائمة الطعام',
+          'قائمة ',
           style: GoogleFonts.audiowide(color: Colors.white),
         ),
       ),

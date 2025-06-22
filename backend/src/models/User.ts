@@ -4,7 +4,6 @@ import { IRating, RatingSchema } from "./Rating";
 
 export enum VendorServiceType {
   Decorator = "decorator",
-  InteriorDesigner = "interior_designer",
   FurnitureStore = "furniture_store",
   Photographer = "photographer",
   Restaurant = "restaurant",
