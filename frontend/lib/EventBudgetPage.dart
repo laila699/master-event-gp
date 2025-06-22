@@ -4,6 +4,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:masterevent/models/offering.dart';
+import 'package:masterevent/screens/create_booking_screen.dart';
 
 import '../models/event.dart';
 import '../models/recommended_offers.dart';
@@ -24,7 +26,7 @@ class _EventBudgetPageState extends ConsumerState<EventBudgetPage> {
   final _catAmountCtl = TextEditingController();
 
   final accent1 = AppColors.gradientStart;
-  final accent2 = const Color.fromARGB(255, 244, 168, 196);
+  final accent2 = AppColors.gradientEnd;
 
   List<Map<String, dynamic>> _categories = [];
   bool _initDone = false;
@@ -208,18 +210,57 @@ class _EventBudgetPageState extends ConsumerState<EventBudgetPage> {
             b.offers
                 .map(
                   (o) => ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
                     title: Text(
                       o.title,
                       style: const TextStyle(color: Colors.white),
                     ),
-                    subtitle: Text(
-                      '${o.price.toStringAsFixed(0)} ش.إ — ${o.vendorName}'
-                      '${o.vendorRating != null ? " ⭐${o.vendorRating}" : ""}',
-                      style: GoogleFonts.cairo(color: Colors.white70),
+                    subtitle: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${o.price.toStringAsFixed(0)} ش.إ — ${o.vendorName}'
+                          '${o.vendorRating != null ? " ⭐${o.vendorRating}" : ""}',
+                          style: GoogleFonts.cairo(color: Colors.white70),
+                        ),
+                        const SizedBox(height: 8),
+                        ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: Colors.deepPurple,
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          icon: const Icon(Icons.favorite),
+                          label: const Text("احجز الآن"),
+                          onPressed: () {
+                            final offering = Offering(
+                              id: o.id,
+                              title: o.title,
+                              price: o.price,
+                              vendorId: o.vendorId,
+                              images: [],
+                              createdAt: DateTime.now(),
+                              updatedAt: DateTime.now(),
+                              // add other required fields here with dummy/defaults if needed
+                            );
+
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder:
+                                    (_) =>
+                                        CreateBookingScreen(offering: offering),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                    onTap: () {
-                      // Navigator.pushNamed(context, '/offer/${o.id}');
-                    },
                   ),
                 )
                 .toList(),
