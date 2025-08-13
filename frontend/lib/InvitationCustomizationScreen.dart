@@ -91,7 +91,7 @@ class _InvitationCustomizationScreenState
                 dataGetter: _buildData,
               ),
               const SizedBox(height: 24),
-              _field(_eventCtl, 'اسم المناسبة', Icons.event),
+              _field(_eventCtl, 'اسم الرحلة', Icons.event),
               _field(_hostsCtl, 'أسماء الداعين', Icons.group),
               _field(
                 _dateCtl,
@@ -172,7 +172,7 @@ class _LivePreview extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  d.eventName.isEmpty ? 'اسم المناسبة' : d.eventName,
+                  d.eventName.isEmpty ? 'اسم الرحلة' : d.eventName,
                   style: GoogleFonts.scheherazadeNew(
                     color: Colors.white,
                     fontSize: 22,

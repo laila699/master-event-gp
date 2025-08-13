@@ -121,7 +121,7 @@ class _PhotographerListScreenState extends State<PhotographerListScreen> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
       ),
       backgroundColor: Color(0xFFF7F7F7), // لون الخلفية من فرونت المطاعم
       body: SingleChildScrollView(
@@ -151,10 +151,10 @@ class _PhotographerListScreenState extends State<PhotographerListScreen> {
                       });
                     },
                   ),
-                  // فلتر نوع المناسبة
+                  // فلتر نوع الرحلة
                   DropdownButton<String>(
                     value: _selectedEventType,
-                    hint: Text('نوع المناسبة', style: GoogleFonts.cairo()),
+                    hint: Text('نوع الرحلة', style: GoogleFonts.cairo()),
                     items:
                         _availableEventTypes.map((type) {
                           return DropdownMenuItem<String>(

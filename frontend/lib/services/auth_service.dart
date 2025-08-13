@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'token_storage.dart';
 import '../models/user.dart' as app_user;
 import 'dart:convert';
+import 'package:firebase_messaging/firebase_messaging.dart';
 
 class AuthService {
   final Dio _dio;
@@ -67,6 +68,7 @@ class AuthService {
     return app_user.User.fromJson(userJson);
   }
 
+  /*
   /// POST /auth/login → { token, user }
   Future<app_user.User> login({
     required String email,
@@ -99,6 +101,59 @@ class AuthService {
     // 3️⃣ Return your app User model
     return app_user.User.fromJson(userJson);
   }
+ 
+ */
+
+  /// POST /auth/login → { token, user, firebaseToken }
+  Future<app_user.User> login({
+    required String email,
+    required String password,
+  }) async {
+    final response = await _dio.post(
+      '/auth/login',
+      data: {'email': email, 'password': password},
+    );
+
+    final data = response.data as Map<String, dynamic>;
+    final jwtToken = data['token'] as String;
+    final userJson = data['user'] as Map<String, dynamic>;
+    final firebaseJwt = data['firebaseToken'] as String;
+
+    /* 1️⃣  Sign-in to FirebaseAuth (so Firestore rules work) */
+    try {
+      await FirebaseAuth.instance.signInWithCustomToken(firebaseJwt);
+      debugPrint('🔐 Firebase sign-in succeeded');
+    } on FirebaseAuthException catch (e) {
+      debugPrint('❌ signInWithCustomToken failed → ${e.code}: ${e.message}');
+      rethrow;
+    }
+
+    /* 2️⃣  Persist *your* JWT so 🚀 Dio sends it on every call */
+    await _tokenStorage.saveToken(jwtToken);
+
+    /* 3️⃣  Immediately register (or re-register) the FCM token */
+    try {
+      final fcmToken = await FirebaseMessaging.instance.getToken();
+      if (fcmToken != null) {
+        await _dio.post(
+          '/notifications/token', // your backend route
+          data: {'token': fcmToken},
+        );
+        debugPrint('📲 FCM token registered on server');
+      } else {
+        debugPrint('⚠️  FirebaseMessaging.getToken() returned null');
+      }
+    } catch (e, st) {
+      debugPrint('⚠️  Failed to register FCM token: $e');
+      debugPrintStack(stackTrace: st);
+      // Don’t throw – login itself succeeded. NotificationService will retry onTokenRefresh
+    }
+
+    /* 4️⃣  Return the deserialized user */
+    return app_user.User.fromJson(userJson);
+  }
+
+  /// GET /auth/me → current user
 
   /// GET /auth/me → current user
   Future<app_user.User> me() async {

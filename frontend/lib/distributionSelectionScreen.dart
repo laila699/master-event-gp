@@ -20,7 +20,7 @@ class _DistributionSelectionScreenState
     {
       'id': 'store_A',
       'name': 'لمسة فنية للتوزيعات',
-      'description': 'نصمم توزيعات فريدة لكل مناسبة، بلمسة إبداعية خاصة.',
+      'description': 'نصمم توزيعات فريدة لكل رحلة، بلمسة إبداعية خاصة.',
       'main_image': 'assets/p1.jpg',
       'price_range': 'تبدأ من 7 شيكل',
       'overall_rating': 4.7,
@@ -29,7 +29,7 @@ class _DistributionSelectionScreenState
       'distribution_types_offered': ['شوكولاتة مغلفة', 'شموع', 'توزيعات خاصة'],
       'details': {
         'about':
-            'نحن في "لمسة فنية" نؤمن بأن كل مناسبة تستحق لمسة خاصة. نقدم تصاميم توزيعات مبتكرة وفخمة، مع التركيز على الجودة والتفاصيل الدقيقة.',
+            'نحن في "لمسة فنية" نؤمن بأن كل رحلة تستحق لمسة خاصة. نقدم تصاميم توزيعات مبتكرة وفخمة، مع التركيز على الجودة والتفاصيل الدقيقة.',
         'gallery_images': ['assets/p2.jpg', 'assets/p2.jpg', 'assets/p1.jpg'],
         'specific_distributions': [
           {
@@ -72,7 +72,7 @@ class _DistributionSelectionScreenState
             'user': 'Khaled Z.',
             'rating': 4,
             'comment':
-                'الأسعار مناسبة والجودة ممتازة. أوصي بهم للمناسبات الخاصة.',
+                'الأسعار رحلة والجودة ممتازة. أوصي بهم للمناسبات الخاصة.',
           },
         ],
       },
@@ -153,7 +153,7 @@ class _DistributionSelectionScreenState
             'user': 'Reem F.',
             'rating': 5,
             'comment':
-                'الشوكولاتة خرافية والتغليف أنيق جداً. كانت توزيعات مثالية لمناسبة خطوبتي.',
+                'الشوكولاتة خرافية والتغليف أنيق جداً. كانت توزيعات مثالية لرحلة خطوبتي.',
           },
           {
             'user': 'Hasan S.',
@@ -175,7 +175,7 @@ class _DistributionSelectionScreenState
       'distribution_types_offered': ['شموع', 'توزيعات خاصة'],
       'details': {
         'about':
-            'في "شمعة أمل"، نركز على تقديم شموع معطرة طبيعية مصنوعة بحب وجودة عالية، لتمنح مناسباتك الدفء والجمال بأسعار مناسبة للجميع.',
+            'في "شمعة أمل"، نركز على تقديم شموع معطرة طبيعية مصنوعة بحب وجودة عالية، لتمنح مناسباتك الدفء والجمال بأسعار رحلة للجميع.',
         'gallery_images': ['assets/s1.jpg', 'assets/s2.jpg'],
         'specific_distributions': [
           {
@@ -313,7 +313,7 @@ class _DistributionSelectionScreenState
                 Expanded(
                   child: DropdownButtonFormField<String>(
                     value: _selectedEventType,
-                    hint: Text('نوع المناسبة', style: GoogleFonts.cairo()),
+                    hint: Text('نوع الرحلة', style: GoogleFonts.cairo()),
                     decoration: InputDecoration(
                       filled: true,
                       fillColor: Colors.white,

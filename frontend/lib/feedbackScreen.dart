@@ -16,7 +16,7 @@ class FeedbackScreen extends StatelessWidget {
       {'userId': 'user4', 'rating': 4, 'comment': 'الرائحة جميلة جداً والشكل أنيق.'},
       {'userId': 'user5', 'rating': 3, 'comment': 'الحجم أصغر مما توقعت.'},
     ],
-    // ... المزيد من التقييمات حسب معرف التوزيعة
+    // ... المزيد من التقييمات حسب معرفة
   };
 
   FeedbackScreen({super.key, required this.distributionId});
@@ -33,7 +33,7 @@ class FeedbackScreen extends StatelessWidget {
       backgroundColor: Color(0xFFF7F7F7),
       body: _distributionFeedback.isEmpty
           ? Center(
-              child: Text('لا يوجد تقييمات لهذه التوزيعة حتى الآن.', style: GoogleFonts.cairo(fontSize: 16, color: Colors.grey[600])),
+              child: Text('لا يوجد تقييمات لهذا حتى الآن.', style: GoogleFonts.cairo(fontSize: 16, color: Colors.grey[600])),
             )
           : ListView.builder(
               padding: const EdgeInsets.all(16.0),

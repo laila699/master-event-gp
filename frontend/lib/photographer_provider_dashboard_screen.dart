@@ -1,7 +1,7 @@
 // lib/photographer_provider_dashboard_screen.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masterevent/manage_photographer_screen.dart';
+import 'package:softwareGP/manage_photographer_screen.dart';
 
 final List<Map<String, dynamic>> myPhotographers = [
   {

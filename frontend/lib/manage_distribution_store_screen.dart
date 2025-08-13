@@ -337,7 +337,7 @@ class _ManageDistributionStoreScreenState
               _buildTextField(
                 controller: _descriptionController,
                 label: 'وصف قصير للمتجر',
-                hint: 'نصمم توزيعات فريدة لكل مناسبة...',
+                hint: 'نصمم توزيعات فريدة لكل رحلة...',
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return 'الرجاء إدخال وصف المتجر';
@@ -518,9 +518,9 @@ class _ManageDistributionStoreScreenState
                             maxLines: 2,
                           ),
                           const SizedBox(height: 10),
-                          // أنواع المناسبات المناسبة لهذه التوزيعة
+                          // أنواع المناسبات الرحلة لهذه التوزيعة
                           Text(
-                            'مناسبة لـ (لهذه التوزيعة):',
+                            'رحلة لـ (لهذه التوزيعة):',
                             style: GoogleFonts.cairo(
                               fontSize: 16,
                               fontWeight: FontWeight.w600,
@@ -540,7 +540,7 @@ class _ManageDistributionStoreScreenState
                                       controller:
                                           distController
                                               .suitableForControllers[suitableIndex],
-                                      label: 'مناسبة #${suitableIndex + 1}',
+                                      label: 'رحلة #${suitableIndex + 1}',
                                       hint: 'مثال: زفاف',
                                     ),
                                   ),
@@ -582,7 +582,7 @@ class _ManageDistributionStoreScreenState
                                 color: Colors.blueAccent,
                               ),
                               label: Text(
-                                'أضف مناسبة أخرى',
+                                'أضف رحلة أخرى',
                                 style: GoogleFonts.cairo(
                                   color: Colors.blueAccent,
                                 ),

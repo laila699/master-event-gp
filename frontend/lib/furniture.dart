@@ -65,7 +65,7 @@ class _FurnitureScreenState extends State<FurnitureScreen> {
       ],
       'rating': 4.5,
       'description':
-          "طاولة مرتفعة مناسبة لوضع المشروبات والمقبلات، مثالية لمناطق الاستقبال.",
+          "طاولة مرتفعة رحلة لوضع المشروبات والمقبلات، مثالية لمناطق الاستقبال.",
       'supplierContact': '+962791234503',
     },
     {
@@ -358,7 +358,7 @@ class _FurnitureScreenState extends State<FurnitureScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('أثاث للمناسبات'), // Title reflects content
-        backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
         foregroundColor: Colors.white,
         elevation: 2,
       ),
@@ -405,7 +405,12 @@ class _FurnitureScreenState extends State<FurnitureScreen> {
                   // Correct color applied here
                   borderRadius: BorderRadius.circular(8.0),
                   borderSide: BorderSide(
-                    color: const Color.fromARGB( 255, 244, 168, 196), // The requested color
+                    color: const Color.fromARGB(
+                      255,
+                      244,
+                      168,
+                      196,
+                    ), // The requested color
                     width: 1.5,
                   ),
                 ),
@@ -436,7 +441,10 @@ class _FurnitureScreenState extends State<FurnitureScreen> {
                 child: DropdownButton<String>(
                   value: selectedEventCategory,
                   isExpanded: true,
-                  icon: const Icon(Icons.chair_outlined, color: Color.fromARGB( 255, 244, 168, 196)),
+                  icon: const Icon(
+                    Icons.chair_outlined,
+                    color: Color.fromARGB(255, 244, 168, 196),
+                  ),
                   onChanged: (String? newValue) {
                     if (newValue != null &&
                         newValue != selectedEventCategory &&

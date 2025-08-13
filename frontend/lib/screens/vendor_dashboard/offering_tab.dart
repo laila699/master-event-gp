@@ -8,11 +8,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'package:masterevent/providers/auth_provider.dart'
+import 'package:softwareGP/providers/auth_provider.dart'
     show authNotifierProvider, AuthStatus;
-import 'package:masterevent/screens/create_booking_screen.dart';
-import 'package:masterevent/screens/offering_details_screen.dart';
-import 'package:masterevent/theme/colors.dart';
+import 'package:softwareGP/screens/create_booking_screen.dart';
+import 'package:softwareGP/screens/offering_details_screen.dart';
+import 'package:softwareGP/theme/colors.dart';
 import '../../models/offering.dart';
 import '../../providers/offering_provider.dart';
 

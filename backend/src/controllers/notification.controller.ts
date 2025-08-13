@@ -45,6 +45,7 @@ export const sendChatNotification = asyncHandler(
 );
 
 // Save an FCM token on login
+/*
 export const saveFcmToken = asyncHandler(
   async (req: Request, res: Response) => {
     const user = req.user as IUser;
@@ -67,6 +68,56 @@ export const saveFcmToken = asyncHandler(
     res.json({ message: "FCM token saved" });
   }
 );
+
+
+export const saveFcmToken = asyncHandler(async (req, res) => {
+  const user = req.user as IUser; // set by auth middleware
+  const { token } = req.body;
+
+  if (!token) {
+    return res.status(400).json({ message: "Token is required" });
+  }
+
+  /* 1️⃣  Add to User.fcmTokens without duplicates 
+  await User.updateOne(
+    { _id: user._id },
+    { $addToSet: { fcmTokens: token } } // atomic, idempotent
+  );
+
+  /* 2️⃣  Upsert mirror doc; re-assign if token existed for another user 
+  await PushToken.updateOne(
+    { token },
+    { token, user: user._id },
+    { upsert: true, setDefaultsOnInsert: true }
+  );
+
+  return res.json({ message: "FCM token saved" });
+}); */  
+
+
+
+export const saveFcmToken = asyncHandler(async (req, res) => {
+  const user = req.user as IUser;
+  const { token } = req.body;
+  if (!token) return res.status(400).json({ message: "Token is required" });
+
+  /* 1️⃣  Add to the User document (no duplicates) */
+  await User.updateOne({ _id: user._id }, { $addToSet: { fcmTokens: token } });
+
+  /* 2️⃣  Upsert *by pair* (user, token) */
+  await PushToken.updateOne(
+    { user: user._id, token }, // <── composite filter
+    { user: user._id, token },
+    { upsert: true, setDefaultsOnInsert: true }
+  );
+
+  res.json({ message: "FCM token saved" });
+}); 
+
+
+
+
+// R
 
 // Remove an FCM token on logout
 export const removeFcmToken = asyncHandler(

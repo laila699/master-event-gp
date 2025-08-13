@@ -9,10 +9,11 @@ import '../theme/colors.dart';
 
 class ChatScreen extends ConsumerStatefulWidget {
   final String chatId;
-  final String otherUid;
-  final String otherName;
+  final String otherUid; //معرف الطرف الآخر في المحادثة
+  final String otherName; //اسمه يلي حينعرض 
   const ChatScreen({
     Key? key,
+    //من صفحة chatListScreen
     required this.chatId,
     required this.otherUid,
     required this.otherName,
@@ -27,6 +28,7 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    //provider to get messages for this chat
     final messagesAsync = ref.watch(messagesProvider(widget.chatId));
     final chatService = ref.read(chatServiceProvider);
     final me = FirebaseAuth.instance.currentUser!.uid;

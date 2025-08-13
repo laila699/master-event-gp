@@ -2,7 +2,7 @@
 
 import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:masterevent/models/service_type.dart';
+import 'package:softwareGP/models/service_type.dart';
 import '../models/offering.dart';
 import '../services/offering_service.dart';
 import 'auth_provider.dart';

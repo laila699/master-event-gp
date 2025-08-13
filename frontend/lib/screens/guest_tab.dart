@@ -8,11 +8,12 @@ import '../models/guest.dart';
 import '../providers/event_provider.dart';
 
 class GuestTab extends ConsumerWidget {
-  final String eventId;
+  final String eventId; // ID of the event to show guests for
   const GuestTab({Key? key, required this.eventId}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // context : معلومات عن البيئة الحالية
     // 1) Watch the event detail (which contains the guests array)
     final evAsync = ref.watch(eventDetailProvider(eventId));
 
@@ -20,11 +21,14 @@ class GuestTab extends ConsumerWidget {
       loading: () => const Center(child: CircularProgressIndicator()),
       error:
           (e, _) => Center(
-            child: Text('خطأ في تحميل الضيوف: $e', style: GoogleFonts.cairo()),
+            child: Text(
+              'خطأ في تحميل المشاركين: $e',
+              style: GoogleFonts.cairo(),
+            ),
           ),
       data: (event) {
-        final guests = event.guests;
-
+        final guests = event.guests; // Get the list of guests from the event
+        // Check if guests list is empty
         return Column(
           children: [
             Expanded(
@@ -32,17 +36,28 @@ class GuestTab extends ConsumerWidget {
                   (guests == null || guests.isEmpty)
                       ? Center(
                         child: Text(
-                          'لا توجد ضيوف بعد',
+                          'لا توجد مشاركين بعد',
                           style: GoogleFonts.cairo(),
                         ),
                       )
                       : ListView.builder(
-                        itemCount: guests.length,
+                        // Build a list of guests
+                        itemCount:
+                            guests
+                                .length, // Number of guests =  number of items
                         itemBuilder: (ctx, i) {
-                          final g = guests[i];
+                          //  دالة ترجع عنصر (Widget) لكل ضيف، حسب الفهرس i.
+                          final g = guests[i]; // Get the guest at index i
                           return ListTile(
-                            title: Text(g.name, style: GoogleFonts.cairo()),
-                            subtitle: Text(g.email, style: GoogleFonts.cairo()),
+                            // عنصر قائمة يمثل ضيف واحد
+                            title: Text(
+                              g.name,
+                              style: GoogleFonts.cairo(),
+                            ), // name
+                            subtitle: Text(
+                              g.email,
+                              style: GoogleFonts.cairo(),
+                            ), // email
                             trailing: Text(
                               g.status.toUpperCase(),
                               style: GoogleFonts.cairo(
@@ -55,23 +70,28 @@ class GuestTab extends ConsumerWidget {
                               ),
                             ),
                             onTap: () async {
+                              // Toggle guest status on tap
                               // cycle status
                               final next =
                                   g.status == 'pending'
                                       ? 'yes'
                                       : (g.status == 'yes' ? 'no' : 'pending');
 
-                              // 2) call updateGuestStatusProvider and await
+                              // 2) call update GuestStatus Provider and await
+                              //حتى نحدث الحالة
                               await ref.read(
+                                //  ينفذ بشكل متزامن
                                 updateGuestStatusProvider({
                                   'eventId': eventId,
                                   'guestId': g.id,
-                                  'status': next,
+                                  'status': next, // new status
                                 }).future,
                               );
 
                               // 3) re-fetch event details
-                              ref.invalidate(eventDetailProvider(eventId));
+                              ref.invalidate(
+                                eventDetailProvider(eventId),
+                              ); // invalidate:نُعيد تحميل بيانات الحدث من جديد من db
                             },
                           );
                         },
@@ -83,7 +103,7 @@ class GuestTab extends ConsumerWidget {
               padding: const EdgeInsets.all(16),
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.person_add),
-                label: Text('إضافة ضيف', style: GoogleFonts.cairo()),
+                label: Text('إضافة مشارك', style: GoogleFonts.cairo()),
                 onPressed: () => _showAddGuestDialog(context, ref),
               ),
             ),
@@ -94,14 +114,14 @@ class GuestTab extends ConsumerWidget {
   }
 
   Future<void> _showAddGuestDialog(BuildContext ctx, WidgetRef ref) async {
-    final nameCtl = TextEditingController();
-    final emailCtl = TextEditingController();
+    final nameCtl = TextEditingController(); //name controller
+    final emailCtl = TextEditingController(); // email controller
 
     final ok = await showDialog<bool>(
       context: ctx,
       builder:
           (_) => AlertDialog(
-            title: Text('إضافة ضيف', style: GoogleFonts.cairo()),
+            title: Text('إضافة مشارك', style: GoogleFonts.cairo()),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -127,13 +147,14 @@ class GuestTab extends ConsumerWidget {
             ],
           ),
     );
-
+    // check if user confirmed
     if (ok == true &&
         nameCtl.text.trim().isNotEmpty &&
         emailCtl.text.trim().isNotEmpty) {
       // 5) call addGuestProvider
       try {
         await ref.read(
+          //wait for the future to complete "send date"
           addGuestProvider({
             'eventId': eventId,
             'name': nameCtl.text.trim(),
@@ -146,7 +167,7 @@ class GuestTab extends ConsumerWidget {
         ScaffoldMessenger.of(ctx).showSnackBar(
           SnackBar(
             content: Text(
-              'تم إرسال الدعوة للضيف عبر البريد الإلكتروني',
+              'تم إرسال الدعوة للمشارك عبر البريد الإلكتروني',
               style: GoogleFonts.cairo(),
             ),
             backgroundColor: Colors.green,

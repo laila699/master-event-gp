@@ -29,14 +29,14 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     } else {
-      throw Exception('فشل في تحميل المناسبات');
+      throw Exception('فشل في تحميل الرحل');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('مناسباتي')),
+      appBar: AppBar(title: Text('رحلاتي')),
       body: FutureBuilder<List<dynamic>>(
         future: _eventsFuture,
         builder: (context, snapshot) {
@@ -45,7 +45,7 @@ class _MyEventsScreenState extends State<MyEventsScreen> {
           } else if (snapshot.hasError) {
             return Center(child: Text('حدث خطأ: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return Center(child: Text('لا توجد مناسبات حالياً.'));
+            return Center(child: Text('لا توجد رحل حالياً.'));
           } else {
             final events = snapshot.data!;
             return ListView.builder(

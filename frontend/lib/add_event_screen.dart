@@ -7,7 +7,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masterevent/theme/colors.dart';
+import 'package:softwareGP/theme/colors.dart';
 
 import '../models/event.dart';
 import '../services/event_service.dart';
@@ -21,29 +21,31 @@ class AddEventScreen extends ConsumerStatefulWidget {
 }
 
 class _AddEventScreenState extends ConsumerState<AddEventScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _dateController = TextEditingController();
-  final _venueController = TextEditingController();
-  final _coordsController = TextEditingController();
+  final _formKey = GlobalKey<FormState>(); // مفتاح النموذج
+  final _titleController = TextEditingController(); // للتحكم في حقل العنوان
+  final _dateController = TextEditingController(); 
+  final _venueController = TextEditingController();  // حقل مكان الرحلة 
+  final _coordsController = TextEditingController(); // بخزن الاحداثيات هون 
   final _descController = TextEditingController();
 
-  LatLng? _pickedLocation;
-  late final MapController _mapController;
+  LatLng? _pickedLocation; // الموقع المختار على الخريطة , ؟ ممكن يكون null 
+  late final MapController _mapController; // للتحكم في الخريطة ,  
 
   @override
   void initState() {
     super.initState();
-    _mapController = MapController();
-    _locateUser();
+    _mapController = MapController(); // إنشاء خريطة جديدة
+    _locateUser(); //الحصول على موقع المستخدم الحالي باستخدام GPS (Geolocator).
+
+
   }
 
-  Future<void> _locateUser() async {
+  Future<void> _locateUser() async { // الحصول على موقع المستخدم الحالي
     try {
-      final pos = await Geolocator.getCurrentPosition(
+      final pos = await Geolocator.getCurrentPosition( // الحصول على موقع المستخدم الحالي
         desiredAccuracy: LocationAccuracy.high,
       );
-      final latlng = LatLng(pos.latitude, pos.longitude);
+      final latlng = LatLng(pos.latitude, pos.longitude); 
       setState(() {
         _pickedLocation = latlng;
         _coordsController.text =
@@ -59,7 +61,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
       initialDate: DateTime.now(),
       firstDate: DateTime.now().subtract(const Duration(days: 30)),
       lastDate: DateTime(DateTime.now().year + 5),
-      helpText: 'اختر تاريخ المناسبة',
+      helpText: 'اختر تاريخ الرحلة',
 
       builder:
           (ctx, child) => Theme(
@@ -122,7 +124,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
-          'إنشاء مناسبة جديدة',
+          'إنشاء رحلة جديدة',
           style: GoogleFonts.orbitron(color: AppColors.textOnNeon),
         ),
         backgroundColor: AppColors.overlay,
@@ -210,11 +212,11 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                             children: [
                               _buildField(
                                 controller: _titleController,
-                                label: 'اسم المناسبة *',
+                                label: 'اسم الرحلة *',
                                 accent: accent1,
                                 validator:
                                     (v) =>
-                                        v!.isEmpty ? 'أدخل اسم المناسبة' : null,
+                                        v!.isEmpty ? 'أدخل اسم الرحلة' : null,
                               ),
                               const SizedBox(height: 12),
                               GestureDetector(
@@ -222,7 +224,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                                 child: AbsorbPointer(
                                   child: _buildField(
                                     controller: _dateController,
-                                    label: 'تاريخ المناسبة *',
+                                    label: 'تاريخ الرحلة *',
                                     accent: accent1,
                                     validator:
                                         (v) => v!.isEmpty ? 'اختر تاريخ' : null,
@@ -232,7 +234,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                               const SizedBox(height: 12),
                               _buildField(
                                 controller: _venueController,
-                                label: 'مكان المناسبة *',
+                                label: 'مكان الرحلة *',
                                 accent: accent1,
                                 validator:
                                     (v) =>
@@ -241,7 +243,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                               const SizedBox(height: 12),
                               _buildField(
                                 controller: _descController,
-                                label: 'وصف المناسبة',
+                                label: 'وصف الرحلة',
                                 accent: accent1,
                               ),
                               const SizedBox(height: 12),
@@ -271,7 +273,7 @@ class _AddEventScreenState extends ConsumerState<AddEventScreen> {
                                 ),
                                 onPressed: _saveEvent,
                                 child: Text(
-                                  'حفظ المناسبة',
+                                  'حفظ الرحلة',
                                   style: GoogleFonts.orbitron(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w700,

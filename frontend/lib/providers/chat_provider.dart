@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:masterevent/providers/auth_provider.dart';
-import 'package:masterevent/services/chat_service.dart';
+import 'package:softwareGP/providers/auth_provider.dart';
+import 'package:softwareGP/services/chat_service.dart';
 
 // add service instance
 final chatServiceProvider = Provider<ChatService>((ref) {

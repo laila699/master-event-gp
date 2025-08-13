@@ -169,9 +169,9 @@ class StoreDetailScreen extends StatelessWidget {
                 const SizedBox(height: 20),
               ],
 
-              // التوزيعات المحددة لهذا المحل
+              // معدات المحددة لهذا المحل
               Text(
-                'توزيعات يقدمها ${store['name']}:',
+                'معدات يقدمها ${store['name']}:',
                 style: GoogleFonts.cairo(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -180,7 +180,7 @@ class StoreDetailScreen extends StatelessWidget {
               const SizedBox(height: 10),
               specificDistributions.isEmpty
                   ? Text(
-                    'لا توجد توزيعات محددة لهذا المحل حالياً.',
+                    'لا توجد معدات رحل محددة لهذا المحل حالياً.',
                     style: GoogleFonts.cairo(color: Colors.grey[600]),
                   )
                   : ListView.builder(

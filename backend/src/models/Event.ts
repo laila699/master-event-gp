@@ -77,7 +77,7 @@ const TaskSchema = new Schema<ITask>(
     id: { type: String, required: true },
     name: { type: String, required: true },
     category: String,
-    dueDate: Date,
+    dueDate: Date, // final date for the task
     notes: String,
     priority: {
       type: String,

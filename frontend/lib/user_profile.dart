@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masterevent/screens/auth/login_screen.dart';
-import 'package:masterevent/theme/colors.dart';
+import 'package:softwareGP/screens/auth/login_screen.dart';
+import 'package:softwareGP/theme/colors.dart';
 
 import '../providers/auth_provider.dart';
 

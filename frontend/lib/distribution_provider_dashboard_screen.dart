@@ -1,7 +1,7 @@
 // lib/distribution_provider_dashboard_screen.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masterevent/manage_distribution_store_screen.dart';
+import 'package:softwareGP/manage_distribution_store_screen.dart';
 
 // **ملاحظة:** في التطبيق الحقيقي، هذه القائمة ستأتي من الـ Backend
 // لكن لأغراض الـ Front-end، سنستخدم هذه البيانات كمثال
@@ -9,7 +9,7 @@ final List<Map<String, dynamic>> myDistributionStores = [
   {
     'id': 'store_A',
     'name': 'لمسة فنية للتوزيعات',
-    'description': 'نصمم توزيعات فريدة لكل مناسبة، بلمسة إبداعية خاصة.',
+    'description': 'نصمم توزيعات فريدة لكل رحلة، بلمسة إبداعية خاصة.',
     'main_image': 'assets/p1.jpg', // تأكدي من وجود هذه الصورة
     'price_range': 'تبدأ من 7 شيكل',
     'overall_rating': 4.7,
@@ -18,7 +18,7 @@ final List<Map<String, dynamic>> myDistributionStores = [
     'distribution_types_offered': ['شوكولاتة مغلفة', 'شموع', 'توزيعات خاصة'],
     'details': {
       'about':
-          'نحن في "لمسة فنية" نؤمن بأن كل مناسبة تستحق لمسة خاصة. نقدم تصاميم توزيعات مبتكرة وفخمة، مع التركيز على الجودة والتفاصيل الدقيقة.',
+          'نحن في "لمسة فنية" نؤمن بأن كل رحلة تستحق لمسة خاصة. نقدم تصاميم توزيعات مبتكرة وفخمة، مع التركيز على الجودة والتفاصيل الدقيقة.',
       'gallery_images': [
         'assets/p2.jpg', // تأكدي من وجود هذه الصور
         'assets/p2.jpg',
@@ -130,7 +130,7 @@ final List<Map<String, dynamic>> myDistributionStores = [
           'user': 'Reem F.',
           'rating': 5,
           'comment':
-              'الشوكولاتة خرافية والتغليف أنيق جداً. كانت توزيعات مثالية لمناسبة خطوبتي.',
+              'الشوكولاتة خرافية والتغليف أنيق جداً. كانت توزيعات مثالية لرحلة خطوبتي.',
         },
       ],
     },
@@ -147,7 +147,7 @@ final List<Map<String, dynamic>> myDistributionStores = [
     'distribution_types_offered': ['شموع', 'توزيعات خاصة'],
     'details': {
       'about':
-          'في "شمعة أمل"، نركز على تقديم شموع معطرة طبيعية مصنوعة بحب وجودة عالية، لتمنح مناسباتك الدفء والجمال بأسعار مناسبة للجميع.',
+          'في "شمعة أمل"، نركز على تقديم شموع معطرة طبيعية مصنوعة بحب وجودة عالية، لتمنح مناسباتك الدفء والجمال بأسعار رحلة للجميع.',
       'gallery_images': ['assets/s1.jpg', 'assets/s2.jpg'],
       'specific_distributions': [
         {

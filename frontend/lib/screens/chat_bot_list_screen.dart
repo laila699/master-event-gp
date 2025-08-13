@@ -42,7 +42,7 @@ class ChatBotListScreen extends ConsumerWidget {
                   backgroundColor: AppColors.overlay,
                   elevation: 0,
                   title: Text(
-                    'الدردشة مع EventBot',
+                    'الدردشة مع TripBot',
                     style: TextStyle(color: AppColors.textOnNeon),
                   ),
                   centerTitle: true,
@@ -63,7 +63,7 @@ class ChatBotListScreen extends ConsumerWidget {
                               color: const Color.fromARGB(255, 244, 168, 196),
                             ),
                             title: Text(
-                              'EventBot',
+                              'TripBot',
                               style: GoogleFonts.orbitron(
                                 color: AppColors.textOnNeon,
                               ),

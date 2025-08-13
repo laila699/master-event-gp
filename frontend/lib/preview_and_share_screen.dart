@@ -1,9 +1,10 @@
 // lib/screens/invitation/preview_and_share_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:share_plus/share_plus.dart';
+import 'package:share_plus/share_plus.dart'; //liiibrary for sharing content
 import '../../../models/invitation_theme.dart'; // adjust import path if needed
 import '../../theme/colors.dart';
+import 'package:flutter/foundation.dart';
 
 class InvitationData {
   final String themeImageUrl;
@@ -20,14 +21,14 @@ class InvitationData {
   });
 
   String text() => '''
-💌 ${eventName.isEmpty ? "دعوة خاصة" : eventName} 💌
+💌 ${eventName.isEmpty ? " رحلتنا الجاية" : eventName} 💌
 
-تتشرف ${hostNames.isEmpty ? "عائلتنا" : hostNames} بدعوتكم
+ندعوك للانضمام إلى ${hostNames.isEmpty ? "رفاق المغامرة" : hostNames} في رحلة مليئة بالتجارب الممتعة   🌲
 📆 $date   ⏰ $time
 📍 $location
 ${notes.isNotEmpty ? "📝 $notes\n" : ""}
 
-بانتظار تشريفكم ✨
+بانتظارك لنصنع ذكريات لا تُنسى!  🔥  
 ''';
 }
 
@@ -37,6 +38,8 @@ class PreviewAndShareScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final host = kIsWeb ? 'localhost' : '192.168.1.107';
+    final base = 'http://$host:5000/api';
     final txt = data.text();
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -49,7 +52,10 @@ class PreviewAndShareScreen extends StatelessWidget {
         body: Stack(
           children: [
             Positioned.fill(
-              child: Image.network(data.themeImageUrl, fit: BoxFit.cover),
+              child: Image.network(
+                "${base}${data.themeImageUrl}",
+                fit: BoxFit.cover,
+              ),
             ),
             Positioned.fill(child: Container(color: Colors.black54)),
             Padding(
@@ -111,7 +117,7 @@ class PreviewAndShareScreen extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             Text(
-              'تتشرف ${d.hostNames} بدعوتكم',
+              'تدعوكم ${d.hostNames} ',
               style: Theme.of(ctx).textTheme.titleMedium,
             ),
             const Divider(height: 24, thickness: 1),

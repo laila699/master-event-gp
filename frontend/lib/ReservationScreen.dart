@@ -14,9 +14,15 @@ class _ReservationScreenState extends State<ReservationScreen> {
   final _peopleCountController = TextEditingController();
   bool _isDateAvailable = true;
   double _estimatedPrice = 0.0;
-  String? _selectedEventType; // متغير لتخزين نوع المناسبة المحدد
-  List<String> _eventTypes = ['برايدل شور', 'كتب كتاب', 'تخرج', 'عيد ميلاد']; // قائمة بأنواع المناسبات
-  double _pricePerPerson = 30.0; // سعر افتراضي للشخص الواحد (قابل للتعديل حسب نوع المناسبة)
+  String? _selectedEventType; // متغير لتخزين نوع الرحلة المحدد
+  List<String> _eventTypes = [
+    'برايدل شور', // رحلة ثقافية
+    'كتب كتاب', // رحلة بحرية
+    'تخرج', //رحلة تخييم
+    'عيد ميلاد', // رحلة مسارات
+  ]; // قائمة بأنواع الرحلات
+  double _pricePerPerson =
+      30.0; // سعر افتراضي للشخص الواحد (قابل للتعديل حسب نوع الرحلة)
 
   @override
   void initState() {
@@ -43,7 +49,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
 
   void _calculatePrice() {
     int peopleCount = int.tryParse(_peopleCountController.text) ?? 0;
-    // يمكنك هنا إضافة منطق لتغيير السعر بناءً على نوع المناسبة إذا لزم الأمر
+    // يمكنك هنا إضافة منطق لتغيير السعر بناءً على نوع الرحلة إذا لزم الأمر
     // مثال:
     // if (_selectedEventType == 'برايدل شور') {
     //   _pricePerPerson = 40.0;
@@ -56,21 +62,25 @@ class _ReservationScreenState extends State<ReservationScreen> {
 
   void _submitReservation() {
     if (_selectedDate == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("يرجى اختيار تاريخ أولاً")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("يرجى اختيار تاريخ أولاً")));
       return;
     }
 
     if (_selectedEventType == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("يرجى اختيار نوع المناسبة")),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("يرجى اختيار نوع الرحلة")));
       return;
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("تم الحجز بنجاح! نوع المناسبة: $_selectedEventType، لعدد ${_peopleCountController.text} شخص بسعر تقديري ${_estimatedPrice.toStringAsFixed(2)} ريال.")),
+      SnackBar(
+        content: Text(
+          "تم الحجز بنجاح! نوع الرحلة: $_selectedEventType، لعدد ${_peopleCountController.text} شخص بسعر تقديري ${_estimatedPrice.toStringAsFixed(2)} ريال.",
+        ),
+      ),
     );
     Navigator.pop(context);
   }
@@ -78,36 +88,38 @@ class _ReservationScreenState extends State<ReservationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('حجز في ${widget.restaurantName}'),
-      ),
+      appBar: AppBar(title: Text('حجز في ${widget.restaurantName}')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('نوع المناسبة:', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('نوع الرحلة:', style: TextStyle(fontWeight: FontWeight.bold)),
             DropdownButtonFormField<String>(
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'ما هو نوع مناسبتك؟',
+                hintText: 'ما هو نوع رحلتك ؟',
               ),
               value: _selectedEventType,
-              items: _eventTypes.map((String value) {
-                return DropdownMenuItem<String>(
-                  value: value,
-                  child: Text(value),
-                );
-              }).toList(),
+              items:
+                  _eventTypes.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
               onChanged: (String? newValue) {
                 setState(() {
                   _selectedEventType = newValue;
-                  _calculatePrice(); // إعادة حساب السعر عند تغيير نوع المناسبة (إذا كان السعر يعتمد عليه)
+                  _calculatePrice(); // إعادة حساب السعر عند تغيير نوع الرحلة (إذا كان السعر يعتمد عليه)
                 });
               },
             ),
             SizedBox(height: 20),
-            Text('تاريخ المناسبة:', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text(
+              'تاريخ الرحلة:',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
             SizedBox(height: 8),
             InkWell(
               onTap: _pickDate,
@@ -144,10 +156,15 @@ class _ReservationScreenState extends State<ReservationScreen> {
             SizedBox(height: 20),
             Text(
               _isDateAvailable ? '✅ التاريخ متاح!' : '❌ التاريخ غير متاح',
-              style: TextStyle(color: _isDateAvailable ? Colors.green : Colors.red),
+              style: TextStyle(
+                color: _isDateAvailable ? Colors.green : Colors.red,
+              ),
             ),
             SizedBox(height: 20),
-            Text('السعر التقديري: ${_estimatedPrice.toStringAsFixed(2)} ريال', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            Text(
+              'السعر التقديري: ${_estimatedPrice.toStringAsFixed(2)} ريال',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
             Spacer(),
             Center(
               child: ElevatedButton(

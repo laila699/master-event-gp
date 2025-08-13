@@ -1,168 +1,228 @@
 // lib/services/notification_service.dart
-
 import 'dart:io';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../providers/event_provider.dart';
 
-// 1️⃣ Define a simple model for in-app state (if you choose to track them):
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../providers/event_provider.dart'; // where you register / delete tokens
+
+/* ────────────────────────────────────────────────────────────────────────── */
+/*  1. Simple in–memory model + Riverpod state for in-app notification list   */
+/* ────────────────────────────────────────────────────────────────────────── */
+
+//يمثل اشعار واحد
 class NotificationItem {
+  NotificationItem({
+    required this.title,
+    required this.body,
+    required this.data,
+  }) : receivedAt = DateTime.now();
+
   final String title;
   final String body;
-  final DateTime receivedAt;
   final Map<String, dynamic>? data;
-  NotificationItem({required this.title, required this.body, this.data})
-    : receivedAt = DateTime.now();
+  final DateTime receivedAt; // حفظ وقت الاستلام
 }
 
-// 2️⃣ Expose a StateNotifier to hold the list of notifications
+// لما يوصل اشعار جديد، يتم اضافته الى قائمة الاشعارات
+// باستخدام Riverpod state notifier
 class _NotificationsNotifier extends StateNotifier<List<NotificationItem>> {
   _NotificationsNotifier() : super([]);
-  void add(NotificationItem item) => state = [item, ...state];
+  void add(NotificationItem n) => state = [n, ...state];
 }
+
 
 final notificationsProvider =
     StateNotifierProvider<_NotificationsNotifier, List<NotificationItem>>(
       (_) => _NotificationsNotifier(),
     );
 
-// 3️⃣ Your service:
-final notificationServiceProvider = Provider((ref) => NotificationService(ref));
+/* ────────────────────────────────────────────────────────────────────────── */
+/*  2. Notification service                                                  */
+/* ────────────────────────────────────────────────────────────────────────── */
+// انشاء المزود  : notificationServiceProvider
+final notificationServiceProvider = Provider((ref) {
+  final svc = NotificationService._(ref);
+  // initialise asynchronously without blocking provider creation
+  svc.init();
+  return svc;
+});
 
 class NotificationService {
-  final ProviderRef ref;
-  final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  final FlutterLocalNotificationsPlugin _local =
-      FlutterLocalNotificationsPlugin();
+  NotificationService._(this._ref);
 
-  NotificationService(this.ref) {
-    _initLocal();
-    _initFCM();
+  final ProviderRef _ref;
+  final _messaging = FirebaseMessaging.instance;
+  final _local = FlutterLocalNotificationsPlugin();
+
+  /* ---------- Constants -------------------------------------------------- */
+  static const _defaultChannelId = 'MESSAGE_CHANNEL'; // fallback
+
+  static const List<AndroidNotificationChannel> _predefinedChannels = [
+    AndroidNotificationChannel(
+      'MESSAGE_CHANNEL',
+      'الرسائل الواردة',
+      description: 'إشعارات الرسائل داخل التطبيق',
+      importance: Importance.high,
+    ),
+    AndroidNotificationChannel(
+      'BOOKING_CHANNEL',
+      'حالة الحجوزات',
+      description: 'قبول أو رفض الحجز',
+      importance: Importance.high,
+    ),
+    AndroidNotificationChannel(
+      'DEFAULT_CHANNEL',
+      'عام',
+      description: 'إشعارات عامة',
+      importance: Importance.defaultImportance,
+    ),
+  ];
+
+  /* ---------- Public API ------------------------------------------------- */
+  Future<void> init() async {
+    await _initLocal(); // تهيئة الإشعارات المحلية
+    await _initFCM(); // الحصول على التوكن وتوصيل المستمعين
   }
 
-  /// 1) Configure local notification channels & icon
-  void _initLocal() async {
-    const androidInit = AndroidInitializationSettings('@drawable/message_icon');
+  /// Call on logout
+  Future<void> unregisterToken() async {
+    final token = await _messaging.getToken();
+    if (token != null) {
+      await _ref.read(eventServiceProvider).deletePushToken(token);
+    }
+  }
 
+  /* ---------- Local notifications --------------------------------------- */
+  Future<void> _initLocal() async {
+    /* 1. Init plugin */
+    const androidInit = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    ); // ensure icon
     await _local.initialize(
       const InitializationSettings(android: androidInit),
-      onDidReceiveNotificationResponse: (NotificationResponse response) {
-        // optional: navigate to details
-        return;
-      },
+      onDidReceiveNotificationResponse: (_) {}, // deep-links here if wanted
     );
 
-    if (Platform.isAndroid) {
-      // Create the same channel IDs you use in your backend payload:
-      const messageChannel = AndroidNotificationChannel(
-        'MESSAGE_CHANNEL',
-        'الرسائل الواردة',
-        description: 'إشعارات الرسائل',
-        importance: Importance.high,
-      );
-      const bookingChannel = AndroidNotificationChannel(
-        'BOOKING_CHANNEL',
-        'حالة الحجوزات',
-        description: 'إشعارات قبول/رفض الحجوزات',
-        importance: Importance.high,
-      );
+    /* 2. Android 13+ runtime permission */
+    // For Android 13+ notification permission, consider using the permission_handler package if needed.
+    // Firebase Messaging's requestPermission() handles push notification permissions.
 
-      final androidImpl =
+    /* 3. Create predefined channels once */
+    if (Platform.isAndroid) {
+      final impl =
           _local
               .resolvePlatformSpecificImplementation<
                 AndroidFlutterLocalNotificationsPlugin
               >();
-      await androidImpl?.createNotificationChannel(messageChannel);
-      await androidImpl?.createNotificationChannel(bookingChannel);
+      for (final ch in _predefinedChannels) {
+        await impl?.createNotificationChannel(ch);
+      }
     }
   }
 
-  /// 2) Hook into FCM, show local & update Riverpod state
-  void _initFCM() async {
-    final settings = await _messaging.requestPermission();
-    if (settings.authorizationStatus != AuthorizationStatus.authorized) return;
+  /* ---------- Firebase Cloud Messaging ---------------------------------- */
+  Future<void> _initFCM() async {
+    final perm = await _messaging.requestPermission();
+    if (perm.authorizationStatus != AuthorizationStatus.authorized) return;
 
-    // Register this device token with your backend
-    final token = await _messaging.getToken();
-    if (token != null) {
-      await ref.read(eventServiceProvider).registerPushToken(token);
-    }
+    /* ─ Register / refresh token with your backend ─ */
+    await _registerToken();
+    _messaging.onTokenRefresh.listen(_registerToken);
 
-    // Foreground
-    FirebaseMessaging.onMessage.listen((msg) {
-      final n = msg.notification;
-      if (n != null) {
-        final channelId =
-            msg.notification?.android?.channelId ?? 'MESSAGE_CHANNEL';
-        _showLocal(n.hashCode, n.title, n.body, channelId);
-        ref
-            .read(notificationsProvider.notifier)
-            .add(
-              NotificationItem(title: n.title!, body: n.body!, data: msg.data),
-            );
-      }
-    });
+    /* ─ Foreground ─ */
+    // اشعار اثناء فتح التطبيق 
+    FirebaseMessaging.onMessage.listen(_handleMessage);  
 
-    // App opened from background
-    FirebaseMessaging.onMessageOpenedApp.listen((msg) {
-      final n = msg.notification;
-      if (n != null) {
-        final channelId =
-            msg.notification?.android?.channelId ?? 'MESSAGE_CHANNEL';
-        _showLocal(n.hashCode, n.title, n.body, channelId);
-        ref
-            .read(notificationsProvider.notifier)
-            .add(
-              NotificationItem(title: n.title!, body: n.body!, data: msg.data),
-            );
-      }
-    });
+    /* ─ App opened from tray while backgrounded ─ */ 
+    //فتح الاشعارات من الخلفيه 
+    FirebaseMessaging.onMessageOpenedApp.listen(_handleMessage);
 
-    // Cold start
+    /* ─ Cold-start notification tap ─ */ 
+    //فتح الاشعار من حالة اغلاق كامل 
     final initial = await _messaging.getInitialMessage();
-    if (initial?.notification != null) {
-      final n = initial!.notification!;
-      final channelId =
-          initial.notification?.android?.channelId ?? 'MESSAGE_CHANNEL';
-      _showLocal(n.hashCode, n.title, n.body, channelId);
-      ref
-          .read(notificationsProvider.notifier)
-          .add(
-            NotificationItem(
-              title: n.title!,
-              body: n.body!,
-              data: initial.data,
-            ),
-          );
+    if (initial != null) _handleMessage(initial);
+  }
+
+// send fcm token to backend
+  Future<void> _registerToken([String? token]) async {
+    token ??= await _messaging.getToken();
+    if (token != null) {
+      await _ref.read(eventServiceProvider).registerPushToken(token);
     }
   }
 
-  /// Helper to show a local notification on Android
-  Future<void> _showLocal(
-    int id,
-    String? title,
-    String? body,
-    String channelId,
-  ) => _local.show(
-    id,
-    title,
-    body,
-    NotificationDetails(
-      android: AndroidNotificationDetails(
-        channelId, // matches the channel you created
-        channelId == 'BOOKING_CHANNEL' ? 'حالة الحجوزات' : 'General',
-        importance: Importance.max,
-        priority: Priority.high,
-      ),
-    ),
-  );
+  /* ---------- Message handler ------------------------------------------- */
+  // receive a message from FCM
+  void _handleMessage(RemoteMessage msg) {
+    final n = msg.notification;
+    if (n == null) return; // data-only, ignore
 
-  /// Clean‐up on logout
-  Future<void> unregisterToken() async {
-    final token = await _messaging.getToken();
-    if (token != null) {
-      await ref.read(eventServiceProvider).deletePushToken(token);
+    final channelId =
+        msg.notification?.android?.channelId ??
+        _defaultChannelId; // backend decides
+
+    _showLocal(
+      id: msg.hashCode,
+      title: n.title,
+      body: n.body,
+      channelId: channelId,
+    );
+
+    _ref
+        .read(notificationsProvider.notifier)
+        .add(
+          NotificationItem(
+            title: n.title ?? '',
+            body: n.body ?? '',
+            data: msg.data,
+          ),
+        );
+  }
+
+  /* ---------- Show local notification ----------------------------------- */
+  Future<void> _showLocal({
+    required int id,
+    required String? title,
+    required String? body,
+    required String channelId,
+  }) async {
+    /* If the backend suddenly sends a new channel we never created
+       before, create it on the fly so Android 8+ will display it. */
+    if (Platform.isAndroid) {
+      final impl =
+          _local
+              .resolvePlatformSpecificImplementation<
+                AndroidFlutterLocalNotificationsPlugin
+              >();
+      final existing = await impl?.getNotificationChannels() ?? [];
+      final exists = existing.any((c) => c.id == channelId);
+      if (!exists) {
+        await impl?.createNotificationChannel(
+          AndroidNotificationChannel(
+            channelId,
+            channelId, // show ID as name until you push an update that localises it
+            importance: Importance.high,
+          ),
+        );
+      }
     }
+
+    await _local.show(
+      id,
+      title,
+      body,
+      NotificationDetails(
+        android: AndroidNotificationDetails(
+          channelId,
+          channelId, // visible name (localise if you know it)
+          importance: Importance.high,
+          priority: Priority.high,
+          icon: '@mipmap/ic_launcher',
+        ),
+      ),
+      payload: null,
+    );
   }
 }

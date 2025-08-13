@@ -1,7 +1,7 @@
 // lib/providers/event_provider.dart
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:masterevent/models/recommended_offers.dart';
+import 'package:softwareGP/models/recommended_offers.dart';
 import '../models/event.dart';
 import '../models/guest.dart';
 import '../services/event_service.dart';

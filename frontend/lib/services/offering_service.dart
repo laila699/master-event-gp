@@ -2,7 +2,7 @@
 
 import 'dart:io';
 import 'package:dio/dio.dart';
-import 'package:masterevent/models/service_type.dart';
+import 'package:softwareGP/models/service_type.dart';
 import '../models/offering.dart';
 import 'token_storage.dart';
 

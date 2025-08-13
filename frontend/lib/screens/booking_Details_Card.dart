@@ -1,14 +1,14 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart'; // for kIsWeb
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:intl/intl.dart';
+import 'package:intl/intl.dart'; // for date formatting
 
-import 'package:masterevent/models/booking_detail.dart';
-import 'package:masterevent/providers/booking_provider.dart'; // eventBookingDetailsProvider
-import 'package:masterevent/providers/vendor_provider.dart'; // rateVendorProvider
+import 'package:softwareGP/models/booking_detail.dart';
+import 'package:softwareGP/providers/booking_provider.dart'; // eventBookingDetailsProvider
+import 'package:softwareGP/providers/vendor_provider.dart'; // rateVendorProvider
 
 /// Displays every field of a BookingDetail **and** lets an organizer rate the
 /// vendor once the event has passed.
@@ -16,9 +16,10 @@ class BookingDetailCard extends ConsumerStatefulWidget {
   final String eventId;
 
   const BookingDetailCard({
+    //يجعله ثابت اذا القيم ماتغيرت
     super.key,
-    required this.booking,
-    required this.eventId,
+    required this.booking, // BookingDetail object to display
+    required this.eventId, // event ID for rating
   });
   final BookingDetail booking;
 
@@ -27,40 +28,45 @@ class BookingDetailCard extends ConsumerStatefulWidget {
 }
 
 class _BookingDetailCardState extends ConsumerState<BookingDetailCard> {
-  late bool _rated; // local copy so we can flip without full reload
+  late bool _rated; // local variable to track if the booking has been rated
 
   @override
   void initState() {
-    super.initState();
+    super
+        .initState(); // يستدعي النسخة حتى يضمن ان التهيئة الافتراضية تحصل قبل  تنفيذ الكود
     _rated = widget.booking.rated;
   }
 
   // ───────────────────────── helpers ──────────────────────────
   Color _statusColor(String s) => switch (s.toLowerCase()) {
+    // switch expression to determine color based on status
     'yes' => Colors.green,
     'no' => Colors.red,
     'pending' => Colors.orange,
     _ => Colors.grey,
   };
-
+  // rate vendor dialog
   Future<void> _openRatingDialog() async {
+    //سيتم الانتظار للنتيجة من مربع الحوار
     int stars = 5;
     final txt = TextEditingController();
 
     final bool? ok = await showDialog<bool>(
+      //await: ينتظر حتى يغلق المستخدم النافذة
       context: context,
       builder:
           (_) => AlertDialog(
             title: const Text('قيِّم البائع'),
             content: Column(
-              mainAxisSize: MainAxisSize.min,
+              mainAxisSize: MainAxisSize.min, //اقل مساحة ممكنة
               children: [
                 StatefulBuilder(
+                  //يتيح تحديث واجهة جزء معين من الـ dialog بدون إعادة بناء الصفحة كلها
                   builder:
                       (ctx, setS) => Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
-                          5,
+                          5, // 5 stars
                           (i) => IconButton(
                             icon: Icon(
                               i < stars ? Icons.star : Icons.star_border,
@@ -94,21 +100,27 @@ class _BookingDetailCardState extends ConsumerState<BookingDetailCard> {
           ),
     );
 
-    if (ok != true) return;
+    if (ok != true) return; // if user didn't confirm, exit
 
     await ref.read(rateVendorProvider)(
+      //send rating to server
       vendorId: widget.booking.vendorId,
       bookingId: widget.booking.id,
-      value: stars,
+      value: stars, // rating value
       eventId: widget.eventId,
       review: txt.text.trim().isEmpty ? null : txt.text.trim(),
     );
 
     // locally mark as rated & refresh list
-    setState(() => _rated = true);
-    ref.invalidate(eventBookingDetailsProvider(widget.booking.event.id));
+    setState(
+      () => _rated = true,
+    ); //بغير الحالة المحلية حتى يعرف انه تم تقييم الحجز
+    ref.invalidate(
+      eventBookingDetailsProvider(widget.booking.event.id),
+    ); // refresh the booking details list
 
     if (mounted) {
+      // check if the widget is still mounted before showing snackbar
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('تم إرسال التقييم')));
@@ -123,7 +135,7 @@ class _BookingDetailCardState extends ConsumerState<BookingDetailCard> {
     final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
 
-    final b = widget.booking;
+    final b = widget.booking; // اختصار لتسهيل الاستخدام بالكود
 
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -132,7 +144,8 @@ class _BookingDetailCardState extends ConsumerState<BookingDetailCard> {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              CrossAxisAlignment.start, // محاذاة النصوص إلى اليسار
           children: [
             // ── Header row: status + (maybe) rate button ─────────────
             Row(
@@ -142,15 +155,20 @@ class _BookingDetailCardState extends ConsumerState<BookingDetailCard> {
                   style: GoogleFonts.cairo(
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: _statusColor(b.status),
+                    color: _statusColor(
+                      b.status,
+                    ), //يعرض حالة الحجز مع اللون المناسب
                   ),
                 ),
-                const Spacer(),
-                if (!_rated && b.scheduledAt.isBefore(DateTime.now()))
+                const Spacer(), // space between status and rate button
+                if (!_rated &&
+                    b.scheduledAt.isBefore(
+                      DateTime.now(),
+                    )) // if not rated and scheduled time has passed
                   TextButton.icon(
                     icon: const Icon(Icons.star, size: 18, color: Colors.amber),
                     label: const Text('قيّم'),
-                    onPressed: _openRatingDialog,
+                    onPressed: _openRatingDialog, // open rating dialog
                   ),
                 if (_rated)
                   Row(
@@ -166,14 +184,14 @@ class _BookingDetailCardState extends ConsumerState<BookingDetailCard> {
 
             // ── Event info ───────────────────────────────────────────
             Text(
-              'المناسبة: ${b.event.title}',
+              'الرحلة: ${b.event.title}',
               style: GoogleFonts.cairo(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              'تاريخ المناسبة: ${dfDate.format(b.event.date)}',
+              'تاريخ الرحلة: ${dfDate.format(b.event.date)}',
               style: GoogleFonts.cairo(),
             ),
             const SizedBox(height: 8),
@@ -189,16 +207,15 @@ class _BookingDetailCardState extends ConsumerState<BookingDetailCard> {
                 style: GoogleFonts.cairo(),
               ),
             ],
-            const SizedBox(height: 8),
-
+            const SizedBox(height: 8), // space before next section
             // ── Price & qty ──────────────────────────────────────────
             Row(
               children: [
                 Text(
-                  'السعر: ${b.offeringPrice.toStringAsFixed(2)}',
+                  'السعر: ${b.offeringPrice.toStringAsFixed(2)}', // format price to 2 decimal places : 100.00
                   style: GoogleFonts.cairo(),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: 16), // space between price and quantity
                 Text('الكمية: ${b.quantity}', style: GoogleFonts.cairo()),
               ],
             ),
@@ -206,7 +223,7 @@ class _BookingDetailCardState extends ConsumerState<BookingDetailCard> {
 
             // ── Schedule ────────────────────────────────────────────
             Text(
-              'موعد الحجز: ${dfDateTm.format(b.scheduledAt)}',
+              'موعد الحجز: ${dfDateTm.format(b.scheduledAt)}', // format date and time
               style: GoogleFonts.cairo(),
             ),
 
@@ -230,7 +247,7 @@ class _BookingDetailCardState extends ConsumerState<BookingDetailCard> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
                           child: Image.network(
-                            '$base${b.offeringImages[i]}',
+                            '$base${b.offeringImages[i]}', // full URL to the image
                             width: 120,
                             height: 120,
                             fit: BoxFit.cover,

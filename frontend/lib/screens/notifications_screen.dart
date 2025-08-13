@@ -2,14 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../services/notification_service.dart';
+import '../services/notification_service.dart'; //file فيه كود الخدمة يلي بتجيب الاشعارات
 import 'package:google_fonts/google_fonts.dart';
 
 class NotificationsScreen extends ConsumerWidget {
+  //مراقبة البيانات باستخدام Riverpod
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final notifications = ref.watch(notificationsProvider);
+    final notifications = ref.watch(
+      notificationsProvider,
+    ); //بوفر قائمة الإشعارات
 
+    //designing the UI
     return Scaffold(
       appBar: AppBar(
         title: Text('الإشعارات', style: GoogleFonts.cairo()),
@@ -24,6 +28,7 @@ class NotificationsScreen extends ConsumerWidget {
                 ),
               )
               : ListView.builder(
+                //عرض قائمة الإشعارات باستخدام ListView
                 padding: const EdgeInsets.symmetric(
                   vertical: 8,
                   horizontal: 12,
@@ -37,6 +42,7 @@ class NotificationsScreen extends ConsumerWidget {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),
+                    //card design
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(12),
                       leading: Icon(
@@ -66,6 +72,7 @@ class NotificationsScreen extends ConsumerWidget {
                           ),
                         ],
                       ),
+                      //يحتوي على الاشعار
                       onTap: () {
                         // e.g. deep-link into booking detail:
                         final bookingId = n.data?['bookingId'];

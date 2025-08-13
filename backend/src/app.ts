@@ -31,6 +31,12 @@ app.use(morgan("dev"));
 app.use(cors({ origin: "*" }));
 
 app.use("/api/uploads/", express.static(path.join(__dirname, "../uploads")));
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "../uploads"), {
+    // optional: add Cache-Control headers here
+  })
+);
 // 2) Parse JSON bodies
 app.use(express.json());
 app.use(

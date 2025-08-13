@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:masterevent/InvitationCustomizationScreen.dart';
-import 'package:masterevent/providers/admin_provider.dart';
+import 'package:softwareGP/InvitationCustomizationScreen.dart';
+import 'package:softwareGP/providers/admin_provider.dart';
 
 import '../../models/invitation_theme.dart';
 

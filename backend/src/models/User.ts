@@ -20,12 +20,12 @@ export interface IVendorAttribute {
     | "string"
     | "number"
     | "boolean"
-    | "select"
-    | "multiSelect"
+    | "select" //بحدد النوع بالزبط 
+    | "multiSelect"     // يسمحله يختار أكثر من خيار
     | "date"
     | "array"
     | "object";
-  value?: any;
+  value?: any;   // mixed type to allow any value
   options?: any[];
   required?: boolean;
   // only for array/object

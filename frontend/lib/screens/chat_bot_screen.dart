@@ -32,7 +32,7 @@ class _ChatBotScreenState extends ConsumerState<ChatBotScreen> {
     // initial bot greeting
     _messages.add(
       types.TextMessage(
-        author: const types.User(id: 'bot', firstName: 'EventBot'),
+        author: const types.User(id: 'bot', firstName: 'TripBot'),
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: _uuid.v4(),
         text: 'مرحبًا! كيف يمكنني مساعدتك في إدارة مناسباتك اليوم؟',
@@ -51,7 +51,7 @@ class _ChatBotScreenState extends ConsumerState<ChatBotScreen> {
 
     _service.sendMessage(partial.text).then((reply) {
       final botMsg = types.TextMessage(
-        author: const types.User(id: 'bot', firstName: 'EventBot'),
+        author: const types.User(id: 'bot', firstName: 'TripBot'),
         createdAt: DateTime.now().millisecondsSinceEpoch,
         id: _uuid.v4(),
         text: reply,
@@ -87,7 +87,7 @@ class _ChatBotScreenState extends ConsumerState<ChatBotScreen> {
                 backgroundColor: AppColors.overlay,
                 elevation: 0,
                 title: Text(
-                  'EventBot',
+                  'TripBot',
                   style: TextStyle(color: AppColors.textOnNeon),
                 ),
                 centerTitle: true,

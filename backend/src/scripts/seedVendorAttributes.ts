@@ -6,14 +6,14 @@ import User, { VendorServiceType, IVendorAttribute } from "../models/User";
 dotenv.config();
 
 const defaultAttributes: Record<VendorServiceType, IVendorAttribute[]> = {
-  [VendorServiceType.Decorator]: [
+    [VendorServiceType.Decorator]: [
     { key: "name", label: "الاسم", type: "string", required: true },
-    { key: "bio", label: "نبذة عن الخدمة", type: "string" },
+    { key: "bio", label: "انواع الورود", type: "string" },
     {
       key: "styles",
       label: "أساليب التصميم",
       type: "multiSelect",
-      options: ["كلاسيكي", "حديث", "ريفي", "صناعي", "مزيج"],
+      options: ["كلاسيكي", "حديث", "ريفي", "جوري", "مزيج"],
       value: [],
     },
     {
@@ -34,6 +34,7 @@ const defaultAttributes: Record<VendorServiceType, IVendorAttribute[]> = {
     { key: "phone", label: "الهاتف", type: "string", required: true },
     { key: "city", label: "المدينة", type: "string" },
   ],
+
 
   [VendorServiceType.FurnitureStore]: [
     { key: "name", label: "اسم المتجر", type: "string", required: true },
@@ -136,13 +137,13 @@ const defaultAttributes: Record<VendorServiceType, IVendorAttribute[]> = {
       options: ["دي جي", "مغني", "فرقة موسيقية", "ساحر", "مهرج"],
       value: [],
     },
-    {
+   /* {
       key: "availability",
       label: "تواريخ التوفر",
       type: "array",
-      itemType: "date",
+      itemType: "string",
       value: [],
-    },
+    }, */ 
     { key: "priceRange", label: "نطاق السعر", type: "string" },
     {
       key: "entertainerImages",

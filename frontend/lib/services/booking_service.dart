@@ -1,7 +1,7 @@
 // lib/services/booking_service.dart
 
 import 'package:dio/dio.dart';
-import 'package:masterevent/models/booking_detail.dart';
+import 'package:softwareGP/models/booking_detail.dart';
 import '../models/booking.dart';
 
 class BookingService {

@@ -7,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:masterevent/providers/auth_provider.dart';
-import 'package:masterevent/providers/chat_provider.dart';
-import 'package:masterevent/screens/chat_screen.dart';
-import 'package:masterevent/screens/vendor_dashboard/menu_tab.dart';
-import 'package:masterevent/screens/vendor_dashboard/offering_tab.dart';
-import 'package:masterevent/theme/colors.dart';
+import 'package:softwareGP/providers/auth_provider.dart';
+import 'package:softwareGP/providers/chat_provider.dart';
+import 'package:softwareGP/screens/chat_screen.dart';
+import 'package:softwareGP/screens/vendor_dashboard/menu_tab.dart';
+import 'package:softwareGP/screens/vendor_dashboard/offering_tab.dart';
+import 'package:softwareGP/theme/colors.dart';
 
 import '../../models/provider_model.dart';
 import '../../models/provider_attribute.dart';
@@ -35,7 +35,7 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this);
+    _tabController = TabController(length: 4, vsync: this); // تنظيف موارد tabController
   }
 
   @override
@@ -47,15 +47,15 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
   @override
   Widget build(BuildContext context) {
     final accent1 = AppColors.gradientStart;
-    final providerAsync = ref.watch(providerModelFamily(widget.vendorId));
-    final nameAsync = ref.watch(userNameProvider(widget.vendorId));
+    final providerAsync = ref.watch(providerModelFamily(widget.vendorId)); // استدعاء بيانات المزود
+    final nameAsync = ref.watch(userNameProvider(widget.vendorId)); // استدعاء اسم المستخدم
 
-    return Scaffold(
+    return Scaffold( // هيكل الصفحة
       appBar: AppBar(
         backgroundColor: AppColors.overlay,
         elevation: 0,
-        title: nameAsync.when(
-          data:
+        title: nameAsync.when( //  nameAsync ديناميكي يظهر اسم المزود بناء على 
+          data: 
               (name) => Text(
                 name,
                 style: GoogleFonts.orbitron(color: AppColors.textOnNeon),
@@ -91,8 +91,8 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
           ),
         ),
       ),
-      body: _buildBackground(
-        providerAsync.when(
+      body: _buildBackground( // بناء خلفية الصفحة
+        providerAsync.when( // استدعاء بيانات المزود
           loading: () => const Center(child: CircularProgressIndicator()),
           error:
               (e, _) => Center(
@@ -102,26 +102,26 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
                 ),
               ),
           data:
-              (provider) => TabBarView(
+              (provider) => TabBarView( // عرض بيانات المزود في تبويبات
                 controller: _tabController,
                 children: [
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: _buildDetailsTab(provider),
+                    child: _buildDetailsTab(provider), // بناء تبويب التفاصيل
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: OfferingTab(vendorId: widget.vendorId),
+                    child: OfferingTab(vendorId: widget.vendorId), // 
                   ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: MenuTab(vendorId: widget.vendorId),
+                    child: MenuTab(vendorId: widget.vendorId), // بناء تبويب القائمة
                   ),
                   Padding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(16.0), // دردشة المزود
                     child: _ChatTab(
                       vendorId: widget.vendorId,
-                      vendorName: nameAsync.value ?? 'مقدم',
+                      vendorName: nameAsync.value ?? 'مقدم', // اسم المزود
                     ),
                   ),
                 ],
@@ -131,7 +131,7 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
     );
   }
 
-  Widget _buildBackground(Widget child) {
+  Widget _buildBackground(Widget child) { // بناء خلفية الصفحة
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -144,7 +144,7 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
             ),
           ),
         ),
-        BackdropFilter(
+        BackdropFilter( // تأثير ضبابي للخلفية
           filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
           child: Container(color: AppColors.overlay),
         ),
@@ -153,32 +153,32 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
     );
   }
 
-  Widget _buildDetailsTab(ProviderModel provider) {
+  Widget _buildDetailsTab(ProviderModel provider) { // بناء تبويب التفاصيل
     LatLng? vendorLatLng;
     try {
-      final locAttr = provider.attributes.firstWhere(
+      final locAttr = provider.attributes.firstWhere( // البحث عن خاصية الموقع
         (a) => a.key.toLowerCase() == 'location',
       );
-      final map = Map<String, dynamic>.from(locAttr.value as Map);
-      vendorLatLng = LatLng(map['lat'], map['lng']);
+      final map = Map<String, dynamic>.from(locAttr.value as Map); // تحويل القيمة إلى خريطة
+      vendorLatLng = LatLng(map['lat'], map['lng']); // إحداثيات الموقع , يستخرج LatLng ,مستخدم في خرائط فلاتر
     } catch (_) {}
 
-    return ListView(
+    return ListView( // بناء قائمة التفاصيل
       padding: const EdgeInsets.all(16),
       children: [
-        if (vendorLatLng != null) ...[
+        if (vendorLatLng != null) ...[ // إذا كان هناك إحداثيات للموقع يعرض خريطة
           SizedBox(
             height: 200,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
-              child: FlutterMap(
+              child: FlutterMap( // استخدام مكتبة FlutterMap لعرض الخريطة
                 options: MapOptions(
-                  initialCenter: vendorLatLng,
-                  initialZoom: 15,
+                  initialCenter: vendorLatLng, //تحديد مركز الخريطة على موقع المزود
+                  initialZoom: 15, // مستوى تكبير الخريطة
                 ),
                 children: [
-                  if (provider.averageRating != null) ...[
-                    Row(
+                  if (provider.averageRating != null) ...[ // إذا كان هناك تقييم للمزود
+                    Row( 
                       children: [
                         Icon(
                           Icons.star,
@@ -187,18 +187,18 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
                         ),
                         const SizedBox(width: 4),
                         Text(
-                          provider.averageRating!.toStringAsFixed(1),
+                          provider.averageRating!.toStringAsFixed(1), // تنسيق التقييم ليظهر برقم عشري واحد
                           style: GoogleFonts.orbitron(
                             color: AppColors.textOnNeon,
                             fontWeight: FontWeight.bold,
                             fontSize: 18,
                           ),
                         ),
-                        if (provider.ratingsCount != null &&
-                            provider.ratingsCount! > 0) ...[
+                        if (provider.ratingsCount != null &&  // هناك عدد تقييمات غير فارغ (null) وعدده أكبر من صفر.
+                            provider.ratingsCount! > 0) ...[ 
                           const SizedBox(width: 4),
                           Text(
-                            '(${provider.ratingsCount})',
+                            '(${provider.ratingsCount})', // عدد التقييمات
                             style: GoogleFonts.orbitron(
                               color: AppColors.textSecondary,
                             ),
@@ -209,9 +209,10 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
                     const SizedBox(height: 16),
                   ],
 
-                  TileLayer(
+                  TileLayer(  //يقوم بجلب خريطة بلاطات (tiles) من خدمة OpenStreetMap باستخدام الرابط urlTemplate.
+
                     urlTemplate:
-                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', // استخدام خريطة OpenStreetMap
                     subdomains: const ['a', 'b', 'c'],
                   ),
                   MarkerLayer(
@@ -234,18 +235,18 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
           ),
           const SizedBox(height: 16),
         ],
-        ...provider.attributes
-            .where((a) => a.key.toLowerCase() != 'location')
+        ...provider.attributes //
+            .where((a) => a.key.toLowerCase() != 'location') // استبعاد خاصية الموقع
             .map(_buildAttributeCard),
       ],
     );
   }
 
-  Widget _buildAttributeCard(ProviderAttribute attr) {
-    final value = attr.value;
+  Widget _buildAttributeCard(ProviderAttribute attr) { 
+    final value = attr.value; // تمثل خاصية من خصائص المزود
 
-    bool _isImagePath(String v) {
-      return v.endsWith('.png') ||
+    bool _isImagePath(String v) { // التحقق مما إذا كانت النص تمثل مسار صورة
+      return v.endsWith('.png') || // صيغ صور
           v.endsWith('.jpg') ||
           v.endsWith('.jpeg') ||
           v.endsWith('.webp');
@@ -258,10 +259,10 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
       return [];
     }
 
-    final images = _extractImagePaths(value);
+    final images = _extractImagePaths(value); // استخراج مسارات الصور
     final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
-    return Card(
+    return Card( // بطاقة تحتوي على خاصية المزود
       color: AppColors.glass,
       margin: const EdgeInsets.only(bottom: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -271,7 +272,7 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              attr.label ?? '',
+              attr.label ?? '', // عنوان الخاصية
               style: GoogleFonts.orbitron(
                 color: AppColors.textOnNeon,
                 fontWeight: FontWeight.w600,
@@ -279,22 +280,22 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
             ),
             const SizedBox(height: 8),
             if (images.isNotEmpty)
-              SizedBox(
+              SizedBox( // عرض الصور في شريط أفقي
                 height: 100,
-                child: ListView.separated(
+                child: ListView.separated( // إنشاء شريط أفقي للصور
                   scrollDirection: Axis.horizontal,
                   itemCount: images.length,
                   separatorBuilder: (_, __) => const SizedBox(width: 12),
-                  itemBuilder: (_, i) {
+                  itemBuilder: (_, i) { // بناء عنصر الصورة
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(12),
-                      child: Image.network(
+                      child: Image.network( // تحميل الصورة من الإنترنت
                         '${base}${images[i]}',
                         height: 100,
                         width: 100,
                         fit: BoxFit.cover,
                         errorBuilder:
-                            (_, __, ___) => Container(
+                            (_, __, ___) => Container( // في حالة حدوث خطأ في تحميل الصورة
                               color: Colors.black26,
                               width: 100,
                               height: 100,
@@ -320,14 +321,14 @@ class _VendorDetailsScreenState extends ConsumerState<VendorDetailsScreen>
   }
 }
 
-class _ChatTab extends ConsumerWidget {
+class _ChatTab extends ConsumerWidget { // تبويب الدردشة
   final String vendorId;
   final String vendorName;
-  const _ChatTab({required this.vendorId, required this.vendorName});
+  const _ChatTab({required this.vendorId, required this.vendorName}); // معرف المزود واسم المزود
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chatIdAsync = ref.watch(createChatProvider(vendorId));
+    final chatIdAsync = ref.watch(createChatProvider(vendorId)); //     لاستدعاء مزود الحالة الذي ينشئ أو يسترجع معرّف الدردشة (chatId) بين المستخدم الحالي والمزود
     return chatIdAsync.when(
       data:
           (chatId) => ChatScreen(

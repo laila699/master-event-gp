@@ -36,18 +36,18 @@ extension VendorServiceTypeExt on VendorServiceType {
   String get label {
     switch (this) {
       case VendorServiceType.decorator:
-        return 'الديكورات';
+        return 'الاقامة';
 
       case VendorServiceType.furnitureStore:
-        return 'متجر أثاث';
+        return 'النقل ';
       case VendorServiceType.photographer:
         return 'التصوير';
       case VendorServiceType.restaurant:
         return 'المطاعم';
       case VendorServiceType.giftShop:
-        return 'متجر هدايا';
+        return 'معدات الرحل ';
       case VendorServiceType.entertainer:
-        return 'الترفيه والعروض';
+        return 'المرشد ';
       case VendorServiceType.unknown:
         return '';
     }

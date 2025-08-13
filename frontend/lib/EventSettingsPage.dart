@@ -2,9 +2,9 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:masterevent/EventBudgetPage.dart';
+import 'package:softwareGP/EventBudgetPage.dart';
 
-import 'package:masterevent/EventToDoListPage.dart';
+import 'package:softwareGP/EventToDoListPage.dart';
 import '../models/event.dart';
 import '../providers/event_provider.dart';
 

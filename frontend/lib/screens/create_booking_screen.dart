@@ -2,17 +2,20 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masterevent/providers/booking_provider.dart';
-import 'package:masterevent/providers/event_provider.dart';
-import 'package:masterevent/services/booking_service.dart';
+import 'package:softwareGP/providers/booking_provider.dart';
+import 'package:softwareGP/providers/event_provider.dart';
+import 'package:softwareGP/services/booking_service.dart';
 import '../models/offering.dart';
 import '../models/event.dart';
 import '../theme/colors.dart';
 
 class CreateBookingScreen extends ConsumerStatefulWidget {
   final Offering offering;
-  const CreateBookingScreen({Key? key, required this.offering})
-    : super(key: key);
+  const CreateBookingScreen({
+    Key? key,
+    required this.offering,
+  }) // Constructor to receive the offering data
+  : super(key: key);
 
   @override
   ConsumerState<CreateBookingScreen> createState() =>
@@ -20,19 +23,19 @@ class CreateBookingScreen extends ConsumerStatefulWidget {
 }
 
 class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
-  String? _selectedEventId;
-  DateTime? _pickedDate;
-  TimeOfDay? _pickedTime;
-  final _noteCtl = TextEditingController();
+  String? _selectedEventId; // Selected event ID for the booking
+  DateTime? _pickedDate; // Selected date for the booking
+  TimeOfDay? _pickedTime; // Selected time for the booking
+  final _noteCtl = TextEditingController(); // Note controller
   int _quantity = 1;
 
   Future<void> _pickDate() async {
     final now = DateTime.now();
     final d = await showDatePicker(
       context: context,
-      initialDate: now,
-      firstDate: now,
-      lastDate: now.add(const Duration(days: 365)),
+      initialDate: now, // the current date
+      firstDate: now, //ما يسمح تختار تاريخ من قبل
+      lastDate: now.add(const Duration(days: 365)), //مسموح لغاية سنة لقدام
       builder:
           (ctx, child) => Theme(
             data: Theme.of(ctx).copyWith(
@@ -46,11 +49,13 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
             child: child!,
           ),
     );
-    if (d != null) setState(() => _pickedDate = d);
+    if (d != null) setState(() => _pickedDate = d); // Update the picked date
   }
 
   Future<void> _pickTime() async {
+    //تنتظر النتيجة من مربع اختيار الوقت
     final t = await showTimePicker(
+      //بفتح مربع اختيار الوقت
       context: context,
       initialTime: TimeOfDay.now(),
       builder:
@@ -58,7 +63,7 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
             data: Theme.of(ctx).copyWith(
               timePickerTheme: TimePickerThemeData(
                 backgroundColor: AppColors.glass,
-                dayPeriodTextColor: AppColors.textOnNeon,
+                dayPeriodTextColor: AppColors.textOnNeon, //لون صباح/مساء
                 dialBackgroundColor: AppColors.background,
               ),
             ),
@@ -69,6 +74,7 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
   }
 
   Future<void> _submit() async {
+    // Submit the booking
     if (_selectedEventId == null ||
         _pickedDate == null ||
         _pickedTime == null) {
@@ -79,6 +85,7 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
     }
 
     final scheduledAt = DateTime(
+      // Combine date and time into a single DateTime object
       _pickedDate!.year,
       _pickedDate!.month,
       _pickedDate!.day,
@@ -88,7 +95,9 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
 
     try {
       await ref
-          .read(bookingServiceProvider)
+          .read(
+            bookingServiceProvider,
+          ) // Use the booking service data to create the booking
           .createBooking(
             eventId: _selectedEventId!,
             offeringId: widget.offering.id,
@@ -107,9 +116,12 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
     }
   }
 
+  // Build the UI for creating a booking
   @override
   Widget build(BuildContext context) {
-    final eventsAsync = ref.watch(eventListProvider);
+    final eventsAsync = ref.watch(
+      eventListProvider,
+    ); // بيقرأ بيانات الرحلات بشكل تفاعلي،ليعمل اعادة بناء عند تغير البيانات
     final accent1 = AppColors.gradientStart;
     final accent2 = const Color.fromARGB(255, 244, 168, 196);
 
@@ -145,11 +157,13 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
                   ),
               data:
                   (events) => SingleChildScrollView(
-                    padding: const EdgeInsets.all(16),
+                    // Scrollable view for the booking form
+                    padding: const EdgeInsets.all(16), //عند وجود بيانات الرحلات
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Text(
+                          // Booking title
                           'حجز: ${widget.offering.title}',
                           style: GoogleFonts.orbitron(
                             color: AppColors.textOnNeon,
@@ -165,14 +179,17 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
                             fontSize: 20,
                           ),
                         ),
-                        const Divider(color: Colors.white24, height: 32),
-
+                        const Divider(
+                          color: Colors.white24,
+                          height: 32,
+                        ), //خط فاصل بين السعر وباقي المحتوى
                         // 1) Event dropdown
                         DropdownButtonFormField<String>(
+                          //قائمة منسدلة لاختيار الرحلة
                           decoration: InputDecoration(
                             filled: true,
                             fillColor: AppColors.fieldFill,
-                            labelText: 'اختر المناسبة',
+                            labelText: 'اختر الرحلة',
                             labelStyle: TextStyle(
                               color: AppColors.textSecondary,
                             ),
@@ -185,9 +202,10 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
                               borderSide: BorderSide(color: accent1, width: 2),
                             ),
                           ),
-                          items:
+                          items: // قائمة الرحلات المتاحة
                               events
                                   .map(
+                                    // تحويل كل حدث يمثل اسم الرحلة إلى عنصر في القائمة
                                     (e) => DropdownMenuItem(
                                       value: e.id,
                                       child: Text(
@@ -199,17 +217,21 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
                                     ),
                                   )
                                   .toList(),
-                          onChanged:
-                              (v) => setState(() => _selectedEventId = v),
+                          onChanged: //when the selected event changes
+                              (v) => setState(
+                                () => _selectedEventId = v,
+                              ), // Update the selected event ID حتى يعيد بناء الواجهة بالاختيار
                         ),
                         const SizedBox(height: 16),
 
                         // 2) Date & Time
                         Row(
+                          // Row to select date and time
                           children: [
                             Expanded(
+                              // Expanded widget to take available space
                               child: ElevatedButton(
-                                onPressed: _pickDate,
+                                onPressed: _pickDate, // Function to pick date
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.glass,
                                   shape: RoundedRectangleBorder(
@@ -232,7 +254,7 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
                             const SizedBox(width: 12),
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: _pickTime,
+                                onPressed: _pickTime, // Function to pick time
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.glass,
                                   shape: RoundedRectangleBorder(
@@ -257,7 +279,7 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
                         const SizedBox(height: 16),
 
                         // 3) Quantity
-                        Row(
+                        Row( 
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
@@ -268,21 +290,21 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
                             ),
                             Row(
                               children: [
-                                IconButton(
+                                IconButton( // Decrease quantity
                                   icon: const Icon(Icons.remove),
                                   color: AppColors.textOnNeon,
                                   onPressed:
                                       _quantity > 1
                                           ? () => setState(() => _quantity--)
-                                          : null,
+                                          : null, // Disable if quantity is 1
                                 ),
                                 Text(
-                                  '$_quantity',
+                                  '$_quantity', // Display current quantity
                                   style: GoogleFonts.orbitron(
                                     color: AppColors.textOnNeon,
                                   ),
                                 ),
-                                IconButton(
+                                IconButton( // Increase quantity
                                   icon: const Icon(Icons.add),
                                   color: AppColors.textOnNeon,
                                   onPressed: () => setState(() => _quantity++),
@@ -295,7 +317,7 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
 
                         // 4) Note
                         TextField(
-                          controller: _noteCtl,
+                          controller: _noteCtl, // Controller for the note input
                           maxLines: 3,
                           style: const TextStyle(color: Colors.white),
                           decoration: InputDecoration(
@@ -331,7 +353,7 @@ class _CreateBookingScreenState extends ConsumerState<CreateBookingScreen> {
                               ),
                             ],
                           ),
-                          child: ElevatedButton(
+                          child: ElevatedButton( // Submit button
                             onPressed: _submit,
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.transparent,

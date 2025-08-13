@@ -159,7 +159,7 @@ router.post("/", async (req: Request, res: Response): Promise<any> => {
           )
           .join("");
         return res.json({
-          reply: `يرجى اختيار المناسبة من القائمة التالية:
+          reply: `يرجى اختيار الرحلة من القائمة التالية:
 ${listText}`,
         });
       }
@@ -180,7 +180,7 @@ ${listText}`,
           .map((e: any, i: number) => `${i + 1}. ${e.title} (ID: ${e.id})`)
           .join("");
         return res.json({
-          reply: `يرجى اختيار المناسبة أولًا من القائمة التالية:
+          reply: `يرجى اختيار الرحلة أولًا من القائمة التالية:
 ${listText}`,
         });
       }

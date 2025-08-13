@@ -18,7 +18,7 @@ class EventDetailsScreen extends StatefulWidget {
 
 class _EventDetailsScreenState extends State<EventDetailsScreen> {
   final TextEditingController _commentController = TextEditingController();
-  String _savedComment = ""; 
+  String _savedComment = "";
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            Navigator.pop(context); 
+            Navigator.pop(context);
           },
         ),
       ),
@@ -48,7 +48,7 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
             ),
             const SizedBox(height: 20),
             const Text(
-              "🎉 تفاصيل إضافية عن المناسبة...",
+              " تفاصيل إضافية عن الرحلة...",
               style: TextStyle(fontSize: 16),
             ),
             const SizedBox(height: 20),
@@ -58,24 +58,23 @@ class _EventDetailsScreenState extends State<EventDetailsScreen> {
                 labelText: 'اكتب تعليقك هنا...',
                 border: OutlineInputBorder(),
               ),
-              maxLines: 4, 
+              maxLines: 4,
             ),
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                
                 setState(() {
-                  _savedComment = _commentController.text; 
-                  _commentController.clear(); 
+                  _savedComment = _commentController.text;
+                  _commentController.clear();
                 });
               },
               child: const Text("إضافة تعليق أو التفاعل"),
             ),
             const SizedBox(height: 20),
-            
+
             if (_savedComment.isNotEmpty)
               Text(
-                "تعليقك المحفوظ: $_savedComment", 
+                "تعليقك المحفوظ: $_savedComment",
                 style: const TextStyle(fontSize: 16),
               ),
           ],

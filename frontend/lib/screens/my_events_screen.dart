@@ -3,29 +3,29 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart';
+import 'package:flutter_map/flutter_map.dart'; // For map display
+import 'package:latlong2/latlong.dart'; // For map coordinates
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masterevent/InvitationScreen.dart';
-import 'package:masterevent/add_event_screen.dart';
-import 'package:masterevent/models/service_type.dart';
-import 'package:masterevent/screens/all_offering_screen.dart';
-import 'package:masterevent/screens/chat_list_screen.dart';
-import 'package:masterevent/screens/chat_bot_list_screen.dart';
-import 'package:masterevent/screens/notifications_screen.dart';
-import 'package:masterevent/screens/vendor_list_screen.dart';
-import 'package:masterevent/services/notification_service.dart';
-import 'package:masterevent/theme/colors.dart';
-import 'package:masterevent/user_profile.dart';
+import 'package:softwareGP/InvitationScreen.dart';
+import 'package:softwareGP/add_event_screen.dart';
+import 'package:softwareGP/models/service_type.dart';
+import 'package:softwareGP/screens/all_offering_screen.dart';
+import 'package:softwareGP/screens/chat_list_screen.dart';
+import 'package:softwareGP/screens/chat_bot_list_screen.dart';
+import 'package:softwareGP/screens/notifications_screen.dart';
+import 'package:softwareGP/screens/vendor_list_screen.dart';
+import 'package:softwareGP/services/notification_service.dart';
+import 'package:softwareGP/theme/colors.dart';
+import 'package:softwareGP/user_profile.dart';
 
-import '../models/user.dart';
-import '../models/event.dart';
-import '../providers/event_provider.dart';
+import '../models/user.dart'; // User model
+import '../models/event.dart'; //event form model to manage event data
+import '../providers/event_provider.dart'; //provider for fetching events to manage event state
 import '../screens/event_details_screen.dart';
 
-/// Home screen with two tabs: "مناسباتي" and "استكشف الخدمات"
+/// Home screen with two tabs: "رحلاتي" and "استكشف الخدمات"
 class MyEventsScreen extends ConsumerStatefulWidget {
-  final User user;
+  final User user; //المستخدم الحالي وتعرض بياناته
   const MyEventsScreen({Key? key, required this.user}) : super(key: key);
 
   @override
@@ -36,12 +36,12 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
   @override
   void initState() {
     super.initState();
-    ref.read(notificationServiceProvider);
+    ref.read(notificationServiceProvider); // Register FCM token on app start
   }
 
   @override
   Widget build(BuildContext context) {
-    final eventsAsync = ref.watch(eventListProvider);
+    final eventsAsync = ref.watch(eventListProvider); // Fetch events from provider
     final primary = Theme.of(context).colorScheme.primary;
     final accent1 = AppColors.gradientStart;
 
@@ -51,8 +51,8 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
         children: [
           // Neon radial background
           DecoratedBox(
-            decoration: BoxDecoration(
-              gradient: RadialGradient(
+            decoration: BoxDecoration( //تعريف شكل الحلفية
+              gradient: RadialGradient( //تدرج لوني  دائري 
                 center: const Alignment(-0.7, -0.7),
                 radius: 1.5,
                 colors: [accent1, AppColors.background],
@@ -65,7 +65,7 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
             child: Container(color: AppColors.overlay),
           ),
           // Main content
-          DefaultTabController(
+          DefaultTabController( //تحديد عدد التبويبات
             length: 3,
             child: Scaffold(
               backgroundColor: Colors.transparent,
@@ -81,7 +81,7 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                     icon: const Icon(Icons.notifications),
                     color: AppColors.textOnNeon,
                     onPressed:
-                        () => Navigator.push(
+                        () => Navigator.push( //انتقال لشاشة الاشعارات 
                           context,
                           MaterialPageRoute(
                             builder: (_) => NotificationsScreen(),
@@ -122,15 +122,15 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                         ),
                   ),
                 ],
-                bottom: TabBar(
-                  indicator: UnderlineTabIndicator(
+                bottom: TabBar( //تاب اسفل شريط appBar
+                  indicator: UnderlineTabIndicator( //شكل الخط
                     borderSide: BorderSide(width: 3.0, color: accent1),
                     insets: const EdgeInsets.symmetric(horizontal: 24.0),
                   ),
                   tabs: [
                     Tab(
                       child: Text(
-                        'مناسباتي',
+                        'رحلاتي',
                         style: GoogleFonts.orbitron(
                           color: AppColors.textOnNeon,
                           fontWeight: FontWeight.bold,
@@ -163,8 +163,8 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                   // Tab 1: My Events
                   Padding(
                     padding: const EdgeInsets.all(12),
-                    child: eventsAsync.when(
-                      loading:
+                    child: eventsAsync.when( 
+                      loading: 
                           () =>
                               const Center(child: CircularProgressIndicator()),
                       error:
@@ -180,7 +180,7 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                         if (events.isEmpty) {
                           return Center(
                             child: Text(
-                              'لا توجد مناسبات',
+                              'لا توجد رحلات',
                               style: GoogleFonts.orbitron(
                                 color: AppColors.textOnNeon,
                                 fontSize: 18,
@@ -188,16 +188,16 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                             ),
                           );
                         }
-                        return ListView.builder(
-                          itemCount: events.length,
+                        return ListView.builder(  //تعرض الرحلات بقائمة 
+                          itemCount: events.length, //القائمة حسب عدد العناصر
                           itemBuilder: (ctx, i) {
-                            final ev = events[i];
+                            final ev = events[i]; // each ev present trip
                             return Padding(
                               padding: const EdgeInsets.symmetric(vertical: 8),
                               child: InkWell(
                                 borderRadius: BorderRadius.circular(16),
                                 onTap:
-                                    () => Navigator.push(
+                                    () => Navigator.push( // بس يضغط على البطاقة ينتقل لصفحة
                                       context,
                                       MaterialPageRoute(
                                         builder:
@@ -216,15 +216,15 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                                     crossAxisAlignment:
                                         CrossAxisAlignment.stretch,
                                     children: [
-                                      if (ev.venueLocation != null)
+                                      if (ev.venueLocation != null) //لو  موقع معين
                                         ClipRRect(
                                           borderRadius:
                                               const BorderRadius.vertical(
                                                 top: Radius.circular(16),
                                               ),
-                                          child: SizedBox(
+                                          child: SizedBox( // تعرض الخريطة 
                                             height: 120,
-                                            child: FlutterMap(
+                                            child: FlutterMap( // مكتبة لرسم الخريطة
                                               options: MapOptions(
                                                 initialCenter:
                                                     ev.venueLocation!,
@@ -232,7 +232,7 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                                                 interactionOptions:
                                                     const InteractionOptions(
                                                       flags:
-                                                          InteractiveFlag.none,
+                                                          InteractiveFlag.none, // Disable user interaction
                                                     ),
                                               ),
                                               children: [
@@ -245,14 +245,14 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                                                     'c',
                                                   ],
                                                 ),
-                                                MarkerLayer(
+                                                MarkerLayer( //تحديد موقع الرحلة على الخريطة
                                                   markers: [
                                                     Marker(
                                                       width: 36,
                                                       height: 36,
                                                       point: ev.venueLocation!,
                                                       child: Icon(
-                                                        Icons.location_pin,
+                                                        Icons.location_pin, 
                                                         color: primary,
                                                         size: 36,
                                                       ),
@@ -287,7 +287,7 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                                                 ),
                                                 const SizedBox(width: 4),
                                                 Text(
-                                                  _formatDate(ev.date),
+                                                  _formatDate(ev.date), // تنسيق تاريخ الرحلة
                                                   style: GoogleFonts.orbitron(
                                                     color: AppColors.textOnNeon,
                                                   ),
@@ -328,27 +328,22 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                   // Tab 2: Services
                   Padding(
                     padding: const EdgeInsets.all(16.0),
-                    child: GridView.count(
-                      crossAxisCount: 2,
+                    child: GridView.count( //عرض الخدمات في شبكة
+                      crossAxisCount: 2, //2 columns
                       crossAxisSpacing: 12,
                       mainAxisSpacing: 12,
                       children: [
-                        _serviceCard(
-                          context,
-                          Icons.celebration,
-                          'الديكورات',
-                          () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder:
-                                    (_) => VendorListScreen(
-                                      initialType: VendorServiceType.decorator,
-                                    ),
-                              ),
-                            );
-                          },
-                        ),
+                        _serviceCard(context, Icons.celebration, 'الاقامة', () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder:
+                                  (_) => VendorListScreen(
+                                    initialType: VendorServiceType.decorator,
+                                  ),
+                            ),
+                          );
+                        }),
                         _serviceCard(context, Icons.email, 'الدعوات', () {
                           Navigator.push(
                             context,
@@ -360,7 +355,7 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                         _serviceCard(
                           context,
                           Icons.card_giftcard,
-                          'التوزيعات',
+                          'متجر معدات الرحل',
                           () {
                             Navigator.push(
                               context,
@@ -373,7 +368,7 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                             );
                           },
                         ),
-                        _serviceCard(context, Icons.chair, 'الأثاث', () {
+                        _serviceCard(context, Icons.chair, 'نقل ومواصلات', () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -410,7 +405,7 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                         _serviceCard(
                           context,
                           Icons.music_note,
-                          'الترفيه والعروض',
+                          'المرشدين ',
                           () {
                             Navigator.push(
                               context,
@@ -427,7 +422,7 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                       ],
                     ),
                   ),
-                  Padding(
+                  Padding( //all offers
                     padding: const EdgeInsets.all(16.0),
                     child: const AllOffersScreen(),
                   ), // ← new screen
@@ -447,7 +442,7 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
                 },
                 icon: const Icon(Icons.add),
                 label: Text(
-                  'إضافة مناسبة',
+                  'إضافة رحلة',
                   style: GoogleFonts.orbitron(color: AppColors.textOnNeon),
                 ),
                 backgroundColor: primary,
@@ -463,11 +458,11 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
     BuildContext context,
     IconData icon,
     String title,
-    VoidCallback onTap,
+    VoidCallback onTap, //دالة تفعل عند الضغط على البطاقة
   ) {
     final primary = Theme.of(context).colorScheme.primary;
     return Card(
-      color: AppColors.glass,
+      color: const Color.fromRGBO(255, 255, 255, 0.925),
       elevation: 3,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       clipBehavior: Clip.antiAlias,
@@ -494,7 +489,7 @@ class _MyEventsScreenState extends ConsumerState<MyEventsScreen> {
     );
   }
 
-  static String _formatDate(DateTime date) {
+  static String _formatDate(DateTime date) { // static function to format date , لتحويل التاريخ الى نص بالعربي 
     const months = [
       'يناير',
       'فبراير',

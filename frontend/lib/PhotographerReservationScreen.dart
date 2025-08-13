@@ -19,7 +19,7 @@ class _PhotographerReservationScreenState
   DateTime? _selectedDate;
   String? _location;
   String? _duration;
-  String? _selectedEventType; // إضافة لتحديد نوع المناسبة للحجز
+  String? _selectedEventType; // إضافة لتحديد نوع الرحلة للحجز
 
   final List<String> durations = ['نصف ساعة', 'ساعة', 'ساعتين', 'يوم كامل'];
   final List<String> eventTypes = [
@@ -29,8 +29,7 @@ class _PhotographerReservationScreenState
     'تخرج',
     'أطفال',
     'افتتاح مشروع',
-  ]; // قائمة بأنواع المناسبات
-
+  ]; // قائمة بأنواع الرحل
   Future<void> _pickDate() async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -50,13 +49,13 @@ class _PhotographerReservationScreenState
     if (_selectedDate == null) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('يرجى اختيار تاريخ المناسبة')));
+      ).showSnackBar(SnackBar(content: Text('يرجى اختيار تاريخ الرحلة')));
       return;
     }
     if (_location == null || _location!.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('يرجى إدخال موقع المناسبة')));
+      ).showSnackBar(SnackBar(content: Text('يرجى إدخال موقع الرحلة')));
       return;
     }
     if (_duration == null || _duration!.isEmpty) {
@@ -68,14 +67,14 @@ class _PhotographerReservationScreenState
     if (_selectedEventType == null || _selectedEventType!.isEmpty) {
       ScaffoldMessenger.of(
         context,
-      ).showSnackBar(SnackBar(content: Text('يرجى اختيار نوع المناسبة')));
+      ).showSnackBar(SnackBar(content: Text('يرجى اختيار نوع الرحلة')));
       return;
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          'تم إرسال طلب حجز لـ ${widget.photographerName} بتاريخ ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year} في موقع $_location لمدة $_duration لمناسبة $_selectedEventType.',
+          'تم إرسال طلب حجز لـ ${widget.photographerName} بتاريخ ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year} في موقع $_location لمدة $_duration لرحلة $_selectedEventType.',
         ),
         backgroundColor: Colors.green,
       ),
@@ -101,7 +100,7 @@ class _PhotographerReservationScreenState
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '📅 تاريخ المناسبة:',
+                '📅 تاريخ الرحلة:',
                 style: GoogleFonts.cairo(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -136,7 +135,7 @@ class _PhotographerReservationScreenState
               TextField(
                 onChanged: (value) => _location = value,
                 decoration: InputDecoration(
-                  hintText: 'ادخل عنوان المناسبة',
+                  hintText: 'ادخل عنوان الرحلة',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -175,7 +174,7 @@ class _PhotographerReservationScreenState
               ),
               SizedBox(height: 20),
               Text(
-                '🎉 نوع المناسبة:',
+                ' نوع الرحلة:',
                 style: GoogleFonts.cairo(
                   fontWeight: FontWeight.bold,
                   fontSize: 16,
@@ -194,7 +193,7 @@ class _PhotographerReservationScreenState
                 onChanged:
                     (value) => setState(() => _selectedEventType = value),
                 decoration: InputDecoration(
-                  hintText: 'اختر نوع المناسبة',
+                  hintText: 'اختر نوع الرحلة',
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
@@ -207,7 +206,7 @@ class _PhotographerReservationScreenState
                 child: ElevatedButton(
                   onPressed: _submitReservation,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
+                    backgroundColor: const Color.fromARGB(255, 244, 168, 196),
                     padding: EdgeInsets.symmetric(horizontal: 50, vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12),

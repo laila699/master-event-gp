@@ -1,7 +1,7 @@
 // lib/providers/menu_provider.dart
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:masterevent/providers/auth_provider.dart';
+import 'package:softwareGP/providers/auth_provider.dart';
 import '../services/menu_service.dart';
 
 /// A “menu section” simplified model. You can replace with a proper Dart class.

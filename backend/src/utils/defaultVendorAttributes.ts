@@ -283,13 +283,13 @@ export const defaultVendorAttributes: Record<
       options: ["دي جي", "مغني", "فرقة موسيقية", "ساحر", "مهرج"],
       value: [],
     },
-    {
-      key: "availability",
+  /*  {
+     key: "availability",
       label: "تواريخ التوفر",
       type: "array",
-      itemType: "date",
+      itemType: "string",
       value: [],
-    },
+    }, */
     { key: "priceRange", label: "نطاق السعر", type: "string", value: "" },
     {
       key: "entertainerImages",

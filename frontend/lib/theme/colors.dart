@@ -5,10 +5,10 @@ import 'package:flutter/material.dart';
 /// 2030-style neon pink⇆purple⇆white palette
 class AppColors {
   /// Login & header gradient start (neon magenta)
-  static const gradientStart = Color(0xFFD81B60);
+  static const gradientStart = Color.fromARGB(255, 183, 162, 143);
 
   /// Login & header gradient end (deep purple)
-  static const gradientEnd = Color(0xFF8E24AA);
+  static const gradientEnd = Color.fromARGB(255, 54, 42, 50);
 
   /// Background “canvas” (pure black)
   static const background = Color(0xFF000000);
@@ -29,7 +29,7 @@ class AppColors {
   static const fieldFill = Color.fromRGBO(255, 255, 255, 0.10);
 
   /// Border color for focused fields (use pure gradientStart)
-  static const fieldBorder = gradientStart;
+  static const fieldBorder = Color.fromARGB(255, 142, 127, 91);
 
   /// Error text / danger
   static const error = Color(0xFFEF5350);

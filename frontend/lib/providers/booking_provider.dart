@@ -1,7 +1,7 @@
 // lib/providers/booking_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:masterevent/models/booking_detail.dart';
-import 'package:masterevent/providers/auth_provider.dart';
+import 'package:softwareGP/models/booking_detail.dart';
+import 'package:softwareGP/providers/auth_provider.dart';
 import '../models/booking.dart';
 import '../services/booking_service.dart';
 

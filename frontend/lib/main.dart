@@ -7,8 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masterevent/firebase_options.dart';
-import 'package:masterevent/theme/colors.dart';
+import 'package:softwareGP/firebase_options.dart';
+import 'package:softwareGP/services/notification_service.dart';
+import 'package:softwareGP/theme/colors.dart';
 
 import 'services/token_storage.dart';
 import 'services/dio_client.dart';
@@ -45,8 +46,10 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(notificationServiceProvider);
+
     return MaterialApp(
-      title: 'Master Event',
+      title: 'Tripify ',
       debugShowCheckedModeBanner: false,
       theme: _buildFutureTheme(),
       localizationsDelegates: const [

@@ -7,21 +7,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masterevent/theme/colors.dart';
+import 'package:softwareGP/theme/colors.dart';
 
 import '../../models/offering.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/offering_provider.dart';
 
 class OfferingDetailsScreen extends ConsumerWidget {
-  final Offering offering;
-  const OfferingDetailsScreen({Key? key, required this.offering})
+  final Offering offering; // Offering object to display details for
+  const OfferingDetailsScreen({Key? key, required this.offering}) // 
     : super(key: key);
 
   Widget _buildStack(BuildContext context, Widget child) {
     return Stack(
       children: [
-        // Background blur or color
+        //  function Background blur or color
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -43,6 +43,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
     );
   }
 
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final accent1 = AppColors.gradientStart;
@@ -52,7 +53,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
     final user =
         authState.status == AuthStatus.authenticated ? authState.user! : null;
     if (user == null) {
-      return Scaffold(body: _buildStack(context, _buildLoginRequired()));
+      return Scaffold(body: _buildStack(context, _buildLoginRequired())); // if user is not authenticated, show login required message
     }
     final vendorId = user.id;
     final isOwner = user.role == 'vendor' && vendorId == offering.vendorId;
@@ -74,7 +75,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
           if (isOwner || isAdmin)
             IconButton(
               icon: Icon(Icons.delete, color: accent1),
-              onPressed: () async {
+              onPressed: () async { // زر الحذف
                 final confirm = await showDialog<bool>(
                   context: context,
                   builder:
@@ -102,7 +103,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          ElevatedButton(
+                          ElevatedButton( // زر الحذف
                             onPressed: () => Navigator.of(ctx).pop(true),
                             child: Text('حذف'),
                           ),
@@ -120,7 +121,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
                 }
               },
             ),
-          if (isOwner || isAdmin)
+          if (isOwner || isAdmin) // زر التعديل
             IconButton(
               icon: Icon(Icons.edit, color: accent1),
               onPressed: () async {
@@ -129,7 +130,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
             ),
         ],
       ),
-      body: _buildStack(
+      body: _buildStack( // Build the main content stack
         context,
         SingleChildScrollView(
           padding: const EdgeInsets.only(top: kToolbarHeight + 24),
@@ -164,7 +165,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
                   ),
                   child: Center(
                     child: Icon(
-                      Icons.card_giftcard,
+                      Icons.card_giftcard, // Placeholder icon if no images
                       size: 80,
                       color: AppColors.textSecondary,
                     ),
@@ -176,7 +177,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Text(
-                  offering.title,
+                  offering.title, // Title of the offering
                   style: GoogleFonts.orbitron(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -190,7 +191,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
                   vertical: 8,
                 ),
                 child: Text(
-                  '${offering.price.toStringAsFixed(2)} ش.إ',
+                  '${offering.price.toStringAsFixed(2)} ش.إ', // Price of the offering
                   style: GoogleFonts.orbitron(
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
@@ -199,7 +200,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
                 ),
               ),
               // Description
-              if (offering.description?.isNotEmpty ?? false)
+              if (offering.description?.isNotEmpty ?? false) // Check if description exists , if null برجع false
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16,
@@ -221,26 +222,26 @@ class OfferingDetailsScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildLoginRequired() => Center(
+  Widget _buildLoginRequired() => Center( // Message to show if user is not authenticated
     child: Text(
       'يجب تسجيل الدخول أولاً',
       style: GoogleFonts.orbitron(color: AppColors.textOnNeon),
     ),
   );
 
-  Future<void> _showEditOfferingDialog(
+  Future<void> _showEditOfferingDialog( // Show dialog to edit offering
     BuildContext context,
     WidgetRef ref,
     String vendorId,
     Offering off,
   ) async {
-    final titleCtl = TextEditingController(text: off.title);
-    final descCtl = TextEditingController(text: off.description);
+    final titleCtl = TextEditingController(text: off.title); // title controller
+    final descCtl = TextEditingController(text: off.description); 
     final priceCtl = TextEditingController(text: off.price.toString());
-    List<File> newImages = [];
+    List<File> newImages = []; // List to hold new images
 
     Future<List<File>?> pickImages() async {
-      return await showModalBottomSheet<List<File>>(
+      return await showModalBottomSheet<List<File>>( // Show bottom sheet to pick images
         context: context,
         builder: (ctx) {
           return SafeArea(
@@ -289,7 +290,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
       );
     }
 
-    await showDialog(
+    await showDialog( // نافذة التعديل
       context: context,
       builder: (dialogCtx) {
         return AlertDialog(
@@ -298,7 +299,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
             'تعديل العرض',
             style: GoogleFonts.orbitron(color: AppColors.textOnNeon),
           ),
-          content: SingleChildScrollView(
+          content: SingleChildScrollView( // Scrollable content for the dialog
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -325,12 +326,12 @@ class OfferingDetailsScreen extends ConsumerWidget {
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(255, 244, 168, 196),
                   ),
-                  icon: Icon(Icons.photo_library, color: Colors.white),
+                  icon: Icon(Icons.photo_library, color: Colors.white), // Button to change/add images
                   label: Text(
                     'تغيير / إضافة صور',
                     style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () async {
+                  onPressed: () async { // Open image picker تعرض واجهة اختيار الصور من المعرض او الكاميرا
                     final picked = await pickImages();
                     if (picked != null && picked.isNotEmpty) newImages = picked;
                   },
@@ -339,7 +340,7 @@ class OfferingDetailsScreen extends ConsumerWidget {
                   Padding(
                     padding: const EdgeInsets.only(top: 8),
                     child: Text(
-                      '${newImages.length} صورة/صور مختارة',
+                      '${newImages.length} صورة/صور مختارة', // تخزن الصورة في newImages ويعرض عدد الصور المختارة
                       style: TextStyle(color: AppColors.textOnNeon),
                     ),
                   ),
@@ -358,11 +359,11 @@ class OfferingDetailsScreen extends ConsumerWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 244, 168, 196),
               ),
-              onPressed: () {
-                final t = titleCtl.text.trim();
-                final pr = double.tryParse(priceCtl.text.trim()) ?? off.price;
+              onPressed: () { // Save changes
+                final t = titleCtl.text.trim(); // Get trimmed title
+                final pr = double.tryParse(priceCtl.text.trim()) ?? off.price; // يحول النص الى رقم عشري 
                 final d =
-                    descCtl.text.trim().isEmpty ? null : descCtl.text.trim();
+                    descCtl.text.trim().isEmpty ? null : descCtl.text.trim(); // اذا فارغ بحول النص الى null
                 if (t.isNotEmpty && pr > 0) {
                   ref
                       .read(vendorOfferingsProvider(vendorId).notifier)
@@ -386,8 +387,8 @@ class OfferingDetailsScreen extends ConsumerWidget {
       },
     );
   }
-
-  Widget _dialogField({
+ 
+  Widget _dialogField({   // انشاء حقل نصي بتصميم موحد
     required TextEditingController controller,
     required String label,
     required Color accent,

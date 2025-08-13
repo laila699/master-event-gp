@@ -1,16 +1,16 @@
 // lib/screens/auth/register_screen.dart
 
-import 'dart:io';
+import 'dart:io'; // Importing dart:io for file handling from image picker
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart'; // Importing image picker for selecting profile images
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masterevent/providers/auth_provider.dart';
-import 'package:masterevent/screens/auth/login_screen.dart';
-import 'package:masterevent/screens/dashboard_screen.dart';
-import 'package:masterevent/models/user.dart';
-import 'package:masterevent/theme/colors.dart';
+import 'package:softwareGP/providers/auth_provider.dart'; // Import for authentication state management
+import 'package:softwareGP/screens/auth/login_screen.dart';
+import 'package:softwareGP/screens/dashboard_screen.dart';
+import 'package:softwareGP/models/user.dart'; // Importing user model for user data representation
+import 'package:softwareGP/theme/colors.dart';
 
 /// These must match exactly the backend enum values:
 const List<String> _allVendorTypes = [
@@ -23,22 +23,25 @@ const List<String> _allVendorTypes = [
 ];
 
 const Map<String, String> _vendorTypeLabels = {
-  'decorator': 'ديكور',
-  'furniture_store': 'متجر أثاث',
+  // Mapping vendor types to user-friendly الاسم يلي حينعرض للمستخد
+  'decorator': ' الاقامة',
+  'furniture_store': 'نقل ومواصلات  ',
   'photographer': 'مصور',
   'restaurant': 'مطعم',
-  'gift_shop': 'متجر هدايا',
-  'entertainer': 'الترفيه و العروض',
+  'gift_shop': ' متجر معدات رحل ',
+  'entertainer': ' مرشد ',
 };
 
 class RegisterScreen extends ConsumerStatefulWidget {
-  const RegisterScreen({Key? key}) : super(key: key);
+  const RegisterScreen({Key? key})
+    : super(key: key); // Constructor for RegisterScreen
 
   @override
   ConsumerState<RegisterScreen> createState() => _RegisterScreenState();
-}
+} //لما بنا الشاشة نستخدم كلاس registerScreenState كحالة
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+  //كلاس خاصة تمل حالة ال ريجستر سكرين
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
@@ -48,10 +51,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   final _picker = ImagePicker();
   String _selectedRole = 'organizer';
   String? _selectedVendorType = _allVendorTypes.first;
-  bool _isSubmitting = false;
+  bool _isSubmitting = false; //يمنع الضغط على زر انشاء حساب  أثناء الإرسال
 
   @override
   void dispose() {
+    // افراغ الذاكرة عند الخروج من الشاشة
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
@@ -80,7 +84,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ListTile(
                 leading: const Icon(
                   Icons.photo_library,
-                  color: Color.fromARGB( 255, 244, 168, 196),
+                  color: Color.fromARGB(255, 244, 168, 196),
                 ),
                 title: const Text('اختيار من المعرض'),
                 onTap: () {
@@ -91,7 +95,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               ListTile(
                 leading: const Icon(
                   Icons.photo_camera,
-                  color: Color.fromARGB( 255, 244, 168, 196),
+                  color: Color.fromARGB(255, 244, 168, 196),
                 ),
                 title: const Text('التقاط صورة'),
                 onTap: () {
@@ -103,7 +107,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ),
         ),
   );
-
+  //تنفذ عند الضغط على زر انشاء حساب
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     final name = _nameController.text.trim();
@@ -149,8 +153,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       }
     });
 
-    final accent1 = AppColors.gradientStart;
-    final accent2 = const Color.fromARGB( 255, 244, 168, 196);
+    final accent1 = const Color.fromRGBO(183, 162, 143, 1);
+    final accent2 = const Color.fromARGB(255, 244, 168, 196);
 
     return Scaffold(
       body: Stack(

@@ -9,13 +9,13 @@ final List<Map<String, dynamic>> allEntertainmentOptions = [
     'id': 'debka_pro',
     'name': 'فرقة شمس للأعراس ',
     'description':
-        'فرقة دبكة مكونة من ٨ راقصين مع موسيقى حية، مناسبة للأفراح والمناسبات الكبيرة. نقدم عروضًا مميزة تجذب الجمهور وتضفي جوًا من البهجة.',
+        'فرقة دبكة مكونة من ٨ راقصين مع موسيقى حية، رحلة للأفراح والمناسبات الكبيرة. نقدم عروضًا مميزة تجذب الجمهور وتضفي جوًا من البهجة.',
     'image': 'assets/dd1.jpg',
     'price_range': 'تبدأ من 800 شيكل',
     'suitable_for_events': ['زفاف', 'خطوبة', 'تخرج', 'افتتاح'],
     'details': {
       'duration': '30 دقيقة',
-      'requirements': 'مساحة مناسبة للرقص، نظام صوت جيد.',
+      'requirements': 'مساحة رحلة للرقص، نظام صوت جيد.',
       'customize_songs': true,
       'gallery_images': ['assets/sh1.jpg', 'assets/sh2.jpg'],
     },
@@ -24,10 +24,10 @@ final List<Map<String, dynamic>> allEntertainmentOptions = [
     'id': 'dabke_small',
     'name': 'فقرة طلت الاستعراضية',
     'description':
-        'وصلة دبكة مكونة من ٤ راقصين مع موسيقى مسجلة، مناسبة للمناسبات العائلية الصغيرة والتجمعات. أداء حيوي وممتع يناسب جميع الأذواق.',
+        'وصلة دبكة مكونة من ٤ راقصين مع موسيقى مسجلة، رحلة للمناسبات العائلية الصغيرة والتجمعات. أداء حيوي وممتع يناسب جميع الأذواق.',
     'image': 'assets/tal1.jpg',
     'price_range': 'تبدأ من 400 شيكل',
-    'suitable_for_events': ['زفاف', 'خطوبة', 'عيد ميلاد', 'مناسبة أخرى'],
+    'suitable_for_events': ['زفاف', 'خطوبة', 'عيد ميلاد', 'رحلة أخرى'],
     'details': {
       'duration': '15 دقيقة',
       'requirements': 'نظام صوت أساسي.',
@@ -74,13 +74,13 @@ final List<Map<String, dynamic>> allEntertainmentOptions = [
     'id': 'magic_show',
     'name': 'فرقة تكات ومسابقات',
     'description':
-        'ساحر محترف يقدم عروضًا شيقة ومسابقات تفاعلية للأطفال والكبار، مناسبة لجميع الاحتفالات.',
+        'ساحر محترف يقدم عروضًا شيقة ومسابقات تفاعلية للأطفال والكبار، رحلة لجميع الاحتفالات.',
     'image': 'assets/magic_show.jpg', // تأكدي من توفر هذه الصورة
     'price_range': 'تبدأ من 500 شيكل',
-    'suitable_for_events': ['عيد ميلاد', 'حفل مدرسي', 'مناسبة أخرى'],
+    'suitable_for_events': ['عيد ميلاد', 'حفل مدرسي', 'رحلة أخرى'],
     'details': {
       'duration': '60 دقيقة',
-      'requirements': 'مسرح صغير، إضاءة مناسبة.',
+      'requirements': 'مسرح صغير، إضاءة رحلة.',
       'age_group': 'جميع الأعمار',
     },
   },
@@ -91,7 +91,7 @@ final List<Map<String, dynamic>> allEntertainmentOptions = [
         'مجموعة من الراقصين يقدمون عروض رقص فلكلورية من ثقافات مختلفة (مثل رقصات خليجية أو شامية)، مع أزياء تقليدية.',
     'image': 'assets/folk_dance.jpg', // تأكدي من توفر هذه الصورة
     'price_range': 'تبدأ من 700 شيكل',
-    'suitable_for_events': ['زفاف', 'افتتاح', 'تخرج', 'مناسبة أخرى'],
+    'suitable_for_events': ['زفاف', 'افتتاح', 'تخرج', 'رحلة أخرى'],
     'details': {
       'duration': '25 دقيقة',
       'requirements': 'مساحة واسعة للرقص.',
@@ -111,7 +111,7 @@ class EntertainmentScreen extends StatefulWidget {
 
 class _EntertainmentScreenState extends State<EntertainmentScreen> {
   String _searchQuery = '';
-  String? _selectedEventType; // لتخزين نوع المناسبة المختار من الفلترة
+  String? _selectedEventType; // لتخزين نوع الرحلة المختار من الفلترة
 
   // قائمة بأنواع المناسبات التي ستظهر في الـ Dropdown
   final List<String> _eventTypes = [
@@ -125,12 +125,12 @@ class _EntertainmentScreenState extends State<EntertainmentScreen> {
     'حفلات خاصة',
     'مهرجانات',
     'حفل مدرسي',
-    'مناسبة أخرى',
+    'رحلة أخرى',
   ];
 
   @override
   Widget build(BuildContext context) {
-    // بناء القائمة المفلترة بناءً على البحث ونوع المناسبة
+    // بناء القائمة المفلترة بناءً على البحث ونوع الرحلة
     List<Map<String, dynamic>> filteredEntertainmentOptions =
         allEntertainmentOptions.where((option) {
           // شرط البحث عن طريق الاسم
@@ -138,7 +138,7 @@ class _EntertainmentScreenState extends State<EntertainmentScreen> {
             _searchQuery.toLowerCase(),
           );
 
-          // شرط الفلترة حسب نوع المناسبة
+          // شرط الفلترة حسب نوع الرحلة
           final eventTypeMatches =
               _selectedEventType == null || // إذا لم يتم اختيار شيء
               _selectedEventType ==
@@ -146,7 +146,7 @@ class _EntertainmentScreenState extends State<EntertainmentScreen> {
               (option['suitable_for_events']
                       as List<
                         String
-                      >) // أو إذا كانت المناسبة المختارة موجودة في قائمة المناسبات للفرقة
+                      >) // أو إذا كانت الرحلة المختارة موجودة في قائمة المناسبات للفرقة
                   .contains(_selectedEventType);
 
           return nameMatches &&
@@ -198,7 +198,7 @@ class _EntertainmentScreenState extends State<EntertainmentScreen> {
                 ),
                 const SizedBox(height: 15),
 
-                // قائمة الفلترة حسب نوع المناسبة
+                // قائمة الفلترة حسب نوع الرحلة
                 DropdownButtonFormField<String>(
                   value: _selectedEventType,
                   hint: Text(
@@ -230,7 +230,7 @@ class _EntertainmentScreenState extends State<EntertainmentScreen> {
                   onChanged: (value) {
                     setState(() {
                       _selectedEventType =
-                          value; // تحديث نوع المناسبة وإعادة بناء الواجهة
+                          value; // تحديث نوع الرحلة وإعادة بناء الواجهة
                     });
                   },
                   style: GoogleFonts.cairo(fontSize: 16),

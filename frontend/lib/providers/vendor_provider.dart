@@ -1,9 +1,9 @@
 // lib/providers/vendor_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:masterevent/models/service_type.dart';
-import 'package:masterevent/models/user.dart';
-import 'package:masterevent/models/vendor_filter.dart';
-import 'package:masterevent/providers/auth_provider.dart';
+import 'package:softwareGP/models/service_type.dart';
+import 'package:softwareGP/models/user.dart';
+import 'package:softwareGP/models/vendor_filter.dart';
+import 'package:softwareGP/providers/auth_provider.dart';
 import '../services/vendor_service.dart';
 import '../models/provider_model.dart';
 import 'dart:io';

@@ -4,8 +4,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masterevent/models/offering.dart';
-import 'package:masterevent/screens/create_booking_screen.dart';
+import 'package:softwareGP/models/offering.dart';
+import 'package:softwareGP/screens/create_booking_screen.dart';
 
 import '../models/event.dart';
 import '../models/recommended_offers.dart';
@@ -169,7 +169,7 @@ class _EventBudgetPageState extends ConsumerState<EventBudgetPage> {
     );
 
     if (buckets.isEmpty) {
-      _snack('لا توجد عروض مناسبة الآن');
+      _snack('لا توجد عروض رحلة الآن');
       return;
     }
 

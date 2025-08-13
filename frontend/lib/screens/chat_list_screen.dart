@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
-import '../providers/chat_provider.dart';
+import '../providers/chat_provider.dart'; // جلب المحادثات
 import '../providers/auth_provider.dart'; // ← NEW (for userNameProvider)
 import '../theme/colors.dart';
 import 'chat_screen.dart';
@@ -16,7 +16,11 @@ class ChatListScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext ctx, WidgetRef ref) {
     final chatsAsync = ref.watch(chatListProvider);
-    final myUid = FirebaseAuth.instance.currentUser!.uid;
+    final myUid =
+        FirebaseAuth
+            .instance
+            .currentUser!
+            .uid; // Get current user ID عشان اعرف الطرف التاني بالمحادثة
 
     return Scaffold(
       body: Stack(
@@ -75,6 +79,7 @@ class ChatListScreen extends ConsumerWidget {
                       padding: const EdgeInsets.all(12),
                       itemCount: chats.length,
                       itemBuilder: (_, i) {
+                        // عرض جميع
                         final chat = chats[i];
                         final otherUid = chat.participants.firstWhere(
                           (u) => u != myUid,

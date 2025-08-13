@@ -20,6 +20,10 @@ export async function sendNotificationToUser(
   const docs = await PushToken.find({ user: userId }).select("token -_id");
   const tokens = docs.map((d) => d.token);
 
+  console.log(`[FCM] Attempting to send notification to user: ${userId}`);
+  console.log(`[FCM] Tokens found:`, tokens);
+  console.log(`[FCM] Payload:`, JSON.stringify(payload, null, 2));
+
   if (tokens.length === 0) {
     console.log(`[FCM] no tokens for user ${userId}`);
   }
@@ -50,8 +54,16 @@ export async function sendNotificationToUser(
     tokens.map((token) =>
       messaging
         .send({ ...baseMessage, token })
-        .then((responseId) => ({ token, success: true, responseId }))
-        .catch((error) => ({ token, success: false, error }))
+        .then((responseId) => {
+          console.log(
+            `[FCM] Successfully sent to token: ${token}, responseId: ${responseId}`
+          );
+          return { token, success: true, responseId };
+        })
+        .catch((error) => {
+          console.error(`[FCM] Failed to send to token: ${token}`, error);
+          return { token, success: false, error };
+        })
     )
   );
 
@@ -63,4 +75,10 @@ export async function sendNotificationToUser(
     .forEach((r) =>
       console.warn(`[FCM] failed token=${r.token}`, (r as any).error)
     );
+
+  if (successCount === 0) {
+    console.error(
+      `[FCM] No notifications were successfully sent for user ${userId}. Check tokens, payload, and FCM configuration.`
+    );
+  }
 }

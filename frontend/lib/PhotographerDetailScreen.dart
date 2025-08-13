@@ -24,7 +24,7 @@ class PhotographerDetailScreen extends StatelessWidget {
           photographer['name'],
           style: GoogleFonts.cairo(fontWeight: FontWeight.bold),
         ),
-        backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
       ),
       backgroundColor: Color(0xFFF7F7F7),
       body: Padding(
@@ -69,7 +69,7 @@ class PhotographerDetailScreen extends StatelessWidget {
                     style: _infoStyle(context),
                   ),
                   Text(
-                    '🎉 يصور مناسبات: ${(photographer['eventTypes'] as List).join(', ')}',
+                    ' يصور رحلات: ${(photographer['eventTypes'] as List).join(', ')}',
                     style: _infoStyle(context),
                   ),
                   Text(
@@ -87,7 +87,7 @@ class PhotographerDetailScreen extends StatelessWidget {
             Center(
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
+                  backgroundColor: const Color.fromARGB(255, 244, 168, 196),
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

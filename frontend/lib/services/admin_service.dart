@@ -43,7 +43,7 @@ class AdminService {
         .map((t) => InvitationTheme.fromJson(t as Map<String, dynamic>))
         .toList();
   }
-
+  /*
   Future<InvitationTheme> createTheme(String name, dynamic image) async {
     MultipartFile imagePart;
 
@@ -75,8 +75,8 @@ class AdminService {
           )).data
           as Map<String, dynamic>,
     );
-  }
-
+  }*/
+  /*
   Future<InvitationTheme> updateTheme(
     String id,
     String name,
@@ -112,6 +112,63 @@ class AdminService {
     final resp = await _dio.put(
       '/admin/invitation-themes/$id',
       data: FormData.fromMap(map),
+      options: Options(contentType: 'multipart/form-data'),
+    );
+    return InvitationTheme.fromJson(resp.data as Map<String, dynamic>);
+  }*/
+
+  Future<InvitationTheme> createTheme(String name, dynamic image) async {
+    MultipartFile imagePart;
+
+    if (image is XFile) {
+      // This covers web *and* mobile/desktop
+      imagePart = await MultipartFile.fromFile(
+        image.path,
+        filename: image.name,
+      );
+    } else if (image is File) {
+      imagePart = await MultipartFile.fromFile(
+        image.path,
+        filename: image.uri.pathSegments.last,
+      );
+    } else {
+      throw ArgumentError('Unsupported image type: ${image.runtimeType}');
+    }
+
+    final form = FormData.fromMap({'name': name, 'image': imagePart});
+    final resp = await _dio.post(
+      '/admin/invitation-themes',
+      data: form,
+      options: Options(contentType: 'multipart/form-data'),
+    );
+    return InvitationTheme.fromJson(resp.data as Map<String, dynamic>);
+  }
+
+  Future<InvitationTheme> updateTheme(
+    String id,
+    String name,
+    dynamic? image,
+  ) async {
+    final data = <String, dynamic>{'name': name};
+
+    if (image != null) {
+      MultipartFile part;
+      if (image is XFile) {
+        part = await MultipartFile.fromFile(image.path, filename: image.name);
+      } else if (image is File) {
+        part = await MultipartFile.fromFile(
+          image.path,
+          filename: image.uri.pathSegments.last,
+        );
+      } else {
+        throw ArgumentError('Unsupported image type: ${image.runtimeType}');
+      }
+      data['image'] = part;
+    }
+
+    final resp = await _dio.put(
+      '/admin/invitation-themes/$id',
+      data: FormData.fromMap(data),
       options: Options(contentType: 'multipart/form-data'),
     );
     return InvitationTheme.fromJson(resp.data as Map<String, dynamic>);

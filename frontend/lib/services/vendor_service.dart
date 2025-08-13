@@ -3,9 +3,9 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:masterevent/models/provider_attribute.dart';
-import 'package:masterevent/models/service_type.dart';
-import 'package:masterevent/models/user.dart';
+import 'package:softwareGP/models/provider_attribute.dart';
+import 'package:softwareGP/models/service_type.dart';
+import 'package:softwareGP/models/user.dart';
 import '../models/provider_model.dart';
 import 'package:path/path.dart' as p;
 import 'package:flutter/foundation.dart'; // for kIsWeb

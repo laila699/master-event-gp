@@ -9,12 +9,12 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 
-import 'package:masterevent/EventBudgetPage.dart';
-import 'package:masterevent/EventLogisticsPage.dart';
-import 'package:masterevent/EventReviewsPage.dart';
-import 'package:masterevent/EventToDoListPage.dart';
-import 'package:masterevent/screens/booking_Details_Card.dart';
-import 'package:masterevent/theme/colors.dart';
+import 'package:softwareGP/EventBudgetPage.dart';
+import 'package:softwareGP/EventLogisticsPage.dart';
+import 'package:softwareGP/EventReviewsPage.dart';
+import 'package:softwareGP/EventToDoListPage.dart';
+import 'package:softwareGP/screens/booking_Details_Card.dart';
+import 'package:softwareGP/theme/colors.dart';
 import '../providers/event_provider.dart';
 import '../providers/booking_provider.dart';
 import '../models/event.dart';
@@ -156,7 +156,10 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
             tabBarTheme: TabBarThemeData(
               indicator: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.gradientStart, const Color.fromARGB( 255, 244, 168, 196)],
+                  colors: [
+                    AppColors.gradientStart,
+                    const Color.fromARGB(255, 244, 168, 196),
+                  ],
                 ),
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -168,7 +171,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
           child: Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
-              title: const Text('تفاصيل المناسبة'),
+              title: const Text('تفاصيل الرحلة'),
               centerTitle: true,
               actions: [
                 IconButton(
@@ -194,7 +197,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                           (_) => AlertDialog(
                             backgroundColor: AppColors.glass,
                             title: const Text('تأكيد الحذف'),
-                            content: const Text('هل تريد حذف هذه المناسبة؟'),
+                            content: const Text('هل تريد حذف هذه الرحلة ؟'),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
@@ -225,7 +228,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                 tabs: const [
                   Tab(text: 'التفاصيل'),
                   Tab(text: 'الحجوزات'),
-                  Tab(text: 'الضيوف'),
+                  Tab(text: 'المشاركين'),
                   Tab(text: 'الإعدادات'),
                 ],
               ),
@@ -274,7 +277,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                                   bookings.isEmpty
                                       ? Center(
                                         child: Text(
-                                          'لا توجد حجوزات لهذه المناسبة',
+                                          'لا توجد حجوزات لهذه الرحلة',
                                           style: GoogleFonts.orbitron(),
                                         ),
                                       )
@@ -307,16 +310,14 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        _field(_titleController, 'اسم المناسبة'),
+        _field(_titleController, 'اسم الرحلة'),
         const SizedBox(height: 12),
         GestureDetector(
           onTap: () => _selectDate(context),
-          child: AbsorbPointer(
-            child: _field(_dateController, 'تاريخ المناسبة'),
-          ),
+          child: AbsorbPointer(child: _field(_dateController, 'تاريخ الرحلة')),
         ),
         const SizedBox(height: 12),
-        _field(_venueController, 'مكان المناسبة'),
+        _field(_venueController, 'مكان الرحلة'),
         const SizedBox(height: 12),
         SizedBox(
           height: 200,
@@ -357,7 +358,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
           label: const Text('حفظ التعديلات'),
           onPressed: _saveChanges,
           style: ElevatedButton.styleFrom(
-            backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
+            backgroundColor: const Color.fromARGB(255, 244, 168, 196),
             padding: const EdgeInsets.symmetric(vertical: 14),
           ),
         ),

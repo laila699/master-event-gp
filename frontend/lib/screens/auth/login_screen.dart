@@ -4,61 +4,81 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masterevent/providers/auth_provider.dart';
-import 'package:masterevent/screens/dashboard_screen.dart';
+import 'package:softwareGP/providers/auth_provider.dart';
+import 'package:softwareGP/screens/dashboard_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState(); //create object of state class
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
-  final _emailCtrl = TextEditingController();
-  final _passCtrl = TextEditingController();
-  bool _submitting = false;
+  final _emailCtrl = TextEditingController(); // Text controller for email input
+  final _passCtrl =
+      TextEditingController(); // Text controller for password input
+  bool _submitting =
+      false; // wait flag for form submission , اذا كان ترو بكون لودنج او اذا فولس بظهر نص الزر
 
   @override
+  //نستخدم dispose() لحذف الـ controllers وتفريغ الذاكرة:
   void dispose() {
     _emailCtrl.dispose();
     _passCtrl.dispose();
     super.dispose();
   }
 
+  // Handles form submission when the user taps the "login button"
   Future<void> _submit() async {
-    final email = _emailCtrl.text.trim();
+    final email =
+        _emailCtrl.text
+            .trim(); //read email input and trim whitespace (TextEditingController)
     final pass = _passCtrl.text;
     if (email.isEmpty || pass.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('يرجى إدخال البريد وكلمة المرور')),
+        const SnackBar(
+          content: Text('يرجى إدخال البريد وكلمة المرور'),
+        ), // Show error if fields are empty
       );
-      return;
+      return; //بوقف الدالة لانه فاضيين
     }
-    setState(() => _submitting = true);
-    await ref
+    setState(() => _submitting = true); //بحدث واجهة المستخدم لتعرض جاري التحميل
+    await ref //  obj Access the auth notifier provider
         .read(authNotifierProvider.notifier)
         .login(email: email, password: pass);
-    setState(() => _submitting = false);
+    setState(() => _submitting = false); //بعد انتهاء عملية تسجيل الدخول
   }
 
   @override
   Widget build(BuildContext context) {
+    //function Build the login screen UI
     ref.listen<AuthState>(authNotifierProvider, (previous, next) {
       if (next.status == AuthStatus.authenticated) {
         Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (_) => DashboardScreen(user: next.user!)),
+          //استبدال الشاشة الحالية بشاشة جديدة
+          MaterialPageRoute(
+            builder:
+                (_) => DashboardScreen(
+                  user: next.user!,
+                ), // Pass the authenticated user to the dashboard
+          ), // Navigate to dashboard on successful login
         );
       }
     });
 
-    final authState = ref.watch(authNotifierProvider);
-    final accent1 = const Color(0xFFD81B60); // magenta-pink
-    final accent2 = const Color.fromARGB(255, 244, 168, 196); // deep purple
+    final authState = ref.watch(
+      authNotifierProvider,
+    ); //براقب الحالة  اذا تغيرت البيانات مباشرة بعيد البناء للواجهة
+    final accent1 = const Color.fromRGBO(183, 162, 143, 1);
+    ;
+    final accent2 = const Color.fromARGB(255, 244, 168, 196);
 
+    //الهيكل الرئيسي
     return Scaffold(
       body: Stack(
+        // Stack to layer background, blur, and form
         fit: StackFit.expand,
         children: [
           // 1) Neon radial background
@@ -86,7 +106,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   Icon(Icons.event, size: 80, color: accent2.withOpacity(0.8)),
                   const SizedBox(height: 24),
                   Text(
-                    'Master Event ',
+                    'Tripify  ',
                     style: GoogleFonts.orbitron(
                       fontSize: 28,
                       color: accent1,
@@ -104,7 +124,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         children: [
                           // Email
                           _buildField(
-                            controller: _emailCtrl,
+                            // Build email input field function
+                            controller:
+                                _emailCtrl, // TextEditingController for email
                             hint: 'البريد الإلكتروني',
                             icon: Icons.email,
                             accent: accent2,
@@ -116,12 +138,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             hint: 'كلمة المرور',
                             icon: Icons.lock,
                             accent: accent2,
-                            obscure: true,
+                            obscure: true, // Hide password input
                           ),
                           const SizedBox(height: 24),
                           // Login button
                           SizedBox(
-                            width: double.infinity,
+                            width: double.infinity, // Full width button
                             child: DecoratedBox(
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(
@@ -156,6 +178,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                                           width: 24,
                                           height: 24,
                                           child: CircularProgressIndicator(
+                                            //دوران لودينج
                                             color: Colors.white,
                                             strokeWidth: 2,
                                           ),
@@ -177,7 +200,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                           if (ref.watch(authNotifierProvider).status ==
                               AuthStatus.error)
                             Text(
-                              ref.watch(authNotifierProvider).message!,
+                              ref
+                                  .watch(authNotifierProvider)
+                                  .message!, // Display error message if login fails from provider
                               style: const TextStyle(color: Colors.redAccent),
                             ),
                         ],
@@ -191,7 +216,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const RegisterScreen(),
+                            builder:
+                                (_) =>
+                                    const RegisterScreen(), // Navigate to registration screen
                           ),
                         ),
                     child: Text(
@@ -218,6 +245,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Widget _buildField({
+    // Function to build input fields
     required TextEditingController controller,
     required String hint,
     required IconData icon,

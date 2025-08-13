@@ -25,7 +25,7 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
   final List<TextEditingController> _photographyTypeControllers =
       []; // لأنواع التصوير
   final List<TextEditingController> _eventTypeControllers =
-      []; // لأنواع المناسبات
+      []; // لأنواع الرحلات
 
   @override
   void initState() {
@@ -68,7 +68,7 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
       ); // حقل واحد فارغ على الأقل
     }
 
-    // تعبئة حقول أنواع المناسبات
+    // تعبئة حقول أنواع الرحلات
     if (widget.photographer != null &&
         widget.photographer!['eventTypes'] != null) {
       for (var event in widget.photographer!['eventTypes']) {
@@ -317,7 +317,7 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
               const SizedBox(height: 20),
 
               _buildDynamicTextFieldsSection(
-                label: 'أنواع المناسبات:',
+                label: 'أنواع الرحلات:',
                 hint: 'مثال: زفاف، خطوبة، تخرج',
                 controllers: _eventTypeControllers,
                 onAdd: () => _addTextField(_eventTypeControllers),
@@ -395,7 +395,7 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
     );
   }
 
-  // دالة مساعدة لبناء أقسام الحقول الديناميكية (صور، أنواع تصوير، مناسبات)
+  // دالة مساعدة لبناء أقسام الحقول الديناميكية (صور، أنواع تصوير، )
   Widget _buildDynamicTextFieldsSection({
     required String label,
     required String hint,

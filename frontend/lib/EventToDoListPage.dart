@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:masterevent/theme/colors.dart';
+import 'package:softwareGP/theme/colors.dart';
 
 import '../models/event.dart';
 import '../models/task.dart';

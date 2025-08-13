@@ -31,7 +31,7 @@ class _BookingScreenState extends State<BookingScreen> {
     'تخرج',
     'عيد ميلاد',
     'افتتاح',
-    'مناسبة أخرى',
+    'رحلة أخرى',
   ];
 
   Future<void> _selectDate(BuildContext context) async {
@@ -71,7 +71,7 @@ class _BookingScreenState extends State<BookingScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'الرجاء اختيار تاريخ المناسبة.',
+            'الرجاء اختيار تاريخ الرحلة.',
             style: GoogleFonts.cairo(),
           ),
           backgroundColor: Colors.redAccent,
@@ -83,7 +83,7 @@ class _BookingScreenState extends State<BookingScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'الرجاء اختيار نوع المناسبة.',
+            'الرجاء اختيار نوع الرحلة.',
             style: GoogleFonts.cairo(),
           ),
           backgroundColor: Colors.redAccent,
@@ -95,7 +95,7 @@ class _BookingScreenState extends State<BookingScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'الرجاء إدخال مكان المناسبة لأن التوصيل متاح.',
+            'الرجاء إدخال مكان الرحلة لأن التوصيل متاح.',
             style: GoogleFonts.cairo(),
           ),
           backgroundColor: Colors.redAccent,
@@ -202,9 +202,9 @@ class _BookingScreenState extends State<BookingScreen> {
             ),
             const SizedBox(height: 20),
 
-            // قسم تاريخ المناسبة
+            // قسم تاريخ الرحلة
             Text(
-              'تاريخ المناسبة:',
+              'تاريخ الرحلة:',
               style: GoogleFonts.cairo(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -229,7 +229,7 @@ class _BookingScreenState extends State<BookingScreen> {
                   children: [
                     Text(
                       _selectedDate == null
-                          ? 'اختر تاريخ المناسبة'
+                          ? 'اختر تاريخ الرحلة'
                           : DateFormat('dd/MM/yyyy').format(_selectedDate!),
                       style: GoogleFonts.cairo(
                         fontSize: 16,
@@ -279,10 +279,10 @@ class _BookingScreenState extends State<BookingScreen> {
             ),
             const SizedBox(height: 20),
 
-            // مكان المناسبة (يظهر فقط إذا كان التوصيل متاح)
+            // مكان الرحلة (يظهر فقط إذا كان التوصيل متاح)
             if (widget.deliveryAvailable) ...[
               Text(
-                'مكان المناسبة (إذا كنت بحاجة لتوصيل):',
+                'مكان الرحلة (إذا كنت بحاجة لتوصيل):',
                 style: GoogleFonts.cairo(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -293,7 +293,7 @@ class _BookingScreenState extends State<BookingScreen> {
               TextField(
                 controller: _locationController,
                 decoration: InputDecoration(
-                  hintText: 'أدخل عنوان المناسبة بالتفصيل',
+                  hintText: 'أدخل عنوان الرحلة بالتفصيل',
                   hintStyle: GoogleFonts.cairo(color: Colors.grey[600]),
                   filled: true,
                   fillColor: Colors.white,
@@ -359,9 +359,9 @@ class _BookingScreenState extends State<BookingScreen> {
             ),
             const SizedBox(height: 20),
 
-            // نوع المناسبة
+            // نوع الرحلة
             Text(
-              'نوع المناسبة:',
+              'نوع الرحلة:',
               style: GoogleFonts.cairo(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -372,7 +372,7 @@ class _BookingScreenState extends State<BookingScreen> {
             DropdownButtonFormField<String>(
               value: _selectedEventType,
               hint: Text(
-                'اختر نوع المناسبة',
+                'اختر نوع الرحلة',
                 style: GoogleFonts.cairo(color: Colors.grey[600]),
               ),
               decoration: InputDecoration(

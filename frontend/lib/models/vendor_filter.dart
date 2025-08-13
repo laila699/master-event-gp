@@ -1,6 +1,6 @@
 // lib/models/vendor_filter.dart
 import 'package:flutter/foundation.dart';
-import 'package:masterevent/models/service_type.dart';
+import 'package:softwareGP/models/service_type.dart';
 
 class VendorFilter {
   final VendorServiceType type;

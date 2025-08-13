@@ -1,9 +1,9 @@
 // lib/providers/vendor_filter_provider.dart
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:masterevent/models/service_type.dart';
-import 'package:masterevent/models/user.dart';
-import 'package:masterevent/models/vendor_filter.dart';
-import 'package:masterevent/providers/vendor_provider.dart';
+import 'package:softwareGP/models/service_type.dart';
+import 'package:softwareGP/models/user.dart';
+import 'package:softwareGP/models/vendor_filter.dart';
+import 'package:softwareGP/providers/vendor_provider.dart';
 
 class VendorFilterNotifier extends StateNotifier<VendorFilter> {
   VendorFilterNotifier()

@@ -8,7 +8,10 @@ import { asyncHandler } from "../utils/asyncHandler";
 import { uploadAvatar } from "../middleware/multer";
 import { defaultVendorAttributes } from "../utils/defaultVendorAttributes";
 import admin from "../utils/firebase";
+import { sendNotificationToUser } from "../utils/notify";
+
 const JWT_EXPIRES_IN = "7d";
+
 
 // ─── Multer setup (same as before) ───────────────────────────────────────────────
 

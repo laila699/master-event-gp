@@ -245,7 +245,7 @@ class EntertainmentDetailScreen extends StatelessWidget {
             ],
 
             Text(
-              'يناسب المناسبات التالية:',
+              'يناسب الرحلات التالية:',
               style: GoogleFonts.cairo(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,

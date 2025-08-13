@@ -8,7 +8,7 @@ export const createInvitationTheme = async (
 ): Promise<any> => {
   try {
     const { name } = req.body;
-    const imageUrl = req.file?.path; // if using multer
+    const imageUrl = `/uploads/invitation-themes/${req?.file?.filename}`; 
     if (!name || !imageUrl) {
       return res.status(400).json({ message: "Name and image are required." });
     }
