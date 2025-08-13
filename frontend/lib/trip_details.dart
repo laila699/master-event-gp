@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class EventDetailsScreen extends StatefulWidget {
+class TripDetailsScreen extends StatefulWidget {
   final String title;
   final String date;
   final String location;
 
-  const EventDetailsScreen({
+  const TripDetailsScreen({
     super.key,
     required this.title,
     required this.date,
@@ -13,10 +13,10 @@ class EventDetailsScreen extends StatefulWidget {
   });
 
   @override
-  _EventDetailsScreenState createState() => _EventDetailsScreenState();
+  _TripDetailsScreenState createState() => _TripDetailsScreenState();
 }
 
-class _EventDetailsScreenState extends State<EventDetailsScreen> {
+class _TripDetailsScreenState extends State<TripDetailsScreen> {
   final TextEditingController _commentController = TextEditingController();
   String _savedComment = "";
 

@@ -5,7 +5,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../providers/event_provider.dart'; // where you register / delete tokens
+import '../providers/tr_provider.dart'; // where you register / delete tokens
 
 /* ────────────────────────────────────────────────────────────────────────── */
 /*  1. Simple in–memory model + Riverpod state for in-app notification list   */

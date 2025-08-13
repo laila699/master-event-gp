@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:softwareGP/providers/booking_provider.dart';
-import 'package:softwareGP/providers/event_provider.dart';
+import 'package:softwareGP/providers/tr_provider.dart';
 import 'package:softwareGP/services/booking_service.dart';
 import '../models/offering.dart';
-import '../models/event.dart';
+import '../models/trip.dart';
 import '../theme/colors.dart';
 
 class CreateBookingScreen extends ConsumerStatefulWidget {

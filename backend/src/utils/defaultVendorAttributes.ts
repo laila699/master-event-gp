@@ -28,7 +28,7 @@ export const defaultVendorAttributes: Record<
     },
     { key: "priceRange", label: "نطاق السعر", type: "string", value: "" },
     {
-      key: "eventTypes",
+      key: "tripTypes",
       label: "أنواع المناسبات",
       type: "multiSelect",
       options: ["زفاف", "خطوبة", "تخرج", "عيد ميلاد", "حفل عمل"],
@@ -151,7 +151,7 @@ export const defaultVendorAttributes: Record<
       value: [],
     },
     {
-      key: "eventTypes",
+      key: "tripTypes",
       label: "أنواع المناسبات",
       type: "multiSelect",
       options: ["زفاف", "خطوبة", "تخرج", "أطفال", "عيد ميلاد", "افتتاح مشروع"],
@@ -292,7 +292,7 @@ export const defaultVendorAttributes: Record<
     }, */
     { key: "priceRange", label: "نطاق السعر", type: "string", value: "" },
     {
-      key: "entertainerImages",
+      key: "guidesImages",
       label: "صور العرض",
       type: "array",
       itemType: "string",

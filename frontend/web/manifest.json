@@ -1,6 +1,6 @@
 {
-    "name": "masterevent",
-    "short_name": "masterevent",
+    "name": "Tripify",
+    "short_name": "Tripify",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

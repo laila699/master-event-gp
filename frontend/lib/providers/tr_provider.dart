@@ -2,8 +2,8 @@
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:softwareGP/models/recommended_offers.dart';
-import '../models/event.dart';
-import '../models/guest.dart';
+import '../models/trip.dart';
+import '../models/member.dart';
 import '../services/event_service.dart';
 import 'auth_provider.dart';
 
@@ -70,26 +70,26 @@ final deleteEventProvider = FutureProvider.family<void, String>((ref, eventId) {
   return ref.read(eventServiceProvider).deleteEvent(eventId);
 });
 
-/// 6) Add Guest
-final addGuestProvider = FutureProvider.family<Guest, Map<String, String>>((
+/// 6) Add Member
+final addMemberProvider = FutureProvider.family<Member, Map<String, String>>((
   ref,
   params,
 ) {
   return ref
       .read(eventServiceProvider)
-      .addGuest(
+      .addMember(
         eventId: params['eventId']!,
         name: params['name']!,
         email: params['email']!,
       );
 });
 
-/// 7) Update Guest Status
-final updateGuestStatusProvider =
-    FutureProvider.family<Guest, Map<String, String>>((ref, params) {
+/// 7) Update Member Status
+final updateMemberStatusProvider =
+    FutureProvider.family<Member, Map<String, String>>((ref, params) {
       return ref
           .read(eventServiceProvider)
-          .updateGuestStatus(
+          .updateMemberStatus(
             eventId: params['eventId']!,
             guestId: params['guestId']!,
             status: params['status']!,

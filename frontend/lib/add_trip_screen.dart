@@ -9,43 +9,43 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:softwareGP/theme/colors.dart';
 
-import '../models/event.dart';
+import 'models/trip.dart';
 import '../services/event_service.dart';
-import '../providers/event_provider.dart';
+import 'providers/tr_provider.dart';
 
-class AddEventScreen extends ConsumerStatefulWidget {
-  const AddEventScreen({Key? key}) : super(key: key);
+class AddTripScreen extends ConsumerStatefulWidget {
+  const AddTripScreen({Key? key}) : super(key: key);
 
   @override
-  ConsumerState<AddEventScreen> createState() => _AddEventScreenState();
+  ConsumerState<AddTripScreen> createState() => _AddTripScreenState();
 }
 
-class _AddEventScreenState extends ConsumerState<AddEventScreen> {
+class _AddTripScreenState extends ConsumerState<AddTripScreen> {
   final _formKey = GlobalKey<FormState>(); // مفتاح النموذج
   final _titleController = TextEditingController(); // للتحكم في حقل العنوان
-  final _dateController = TextEditingController(); 
-  final _venueController = TextEditingController();  // حقل مكان الرحلة 
-  final _coordsController = TextEditingController(); // بخزن الاحداثيات هون 
+  final _dateController = TextEditingController();
+  final _venueController = TextEditingController(); // حقل مكان الرحلة
+  final _coordsController = TextEditingController(); // بخزن الاحداثيات هون
   final _descController = TextEditingController();
 
-  LatLng? _pickedLocation; // الموقع المختار على الخريطة , ؟ ممكن يكون null 
-  late final MapController _mapController; // للتحكم في الخريطة ,  
+  LatLng? _pickedLocation; // الموقع المختار على الخريطة , ؟ ممكن يكون null
+  late final MapController _mapController; // للتحكم في الخريطة ,
 
   @override
   void initState() {
     super.initState();
     _mapController = MapController(); // إنشاء خريطة جديدة
     _locateUser(); //الحصول على موقع المستخدم الحالي باستخدام GPS (Geolocator).
-
-
   }
 
-  Future<void> _locateUser() async { // الحصول على موقع المستخدم الحالي
+  Future<void> _locateUser() async {
+    // الحصول على موقع المستخدم الحالي
     try {
-      final pos = await Geolocator.getCurrentPosition( // الحصول على موقع المستخدم الحالي
+      final pos = await Geolocator.getCurrentPosition(
+        // الحصول على موقع المستخدم الحالي
         desiredAccuracy: LocationAccuracy.high,
       );
-      final latlng = LatLng(pos.latitude, pos.longitude); 
+      final latlng = LatLng(pos.latitude, pos.longitude);
       setState(() {
         _pickedLocation = latlng;
         _coordsController.text =

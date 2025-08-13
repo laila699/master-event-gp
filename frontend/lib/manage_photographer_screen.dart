@@ -70,8 +70,8 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
 
     // تعبئة حقول أنواع الرحلات
     if (widget.photographer != null &&
-        widget.photographer!['eventTypes'] != null) {
-      for (var event in widget.photographer!['eventTypes']) {
+        widget.photographer!['tripTypes'] != null) {
+      for (var event in widget.photographer!['tripTypes']) {
         _eventTypeControllers.add(TextEditingController(text: event));
       }
     } else {
@@ -133,7 +133,7 @@ class _ManagePhotographerScreenState extends State<ManagePhotographerScreen> {
                 .where((c) => c.text.isNotEmpty)
                 .map((c) => c.text)
                 .toList(),
-        'eventTypes':
+        'tripTypes':
             _eventTypeControllers
                 .where((c) => c.text.isNotEmpty)
                 .map((c) => c.text)

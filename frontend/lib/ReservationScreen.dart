@@ -15,7 +15,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
   bool _isDateAvailable = true;
   double _estimatedPrice = 0.0;
   String? _selectedEventType; // متغير لتخزين نوع الرحلة المحدد
-  List<String> _eventTypes = [
+  List<String> _tripTypes = [
     'برايدل شور', // رحلة ثقافية
     'كتب كتاب', // رحلة بحرية
     'تخرج', //رحلة تخييم
@@ -102,7 +102,7 @@ class _ReservationScreenState extends State<ReservationScreen> {
               ),
               value: _selectedEventType,
               items:
-                  _eventTypes.map((String value) {
+                  _tripTypes.map((String value) {
                     return DropdownMenuItem<String>(
                       value: value,
                       child: Text(value),

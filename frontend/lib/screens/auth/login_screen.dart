@@ -1,10 +1,12 @@
 // lib/screens/auth/login_screen.dart
 
-import 'dart:ui';
+import 'dart:ui'; // Import necessary packages
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:softwareGP/providers/auth_provider.dart';
+import 'package:softwareGP/providers/auth_provider.dart'; // يحتوي على المنطق الخاص بالمصادقة (Login / Register)  .
+
+
 import 'package:softwareGP/screens/dashboard_screen.dart';
 import 'register_screen.dart';
 

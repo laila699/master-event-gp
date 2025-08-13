@@ -12,7 +12,7 @@ class PhotographerListScreen extends StatefulWidget {
       'rating': 4.7,
       'phone': '0599123456',
       'photographyTypes': ['كلاسيكي', 'سينمائي'],
-      'eventTypes': ['زفاف', 'خطوبة'],
+      'tripTypes': ['زفاف', 'خطوبة'],
       'priceRange': 'يبدأ من 150 شيكل',
       'customerReviews': [4.9, 4.5, 5.0],
     },
@@ -24,7 +24,7 @@ class PhotographerListScreen extends StatefulWidget {
       'rating': 4.5,
       'phone': '0599876543',
       'photographyTypes': ['استوديو'],
-      'eventTypes': ['تخرج', 'أطفال'],
+      'tripTypes': ['تخرج', 'أطفال'],
       'priceRange': 'حسب المدة',
       'customerReviews': [4.2, 4.8],
     },
@@ -36,7 +36,7 @@ class PhotographerListScreen extends StatefulWidget {
       'rating': 4.9,
       'phone': '0591112233',
       'photographyTypes': ['تصوير خارجي'],
-      'eventTypes': ['عيد ميلاد', 'افتتاح مشروع'],
+      'tripTypes': ['عيد ميلاد', 'افتتاح مشروع'],
       'priceRange': 'يبدأ من 100 شيكل',
       'customerReviews': [5.0, 4.8, 4.9],
     },
@@ -48,7 +48,7 @@ class PhotographerListScreen extends StatefulWidget {
       'rating': 4.6,
       'phone': '0595556677',
       'photographyTypes': ['كلاسيكي', 'استوديو'],
-      'eventTypes': ['زفاف', 'كتب كتاب'],
+      'tripTypes': ['زفاف', 'كتب كتاب'],
       'priceRange': 'حسب الباقة',
       'customerReviews': [4.5, 4.7],
     },
@@ -73,7 +73,7 @@ class _PhotographerListScreenState extends State<PhotographerListScreen> {
   List<String> get _availableEventTypes =>
       {
         'الكل',
-        ...widget.initialPhotographers.expand((p) => p['eventTypes']).toSet(),
+        ...widget.initialPhotographers.expand((p) => p['tripTypes']).toSet(),
       }.toList().cast<String>();
 
   @override
@@ -93,7 +93,7 @@ class _PhotographerListScreenState extends State<PhotographerListScreen> {
             final eventTypeMatch =
                 _selectedEventType == null ||
                 _selectedEventType == 'الكل' ||
-                (photographer['eventTypes'] as List).contains(
+                (photographer['tripTypes'] as List).contains(
                   _selectedEventType,
                 );
             return cityMatch && eventTypeMatch;

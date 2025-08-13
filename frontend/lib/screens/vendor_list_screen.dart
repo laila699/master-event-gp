@@ -18,19 +18,19 @@ import '../../providers/vendor_provider.dart';
 import 'vendor_details_screen.dart';
 
 /// Which multiSelect keys can we filter by, for each service?
-const Map<VendorServiceType, List<String>> _filterKeys = { 
-  VendorServiceType.decorator: ['styles', 'eventTypes'],
-  VendorServiceType.furnitureStore: ['productCategories'],
-  VendorServiceType.photographer: ['photographyTypes', 'eventTypes'],
+const Map<VendorServiceType, List<String>> _filterKeys = {
+  VendorServiceType.accommodation: ['styles', 'tripTypes'],
+  VendorServiceType.transportation: ['productCategories'],
+  VendorServiceType.photographer: ['photographyTypes', 'tripTypes'],
   VendorServiceType.restaurant: [],
-  VendorServiceType.giftShop: ['productTypes'],
-  VendorServiceType.entertainer: ['performanceTypes'],
+  VendorServiceType.tools: ['productTypes'],
+  VendorServiceType.guides: ['performanceTypes'],
 };
 
 /// The available options for each of those keys.
 const Map<String, List<String>> _filterOptions = {
   'styles': ['كرفان', 'شاليهات', 'مخيمات', 'فنادق'],
-  'eventTypes': [
+  'tripTypes': [
     'رحل ثقافية',
     'رحلات بحرية',
     'رحلة دينية',
@@ -65,7 +65,7 @@ const Map<String, List<String>> _filterOptions = {
 /// Friendly display names for each filter key. Labels in Arabic.
 const Map<String, String> _filterLabels = {
   'styles': 'انواع الاقامة ',
-  'eventTypes': 'نوع الفعالية',
+  'tripTypes': 'نوع الفعالية',
   'specialties': 'التخصصات',
   'productCategories': 'فئات النقل',
   'photographyTypes': 'أسلوب التصوير',
@@ -76,7 +76,7 @@ const Map<String, String> _filterLabels = {
 /// Icons for each filter key.
 const Map<String, IconData> _filterIcons = {
   'styles': Icons.cabin,
-  'eventTypes': Icons.explore,
+  'tripTypes': Icons.explore,
   'specialties': Icons.design_services,
   'productCategories': Icons.chair,
   'photographyTypes': Icons.camera_alt,
@@ -104,15 +104,18 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
     _selectedType = widget.initialType;
   }
 
-  @override 
-  Widget build(BuildContext context) { // بناء نافذة 
+  @override
+  Widget build(BuildContext context) {
+    // بناء نافذة
     final accent1 = AppColors.gradientStart;
     final accent2 = const Color.fromARGB(255, 244, 168, 196);
     final filter = VendorFilter(
       type: _selectedType, // نوع الخدمة
       attrs: Map.from(_selectedFilters), // الفلاتر المحددة
     );
-    final vendorsAsync = ref.watch(vendorListProvider(filter)); //براقب قائمة المزودين مع الفلاتر المحددة
+    final vendorsAsync = ref.watch(
+      vendorListProvider(filter),
+    ); //براقب قائمة المزودين مع الفلاتر المحددة
 
     return Scaffold(
       body: Stack(
@@ -175,14 +178,18 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
                 // Service-type selector
                 SizedBox(
                   height: 60,
-                  child: ListView( // إنشاء شريط أفقي لاختيار نوع الخدمة
+                  child: ListView(
+                    // إنشاء شريط أفقي لاختيار نوع الخدمة
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     children:
-                        VendorServiceType.values // استعراض أنواع الخدمات
+                        VendorServiceType
+                            .values // استعراض أنواع الخدمات
                             .where((t) => t != VendorServiceType.unknown)
                             .map((type) {
-                              final isSelected = type == _selectedType; // تحديد ما إذا كان النوع محددًا
+                              final isSelected =
+                                  type ==
+                                  _selectedType; // تحديد ما إذا كان النوع محددًا
                               return Padding(
                                 padding: const EdgeInsets.symmetric(
                                   horizontal: 4,
@@ -197,13 +204,16 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
                                               : AppColors.textSecondary,
                                     ),
                                   ),
-                                  selected: isSelected, // تحديد ما إذا كان النوع محددًا
+                                  selected:
+                                      isSelected, // تحديد ما إذا كان النوع محددًا
                                   selectedColor: accent2,
                                   backgroundColor: AppColors.glass,
-                                  onSelected: 
-                                      (_) => setState(() {  //بمجرد اختيار نوع جديد، يتم تحديث الواجهة فورًا لإظهار البيانات المتعلقة بالنوع الجديد فقط.
+                                  onSelected:
+                                      (_) => setState(() {
+                                        //بمجرد اختيار نوع جديد، يتم تحديث الواجهة فورًا لإظهار البيانات المتعلقة بالنوع الجديد فقط.
                                         _selectedType = type;
-                                        _selectedFilters.clear(); // إعادة تعيين الفلاتر المحددة
+                                        _selectedFilters
+                                            .clear(); // إعادة تعيين الفلاتر المحددة
                                       }),
                                 ),
                               );
@@ -217,35 +227,42 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: Column(
                     children: [
-                      _buildSearchField( // حقل البحث عن الاسم
+                      _buildSearchField(
+                        // حقل البحث عن الاسم
                         Icons.search,
                         'ابحث بالاسم',
                         (val) => setState(() => _searchName = val.trim()),
                       ),
                       const SizedBox(height: 8),
-                      _buildSearchField( // حقل البحث عن المدينة
+                      _buildSearchField(
+                        // حقل البحث عن المدينة
                         Icons.location_on,
                         'ابحث بالمدينة',
                         (val) => setState(() {
                           if (val.trim().isEmpty)
-                            _selectedFilters.remove('city'); // إذا كانت القيمة فارغة، نزيل المدينة من الفلاتر
+                            _selectedFilters.remove(
+                              'city',
+                            ); // إذا كانت القيمة فارغة، نزيل المدينة من الفلاتر
                           else
-                            _selectedFilters['city'] = val.trim(); // إضافة المدينة إلى الفلاتر
+                            _selectedFilters['city'] =
+                                val.trim(); // إضافة المدينة إلى الفلاتر
                         }),
                       ),
                     ],
                   ),
                 ),
                 // Dynamic filters
-                if (_filterKeys[_selectedType]!.isNotEmpty) 
+                if (_filterKeys[_selectedType]!.isNotEmpty)
                   Padding(
                     padding: const EdgeInsets.all(8),
                     child: Wrap(
                       spacing: 6,
                       runSpacing: 4,
                       children:
-                          _filterKeys[_selectedType]!.expand((key) { // استعراض الفلاتر المتاحة لنوع الخدمة المحدد
-                            final options = _filterOptions[key]!;    // الخيارات المتاحة لكل فلتر
+                          _filterKeys[_selectedType]!.expand((key) {
+                            // استعراض الفلاتر المتاحة لنوع الخدمة المحدد
+                            final options =
+                                _filterOptions[key]!; // الخيارات المتاحة لكل فلتر
                             return [
                               Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -261,16 +278,21 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
                                   ),
                                 ],
                               ),
-                              ...options.map((opt) { // إنشاء زر اختيار لكل خيار
-                                final selected = _selectedFilters[key] == opt; // تحديد ما إذا كان الخيار محددًا
+                              ...options.map((opt) {
+                                // إنشاء زر اختيار لكل خيار
+                                final selected =
+                                    _selectedFilters[key] ==
+                                    opt; // تحديد ما إذا كان الخيار محددًا
                                 return FilterChip(
                                   label: Text(
                                     opt,
                                     style: GoogleFonts.orbitron(
                                       color:
                                           selected
-                                              ? AppColors.textOnNeon // إذا كان الخيار محددًا
-                                              : AppColors.textSecondary, // إذا لم يكن محددًا
+                                              ? AppColors
+                                                  .textOnNeon // إذا كان الخيار محددًا
+                                              : AppColors
+                                                  .textSecondary, // إذا لم يكن محددًا
                                     ),
                                   ),
                                   selected: selected,
@@ -281,7 +303,8 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
                                         if (selected) // إذا كان الخيار محددًا بالفعل، نقوم بإزالته من الفلاتر
                                           _selectedFilters.remove(key);
                                         else
-                                          _selectedFilters[key] = opt; // إضافة الخيار المحدد إلى الفلاتر
+                                          _selectedFilters[key] =
+                                              opt; // إضافة الخيار المحدد إلى الفلاتر
                                       }),
                                 );
                               }),
@@ -303,12 +326,15 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
                         ),
                     data: (vendors) {
                       final filtered =
-                          _searchName.isEmpty // إذا لم يكن هناك بحث بالاسم
+                          _searchName
+                                  .isEmpty // إذا لم يكن هناك بحث بالاسم
                               ? vendors
                               : vendors
                                   .where(
-                                    (v) => v.name.toLowerCase().contains( //  نختار فقط المزودين الذين يحتوي اسمهم (v.name)  
-                                      _searchName.toLowerCase(), // تحويل اسم البحث إلى أحرف صغيرة
+                                    (v) => v.name.toLowerCase().contains(
+                                      //  نختار فقط المزودين الذين يحتوي اسمهم (v.name)
+                                      _searchName
+                                          .toLowerCase(), // تحويل اسم البحث إلى أحرف صغيرة
                                     ),
                                   )
                                   .toList();
@@ -321,10 +347,14 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
                             ),
                           ),
                         );
-                      return ListView.builder( // بناء قائمة بالمزودين
+                      return ListView.builder(
+                        // بناء قائمة بالمزودين
                         padding: const EdgeInsets.all(12),
                         itemCount: filtered.length, // عدد العناصر في القائمة
-                        itemBuilder: (_, i) => _VendorCard(vendor: filtered[i]), // نستدعي بطاقة لكل مزود
+                        itemBuilder:
+                            (_, i) => _VendorCard(
+                              vendor: filtered[i],
+                            ), // نستدعي بطاقة لكل مزود
                       );
                     },
                   ),
@@ -337,7 +367,8 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
     );
   }
 
-  Widget _buildSearchField( // بناء حقل البحث قابل لاعادة الاستخدام
+  Widget _buildSearchField(
+    // بناء حقل البحث قابل لاعادة الاستخدام
     IconData icon,
     String label,
     void Function(String) onChanged, // دالة تعالج التغيير في النص
@@ -348,7 +379,7 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
         labelText: label,
         labelStyle: TextStyle(color: AppColors.textSecondary),
         filled: true,
-        fillColor: AppColors.fieldFill, 
+        fillColor: AppColors.fieldFill,
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
       ),
       onChanged: onChanged,
@@ -356,22 +387,26 @@ class _VendorListScreenState extends ConsumerState<VendorListScreen> {
   }
 }
 
-class _VendorCard extends StatelessWidget { // بطاقة مزود الخدمة
+class _VendorCard extends StatelessWidget {
+  // بطاقة مزود الخدمة
   final User vendor; // مزود الخدمة بيانات
-  const _VendorCard({required this.vendor});  
+  const _VendorCard({required this.vendor});
 
   @override
   Widget build(BuildContext context) {
-    final attrs = vendor.vendorProfile?.attributes ?? <ProviderAttribute>[]; // خصائص المزود
+    final attrs =
+        vendor.vendorProfile?.attributes ??
+        <ProviderAttribute>[]; // خصائص المزود
     String city = '—';
     final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
-    try { // محاولة الحصول على المدينة من الخصائص
+    try {
+      // محاولة الحصول على المدينة من الخصائص
       city = attrs.firstWhere((a) => a.key == 'city').value?.toString() ?? '—';
     } catch (_) {}
     String rating = '-';
     try {
-      final ratingVal = 
+      final ratingVal =
           vendor.averageRating != null
               ? vendor.averageRating!.toStringAsFixed(1)
               : '-';
@@ -384,21 +419,25 @@ class _VendorCard extends StatelessWidget { // بطاقة مزود الخدمة
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       elevation: 3,
       margin: const EdgeInsets.symmetric(vertical: 8),
-      child: ListTile( //عرض صف في قائمة
+      child: ListTile(
+        //عرض صف في قائمة
         onTap:
-            () => Navigator.push( // عند الضغط على البطاقة، ننتقل إلى شاشة تفاصيل المزود
+            () => Navigator.push(
+              // عند الضغط على البطاقة، ننتقل إلى شاشة تفاصيل المزود
               context,
               MaterialPageRoute(
                 builder: (_) => VendorDetailsScreen(vendorId: vendor.id),
               ),
             ),
-        leading: CircleAvatar( // صورة المزود
+        leading: CircleAvatar(
+          // صورة المزود
           backgroundImage:
               vendor.avatarUrl != null
                   ? NetworkImage("${base}${vendor.avatarUrl!}")
                   : null,
           child:
-              vendor.avatarUrl == null // إذا لم يكن هناك صورة، نعرض أيقونة
+              vendor.avatarUrl ==
+                      null // إذا لم يكن هناك صورة، نعرض أيقونة
                   ? Icon(Icons.person, color: accent2)
                   : null,
         ),
@@ -411,7 +450,11 @@ class _VendorCard extends StatelessWidget { // بطاقة مزود الخدمة
         ),
         subtitle: Row(
           children: [
-            Icon(Icons.location_on, size: 16, color: AppColors.textSecondary), // أيقونة الموقع
+            Icon(
+              Icons.location_on,
+              size: 16,
+              color: AppColors.textSecondary,
+            ), // أيقونة الموقع
             const SizedBox(width: 4),
             Text(
               city, // المدينة
@@ -422,7 +465,7 @@ class _VendorCard extends StatelessWidget { // بطاقة مزود الخدمة
             const SizedBox(width: 4),
             Text(
               vendor.averageRating != null
-                  ? vendor.averageRating!.toStringAsFixed(1) 
+                  ? vendor.averageRating!.toStringAsFixed(1)
                   : '-',
               style: GoogleFonts.orbitron(
                 color: accent2,

@@ -7,20 +7,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:softwareGP/models/offering.dart';
 import 'package:softwareGP/screens/create_booking_screen.dart';
 
-import '../models/event.dart';
+import 'models/trip.dart';
 import '../models/recommended_offers.dart';
-import '../providers/event_provider.dart';
+import 'providers/tr_provider.dart';
 import '../theme/colors.dart';
 
-class EventBudgetPage extends ConsumerStatefulWidget {
+class TripBudgetPage extends ConsumerStatefulWidget {
   final String eventId;
-  const EventBudgetPage({Key? key, required this.eventId}) : super(key: key);
+  const TripBudgetPage({Key? key, required this.eventId}) : super(key: key);
 
   @override
-  ConsumerState<EventBudgetPage> createState() => _EventBudgetPageState();
+  ConsumerState<TripBudgetPage> createState() => _TripBudgetPageState();
 }
 
-class _EventBudgetPageState extends ConsumerState<EventBudgetPage> {
+class _TripBudgetPageState extends ConsumerState<TripBudgetPage> {
   final _totalCtl = TextEditingController();
   final _catNameCtl = TextEditingController();
   final _catAmountCtl = TextEditingController();
@@ -35,7 +35,7 @@ class _EventBudgetPageState extends ConsumerState<EventBudgetPage> {
   //---------------------------------------------------------------------------
   // helpers
   //---------------------------------------------------------------------------
-  void _init(EventSettings? s) {
+  void _init(TripSettings? s) {
     if (_initDone) return;
     _initDone = true;
     if (s?.budget != null) {

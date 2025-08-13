@@ -14,22 +14,22 @@ import 'package:softwareGP/theme/colors.dart';
 
 /// These must match exactly the backend enum values:
 const List<String> _allVendorTypes = [
-  'decorator',
-  'furniture_store',
+  'accommodation',
+  'transportation',
   'photographer',
   'restaurant',
-  'gift_shop',
-  'entertainer',
+  'tools',
+  'guides',
 ];
 
 const Map<String, String> _vendorTypeLabels = {
   // Mapping vendor types to user-friendly الاسم يلي حينعرض للمستخد
-  'decorator': ' الاقامة',
-  'furniture_store': 'نقل ومواصلات  ',
+  'accommodation': ' الاقامة',
+  'transportation': 'نقل ومواصلات  ',
   'photographer': 'مصور',
   'restaurant': 'مطعم',
-  'gift_shop': ' متجر معدات رحل ',
-  'entertainer': ' مرشد ',
+  'tools': ' متجر معدات رحل ',
+  'guides': ' مرشد ',
 };
 
 class RegisterScreen extends ConsumerStatefulWidget {

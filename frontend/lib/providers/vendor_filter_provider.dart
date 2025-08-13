@@ -7,7 +7,7 @@ import 'package:softwareGP/providers/vendor_provider.dart';
 
 class VendorFilterNotifier extends StateNotifier<VendorFilter> {
   VendorFilterNotifier()
-    : super(const VendorFilter(type: VendorServiceType.decorator));
+    : super(const VendorFilter(type: VendorServiceType.accommodation));
 
   void changeType(VendorServiceType t) => state = VendorFilter(type: t);
   void setAttr(String key, String? value) {

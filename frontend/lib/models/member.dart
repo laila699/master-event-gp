@@ -1,20 +1,20 @@
-// lib/models/guest.dart
+// lib/models/member.dart
 
-class Guest {
+class Member {
   final String id;
   final String name;
   final String email;
   final String status; // “pending” | “yes” | “no”
 
-  Guest({
+  Member({
     required this.id,
     required this.name,
     required this.email,
     required this.status,
   });
 
-  factory Guest.fromJson(Map<String, dynamic> json) {
-    return Guest(
+  factory Member.fromJson(Map<String, dynamic> json) {
+    return Member(
       id: json['_id'] as String? ?? '',
       name: json['name'] as String? ?? '',
       email: json['email'] as String? ?? '',

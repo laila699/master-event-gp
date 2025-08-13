@@ -13,13 +13,13 @@ class VendorFilter {
     this.city,
     this.lat,
     this.lng,
-    this.radiusKm,
+    this.radiusKm, // e.g. 10.0 for 10 km radius
     this.attrs = const {},
   });
 
   @override
   bool operator ==(Object other) {
-    if (identical(this, other)) return true;
+    if (identical(this, other)) return true; 
     if (other is! VendorFilter) return false;
     return other.type == type &&
         other.city == city &&

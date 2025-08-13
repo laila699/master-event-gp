@@ -9,26 +9,26 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 
-import 'package:softwareGP/EventBudgetPage.dart';
-import 'package:softwareGP/EventLogisticsPage.dart';
-import 'package:softwareGP/EventReviewsPage.dart';
-import 'package:softwareGP/EventToDoListPage.dart';
+import 'package:softwareGP/TripBudgetPage.dart';
+import 'package:softwareGP/TripLogisticsPage.dart';
+import 'package:softwareGP/TripReviewsPage.dart';
+import 'package:softwareGP/TripToDoListPage.dart';
 import 'package:softwareGP/screens/booking_Details_Card.dart';
 import 'package:softwareGP/theme/colors.dart';
-import '../providers/event_provider.dart';
+import '../providers/tr_provider.dart';
 import '../providers/booking_provider.dart';
-import '../models/event.dart';
-import '../screens/guest_tab.dart';
+import '../models/trip.dart';
+import 'member_tab.dart';
 
-class EventDetailsScreen extends ConsumerStatefulWidget {
+class TripDetailsScreen extends ConsumerStatefulWidget {
   final String eventId;
-  const EventDetailsScreen({Key? key, required this.eventId}) : super(key: key);
+  const TripDetailsScreen({Key? key, required this.eventId}) : super(key: key);
 
   @override
-  ConsumerState<EventDetailsScreen> createState() => _EventDetailsScreenState();
+  ConsumerState<TripDetailsScreen> createState() => _TripDetailsScreenState();
 }
 
-class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
+class _TripDetailsScreenState extends ConsumerState<TripDetailsScreen>
     with TickerProviderStateMixin {
   late final TabController _tabController;
   bool _isEditing = false;
@@ -293,7 +293,7 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
                       },
                     ),
                     // GUESTS TAB
-                    GuestTab(eventId: widget.eventId),
+                    MemberTab(eventId: widget.eventId),
                     // SETTINGS TAB
                     _buildSettingsList(context, event),
                   ],
@@ -442,13 +442,13 @@ class _EventDetailsScreenState extends ConsumerState<EventDetailsScreen>
       {
         'title': 'الميزانية والتكلفة',
         'icon': Icons.attach_money,
-        'page': EventBudgetPage(eventId: event.id),
+        'page': TripBudgetPage(eventId: event.id),
       },
 
       {
         'title': 'تنظيم المهام',
         'icon': Icons.checklist_rtl,
-        'page': EventToDoListPage(eventId: event.id),
+        'page': TripToDoListPage(eventId: event.id),
       },
     ];
     return ListView.separated(

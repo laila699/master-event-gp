@@ -25,7 +25,7 @@ const defaultAttributes: Record<VendorServiceType, IVendorAttribute[]> = {
     },
     { key: "priceRange", label: "نطاق السعر", type: "string" },
     {
-      key: "eventTypes",
+      key: "tripTypes",
       label: "أنواع المناسبات",
       type: "multiSelect",
       options: ["زفاف", "خطوبة", "تخرج", "عيد ميلاد", "حفل عمل"],
@@ -79,7 +79,7 @@ const defaultAttributes: Record<VendorServiceType, IVendorAttribute[]> = {
       value: [],
     },
     {
-      key: "eventTypes",
+      key: "tripTypes",
       label: "أنواع المناسبات",
       type: "multiSelect",
       options: ["زفاف", "خطوبة", "تخرج", "أطفال", "عيد ميلاد", "افتتاح مشروع"],
@@ -146,7 +146,7 @@ const defaultAttributes: Record<VendorServiceType, IVendorAttribute[]> = {
     }, */ 
     { key: "priceRange", label: "نطاق السعر", type: "string" },
     {
-      key: "entertainerImages",
+      key: "guidesImages",
       label: "صور العرض",
       type: "array",
       itemType: "string",

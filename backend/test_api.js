@@ -14,7 +14,7 @@ const VND = {
   email: "bob@vendor.com",
   password: "pass123",
   role: "vendor",
-  vendorProfile: { serviceType: "decorator", bio: "Test vendor" },
+  vendorProfile: { serviceType: "accommodation", bio: "Test vendor" },
 };
 
 async function go() {

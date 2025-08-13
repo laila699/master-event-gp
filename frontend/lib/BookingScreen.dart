@@ -24,7 +24,7 @@ class _BookingScreenState extends State<BookingScreen> {
   final TextEditingController _quantityController =
       TextEditingController(); // للتحكم بحقل الكمية
 
-  final List<String> _eventTypes = [
+  final List<String> _tripTypes = [
     'زفاف',
     'خطوبة',
     'مواليد',
@@ -388,7 +388,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 ),
               ),
               items:
-                  _eventTypes.map((type) {
+                  _tripTypes.map((type) {
                     return DropdownMenuItem<String>(
                       value: type,
                       child: Text(

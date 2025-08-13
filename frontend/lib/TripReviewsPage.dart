@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
-class EventReviewsPage extends StatefulWidget {
-  const EventReviewsPage({super.key});
+class TripReviewsPage extends StatefulWidget {
+  const TripReviewsPage({super.key});
 
   @override
-  State<EventReviewsPage> createState() => _EventReviewsPageState();
+  State<TripReviewsPage> createState() => _TripReviewsPageState();
 }
 
-class _EventReviewsPageState extends State<EventReviewsPage> {
+class _TripReviewsPageState extends State<TripReviewsPage> {
   String _sortOption = 'الأحدث';
   String _selectedProvider = 'كل المراجعات';
 

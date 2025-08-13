@@ -3,12 +3,12 @@ import mongoose, { Document, Schema } from "mongoose";
 import { IRating, RatingSchema } from "./Rating";
 
 export enum VendorServiceType {
-  Decorator = "decorator",
-  FurnitureStore = "furniture_store",
+  Decorator = "accommodation",
+  FurnitureStore = "transportation",
   Photographer = "photographer",
   Restaurant = "restaurant",
-  GiftShop = "gift_shop",
-  Entertainer = "entertainer",
+  GiftShop = "tools",
+  Entertainer = "guides",
   UNKNOWN = "unknown",
 }
 

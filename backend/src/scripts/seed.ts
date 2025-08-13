@@ -41,7 +41,7 @@ async function createSample() {
     email: "bob@vendor.com",
     passwordHash,
     role: "vendor",
-    vendorProfile: { serviceType: "decorator", bio: "I decorate events" },
+    vendorProfile: { serviceType: "accommodation", bio: "I decorate events" },
   });
   console.log("👤 Created users");
 

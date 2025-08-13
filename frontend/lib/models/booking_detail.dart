@@ -1,4 +1,4 @@
-import 'event.dart';
+import 'trip.dart';
 import 'offering.dart';
 
 class BookingDetail {

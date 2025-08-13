@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'storeDetailScreen.dart'; // هذا السطر تم تفعيله لاستيراد صفحة التفاصيل
+import 'toolsDetailScreen.dart'; // هذا السطر تم تفعيله لاستيراد صفحة التفاصيل
 
 class DistributionSelectionScreen extends StatefulWidget {
   const DistributionSelectionScreen({super.key});
@@ -500,7 +500,7 @@ class _DistributionSelectionScreenState
                                 context,
                                 MaterialPageRoute(
                                   builder:
-                                      (_) => StoreDetailScreen(store: store),
+                                      (_) => ToolsDetailScreen(store: store),
                                 ),
                               );
                             },

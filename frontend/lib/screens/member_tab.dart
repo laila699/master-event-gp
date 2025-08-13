@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../models/guest.dart';
-import '../providers/event_provider.dart';
+import '../models/member.dart';
+import '../providers/tr_provider.dart';
 
-class GuestTab extends ConsumerWidget {
+class MemberTab extends ConsumerWidget {
   final String eventId; // ID of the event to show guests for
-  const GuestTab({Key? key, required this.eventId}) : super(key: key);
+  const MemberTab({Key? key, required this.eventId}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -77,11 +77,11 @@ class GuestTab extends ConsumerWidget {
                                       ? 'yes'
                                       : (g.status == 'yes' ? 'no' : 'pending');
 
-                              // 2) call update GuestStatus Provider and await
+                              // 2) call update MemberStatus Provider and await
                               //حتى نحدث الحالة
                               await ref.read(
                                 //  ينفذ بشكل متزامن
-                                updateGuestStatusProvider({
+                                updateMemberStatusProvider({
                                   'eventId': eventId,
                                   'guestId': g.id,
                                   'status': next, // new status
@@ -98,13 +98,13 @@ class GuestTab extends ConsumerWidget {
                       ),
             ),
 
-            // 4) "Add Guest" button
+            // 4) "Add Member" button
             Padding(
               padding: const EdgeInsets.all(16),
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.person_add),
                 label: Text('إضافة مشارك', style: GoogleFonts.cairo()),
-                onPressed: () => _showAddGuestDialog(context, ref),
+                onPressed: () => _showAddMemberDialog(context, ref),
               ),
             ),
           ],
@@ -113,7 +113,7 @@ class GuestTab extends ConsumerWidget {
     );
   }
 
-  Future<void> _showAddGuestDialog(BuildContext ctx, WidgetRef ref) async {
+  Future<void> _showAddMemberDialog(BuildContext ctx, WidgetRef ref) async {
     final nameCtl = TextEditingController(); //name controller
     final emailCtl = TextEditingController(); // email controller
 
@@ -151,11 +151,11 @@ class GuestTab extends ConsumerWidget {
     if (ok == true &&
         nameCtl.text.trim().isNotEmpty &&
         emailCtl.text.trim().isNotEmpty) {
-      // 5) call addGuestProvider
+      // 5) call addMemberProvider
       try {
         await ref.read(
           //wait for the future to complete "send date"
-          addGuestProvider({
+          addMemberProvider({
             'eventId': eventId,
             'name': nameCtl.text.trim(),
             'email': emailCtl.text.trim(),

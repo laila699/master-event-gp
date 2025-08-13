@@ -69,7 +69,7 @@ class PhotographerDetailScreen extends StatelessWidget {
                     style: _infoStyle(context),
                   ),
                   Text(
-                    ' يصور رحلات: ${(photographer['eventTypes'] as List).join(', ')}',
+                    ' يصور رحلات: ${(photographer['tripTypes'] as List).join(', ')}',
                     style: _infoStyle(context),
                   ),
                   Text(

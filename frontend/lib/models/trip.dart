@@ -1,17 +1,17 @@
 // lib/models/event.dart
 import 'package:latlong2/latlong.dart';
 import 'task.dart';
-import 'guest.dart';
+import 'member.dart';
 
-class EventSettings {
+class TripSettings {
   final Map<String, dynamic>? budget;
   final Map<String, dynamic>? logistics;
   final List<Task>? tasks;
 
-  EventSettings({this.budget, this.logistics, this.tasks});
+  TripSettings({this.budget, this.logistics, this.tasks});
 
-  factory EventSettings.fromJson(Map<String, dynamic> json) {
-    return EventSettings(
+  factory TripSettings.fromJson(Map<String, dynamic> json) {
+    return TripSettings(
       budget:
           json['budget'] != null
               ? Map<String, dynamic>.from(json['budget'] as Map)
@@ -43,8 +43,8 @@ class Event {
   final String venue;
   final LatLng? venueLocation;
   final String? description;
-  final EventSettings? settings;
-  final List<Guest>? guests;
+  final TripSettings? settings;
+  final List<Member>? guests;
 
   Event({
     required this.id,
@@ -78,11 +78,11 @@ class Event {
       venueLocation: loc,
       settings:
           json['settings'] != null
-              ? EventSettings.fromJson(json['settings'] as Map<String, dynamic>)
+              ? TripSettings.fromJson(json['settings'] as Map<String, dynamic>)
               : null,
       guests:
           (json['guests'] as List<dynamic>?)
-              ?.map((e) => Guest.fromJson(e as Map<String, dynamic>))
+              ?.map((e) => Member.fromJson(e as Map<String, dynamic>))
               .toList(),
     );
   }
@@ -116,8 +116,8 @@ class Event {
     DateTime? date,
     String? venue,
     LatLng? venueLocation,
-    EventSettings? settings,
-    List<Guest>? guests,
+    TripSettings? settings,
+    List<Member>? guests,
     String? description,
   }) {
     final m = <String, dynamic>{};

@@ -3,7 +3,7 @@
 import 'provider_attribute.dart';
 
 class VendorProfile {
-  final String serviceType; // e.g. "decorator"
+  final String serviceType; // e.g. "accommodation"
   final String? bio;
   final List<double>? location; // [lng, lat]
   final List<ProviderAttribute>? attributes;

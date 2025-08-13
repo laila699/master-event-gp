@@ -6,7 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 import '../../models/booking.dart';
 import '../../providers/booking_provider.dart';
-import '../../providers/event_provider.dart';
+import '../../providers/tr_provider.dart';
 import '../../providers/offering_provider.dart';
 
 class BookingTab extends ConsumerWidget {

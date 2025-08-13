@@ -1,4 +1,4 @@
-# masterevent
+# Tripify
 
 A new Flutter project.
 

@@ -22,7 +22,7 @@ class _PhotographerReservationScreenState
   String? _selectedEventType; // إضافة لتحديد نوع الرحلة للحجز
 
   final List<String> durations = ['نصف ساعة', 'ساعة', 'ساعتين', 'يوم كامل'];
-  final List<String> eventTypes = [
+  final List<String> tripTypes = [
     'زفاف',
     'خطوبة',
     'عيد ميلاد',
@@ -182,7 +182,7 @@ class _PhotographerReservationScreenState
               ),
               DropdownButtonFormField<String>(
                 items:
-                    eventTypes
+                    tripTypes
                         .map(
                           (type) => DropdownMenuItem(
                             value: type,

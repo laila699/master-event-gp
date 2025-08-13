@@ -2,15 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:softwareGP/EventBudgetPage.dart';
+import 'package:softwareGP/TripBudgetPage.dart';
 
-import 'package:softwareGP/EventToDoListPage.dart';
-import '../models/event.dart';
-import '../providers/event_provider.dart';
+import 'package:softwareGP/TripToDoListPage.dart';
+import 'models/trip.dart';
+import 'providers/tr_provider.dart';
 
-class EventSettingsPage extends ConsumerWidget {
+class TripSettingsPage extends ConsumerWidget {
   final Event event;
-  const EventSettingsPage({Key? key, required this.event}) : super(key: key);
+  const TripSettingsPage({Key? key, required this.event}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,20 +18,20 @@ class EventSettingsPage extends ConsumerWidget {
       {
         'title': 'الميزانية والتكلفة',
         'icon': Icons.attach_money,
-        'builder': (_) => EventBudgetPage(eventId: event.id),
+        'builder': (_) => TripBudgetPage(eventId: event.id),
       },
 
       {
         'title': 'تنظيم المهام',
         'icon': Icons.checklist_rtl,
-        'builder': (_) => EventToDoListPage(eventId: event.id),
+        'builder': (_) => TripToDoListPage(eventId: event.id),
       },
     ];
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('إدارة الفعالية'),
-        backgroundColor: const Color.fromARGB( 255, 244, 168, 196),
+        backgroundColor: const Color.fromARGB(255, 244, 168, 196),
         foregroundColor: Colors.white,
       ),
       backgroundColor: const Color(0xFFF7F7F7),

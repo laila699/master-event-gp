@@ -3,8 +3,8 @@
 import 'package:dio/dio.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:softwareGP/models/recommended_offers.dart';
-import '../models/event.dart';
-import '../models/guest.dart';
+import '../models/trip.dart';
+import '../models/member.dart';
 
 class EventService {
   final Dio _dio;
@@ -104,7 +104,7 @@ class EventService {
 
   Future<void> deletePushToken(String token) =>
       _dio.delete('/notifications/token', data: {'token': token});
-  Future<Guest> addGuest({
+  Future<Member> addMember({
     required String eventId,
     required String name,
     required String email,
@@ -113,10 +113,10 @@ class EventService {
       '/events/$eventId/guests',
       data: {'name': name, 'email': email},
     );
-    return Guest.fromJson(resp.data as Map<String, dynamic>);
+    return Member.fromJson(resp.data as Map<String, dynamic>);
   }
 
-  Future<Guest> updateGuestStatus({
+  Future<Member> updateMemberStatus({
     required String eventId,
     required String guestId,
     required String status,
@@ -125,6 +125,6 @@ class EventService {
       '/events/$eventId/guests/$guestId',
       data: {'status': status},
     );
-    return Guest.fromJson(resp.data as Map<String, dynamic>);
+    return Member.fromJson(resp.data as Map<String, dynamic>);
   }
 }

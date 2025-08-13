@@ -2,18 +2,18 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/event_service.dart';
-import '../providers/event_provider.dart';
+import 'providers/tr_provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class EventLogisticsPage extends ConsumerStatefulWidget {
+class TripLogisticsPage extends ConsumerStatefulWidget {
   final String eventId;
-  const EventLogisticsPage({super.key, required this.eventId});
+  const TripLogisticsPage({super.key, required this.eventId});
 
   @override
-  ConsumerState<EventLogisticsPage> createState() => _EventLogisticsPageState();
+  ConsumerState<TripLogisticsPage> createState() => _TripLogisticsPageState();
 }
 
-class _EventLogisticsPageState extends ConsumerState<EventLogisticsPage> {
+class _TripLogisticsPageState extends ConsumerState<TripLogisticsPage> {
   final _locationCtl = TextEditingController();
   final _scheduleCtl = TextEditingController();
   DateTime? _selectedDate;

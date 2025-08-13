@@ -3,7 +3,7 @@ import Offering from "../models/Offering";
 import { asyncHandler } from "../utils/asyncHandler";
 import mongoose from "mongoose";
 
-// GET /api/offerings?serviceType=decorator
+// GET /api/offerings?serviceType=accommodation
 export const listOfferings = asyncHandler(
   async (req: Request, res: Response) => {
     const { serviceType } = req.query as { serviceType?: string };
@@ -13,7 +13,7 @@ export const listOfferings = asyncHandler(
 
     // If they passed ?serviceType=…, only return offerings whose vendor has that serviceType
     if (serviceType && mongoose.Types.ObjectId.isValid(serviceType) === false) {
-      // serviceType is a string like "decorator", so we match on the populated vendorProfile
+      // serviceType is a string like "accommodation", so we match on the populated vendorProfile
       query = query.populate({
         path: "vendor",
         match: { "vendorProfile.serviceType": serviceType },

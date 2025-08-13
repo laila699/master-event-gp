@@ -77,7 +77,7 @@ class _ManageDistributionStoreScreenState
   late TextEditingController _aboutController;
 
   final List<TextEditingController> _galleryImageControllers = [];
-  final List<TextEditingController> _eventTypesCoveredControllers = [];
+  final List<TextEditingController> _tripTypesCoveredControllers = [];
   final List<TextEditingController> _distributionTypesOfferedControllers = [];
   final List<SpecificDistributionController> _specificDistributions = [];
 
@@ -118,10 +118,10 @@ class _ManageDistributionStoreScreenState
     if (widget.distributionStore != null &&
         widget.distributionStore!['event_types_covered'] != null) {
       for (var type in widget.distributionStore!['event_types_covered']) {
-        _eventTypesCoveredControllers.add(TextEditingController(text: type));
+        _tripTypesCoveredControllers.add(TextEditingController(text: type));
       }
     } else {
-      _eventTypesCoveredControllers.add(TextEditingController());
+      _tripTypesCoveredControllers.add(TextEditingController());
     }
 
     // تعبئة حقول أنواع التوزيعات المقدمة
@@ -169,7 +169,7 @@ class _ManageDistributionStoreScreenState
     _priceRangeController.dispose();
     _aboutController.dispose();
     for (var c in _galleryImageControllers) c.dispose();
-    for (var c in _eventTypesCoveredControllers) c.dispose();
+    for (var c in _tripTypesCoveredControllers) c.dispose();
     for (var c in _distributionTypesOfferedControllers) c.dispose();
     for (var c in _specificDistributions) c.dispose();
     super.dispose();
@@ -215,7 +215,7 @@ class _ManageDistributionStoreScreenState
         'price_range': _priceRangeController.text,
         'delivery_available': _deliveryAvailable,
         'event_types_covered':
-            _eventTypesCoveredControllers
+            _tripTypesCoveredControllers
                 .where((c) => c.text.isNotEmpty)
                 .map((c) => c.text)
                 .toList(),
@@ -411,11 +411,11 @@ class _ManageDistributionStoreScreenState
               _buildDynamicTextFieldsSection(
                 label: 'أنواع المناسبات التي يغطيها المتجر:',
                 hint: 'مثال: زفاف، خطوبة، مواليد',
-                controllers: _eventTypesCoveredControllers,
-                onAdd: () => _addTextField(_eventTypesCoveredControllers),
+                controllers: _tripTypesCoveredControllers,
+                onAdd: () => _addTextField(_tripTypesCoveredControllers),
                 onRemove:
                     (index) =>
-                        _removeTextField(_eventTypesCoveredControllers, index),
+                        _removeTextField(_tripTypesCoveredControllers, index),
               ),
               const SizedBox(height: 20),
 

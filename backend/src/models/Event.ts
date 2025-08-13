@@ -3,13 +3,13 @@ import mongoose, { Document, Schema } from "mongoose";
 import Booking from "./Booking";
 
 // ── GUEST SUB‐SCHEMA ───────────────────────────────────────────────────────────
-export interface IGuest {
+export interface IMember {
   _id: mongoose.Types.ObjectId;
   name: string;
   email: string;
   status: "pending" | "yes" | "no";
 }
-const GuestSchema = new Schema<IGuest>(
+const MemberSchema = new Schema<IMember>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true },
@@ -115,7 +115,7 @@ export interface IEvent extends Document {
     coordinates: [number, number]; // [lng, lat]
   };
   description?: string;
-  guests: IGuest[];
+  guests: IMember[];
   settings?: ISettings;
   createdAt: Date;
   updatedAt: Date;
@@ -140,7 +140,7 @@ const EventSchema = new Schema<IEvent>(
         required: false,
       },
     },
-    guests: { type: [GuestSchema], default: [] },
+    guests: { type: [MemberSchema], default: [] },
     settings: { type: SettingsSchema, default: {} },
   },
   { timestamps: true }

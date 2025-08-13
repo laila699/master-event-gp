@@ -25,7 +25,7 @@ val flutterNdkVersion = localProperties.getProperty("flutter.ndkVersion") ?: "27
 
 
 android {
-    namespace = "com.example.masterevent" // تأكد من أن هذا هو namespace الصحيح لمشروعك
+    namespace = "com.example.Tripify" // تأكد من أن هذا هو namespace الصحيح لمشروعك
     
     // --- التغيير المطلوب ---
     compileSdk = 35 // <--- استخدام القيمة 35 بشكل مباشر هنا
@@ -44,7 +44,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.masterevent" // تأكد من أن هذا هو applicationId الصحيح
+        applicationId = "com.example.Tripify" // تأكد من أن هذا هو applicationId الصحيح
 //   minSdk = flutterMinSdkVersion          // Use the value read from properties or the default
  minSdk = 23;
         targetSdk = flutterTargetSdkVersion    // Use the value read from properties or the default

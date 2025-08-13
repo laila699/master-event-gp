@@ -18,21 +18,21 @@ const Map<String, IconData> _roleIcons = {
 };
 
 const Map<String, IconData> _vendorTypeIcons = {
-  'decorator': Icons.hotel,
-  'furniture_store': Icons.directions_bus,
+  'accommodation': Icons.hotel,
+  'transportation': Icons.directions_bus,
   'photographer': Icons.camera_alt,
   'restaurant': Icons.restaurant,
-  'gift_shop': Icons.card_giftcard,
-  'entertainer': Icons.hiking,
+  'tools': Icons.card_giftcard,
+  'guides': Icons.hiking,
 };
 
 const Map<String, String> _vendorTypeLabels = {
-  'decorator': 'الاقامة ',
-  'furniture_store': 'نقل ومواصلات ',
+  'accommodation': 'الاقامة ',
+  'transportation': 'نقل ومواصلات ',
   'photographer': 'مصور',
   'restaurant': 'مطعم',
-  'gift_shop': 'محل معدات رحل',
-  'entertainer': 'مرشدين',
+  'tools': 'محل معدات رحل',
+  'guides': 'مرشدين',
 };
 
 class AdminDashboardScreen extends ConsumerStatefulWidget {
@@ -43,12 +43,16 @@ class AdminDashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
-    with SingleTickerProviderStateMixin { // SingleTickerProviderStateMixin for TabController animation
+    with SingleTickerProviderStateMixin {
+  // SingleTickerProviderStateMixin for TabController animation
   late TabController _tabController; // TabController for managing tabs
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this); // 2 tabs: Users and Themes
+    _tabController = TabController(
+      length: 2,
+      vsync: this,
+    ); // 2 tabs: Users and Themes
   }
 
   @override
@@ -57,7 +61,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
     super.dispose();
   }
 
-  Future<void> _refreshAll() async { // Refresh both users and themes
+  Future<void> _refreshAll() async {
+    // Refresh both users and themes
     ref.refresh(adminUsersProvider);
     ref.refresh(adminThemesProvider);
   }
@@ -72,15 +77,15 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
     };
 
     const Map<String, IconData> _vendorTypeIcons = {
-      'decorator': Icons.hotel,
-      'furniture_store': Icons.directions_bus,
+      'accommodation': Icons.hotel,
+      'transportation': Icons.directions_bus,
       'photographer': Icons.camera_alt,
       'restaurant': Icons.restaurant,
-      'gift_shop': Icons.card_giftcard,
-      'entertainer': Icons.hiking,
+      'tools': Icons.card_giftcard,
+      'guides': Icons.hiking,
     };
 
-    final usersAsync = ref.watch(adminUsersProvider); //براقب قائمة المسخدمين 
+    final usersAsync = ref.watch(adminUsersProvider); //براقب قائمة المسخدمين
     final themesAsync = ref.watch(adminThemesProvider); //براقب قائمة التصاميم
     final accent1 = Theme.of(context).colorScheme.primary;
     final accent2 = Theme.of(context).colorScheme.secondary;
@@ -122,9 +127,11 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
                 icon: Icon(Icons.refresh, color: accent1),
                 onPressed: _refreshAll, // Refresh both users and themes
               ),
-              IconButton( // Logout button
+              IconButton(
+                // Logout button
                 icon: Icon(Icons.logout, color: accent1),
-                onPressed: () { // Logout action
+                onPressed: () {
+                  // Logout action
                   ref.read(authNotifierProvider.notifier).logout();
                   Navigator.pushReplacement(
                     context,
@@ -134,17 +141,20 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
               ),
             ],
           ),
-          body: TabBarView( // TabBarView to switch between Users and Themes حسب المختار
+          body: TabBarView(
+            // TabBarView to switch between Users and Themes حسب المختار
             controller: _tabController,
             children: [
               // Users Tab
-              usersAsync.when( // Users list
+              usersAsync.when(
+                // Users list
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error:
                     (e, _) => Center(
                       child: Text('خطأ: $e', style: TextStyle(color: accent2)),
                     ),
-                data: (users) { // Display list of users
+                data: (users) {
+                  // Display list of users
                   return ListView.builder(
                     padding: const EdgeInsets.all(16),
                     itemCount: users.length, // عدد المستخدمين
@@ -185,14 +195,16 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
                                       spacing: 6,
                                       runSpacing: 4,
                                       children: [
-                                        Chip( // Display user role
+                                        Chip(
+                                          // Display user role
                                           label: Text(
                                             u.role == 'vendor'
                                                 ? 'بائع'
                                                 : u.role == 'organizer'
                                                 ? 'منظم'
                                                 : 'مشرف',
-                                            style: const TextStyle( // User role text style
+                                            style: const TextStyle(
+                                              // User role text style
                                               color: Colors.white,
                                             ),
                                           ),
@@ -200,15 +212,16 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
                                             0.8,
                                           ),
                                           avatar: Icon(
-                                            _roleIcons[u.role]!, // Role icon 
+                                            _roleIcons[u.role]!, // Role icon
                                             size: 16,
                                             color: Colors.white,
                                           ),
                                         ),
                                         if (u.role == 'vendor' &&
                                             u.vendorProfile?.serviceType !=
-                                                null) // لازم نوع الخدمة محدد في ملفه الشخصي 
-                                          Chip( // Display vendor service type
+                                                null) // لازم نوع الخدمة محدد في ملفه الشخصي
+                                          Chip(
+                                            // Display vendor service type
                                             label: Text(
                                               // human‐friendly label mapping
                                               _vendorTypeLabels[u
@@ -219,9 +232,11 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
                                                 color: Colors.white,
                                               ),
                                             ),
-                                            backgroundColor: accent1 // لون خلفية الشريحة
-                                                .withOpacity(0.8),
-                                            avatar: Icon( // Vendor service type icon
+                                            backgroundColor:
+                                                accent1 // لون خلفية الشريحة
+                                                    .withOpacity(0.8),
+                                            avatar: Icon(
+                                              // Vendor service type icon
                                               _vendorTypeIcons[u
                                                   .vendorProfile!
                                                   .serviceType]!,
@@ -233,7 +248,10 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
                                     ),
                                   ],
                                 ),
-                                trailing: _buildUserAction(u, accent1), // Action button for user . u: object يحمل البيانات 
+                                trailing: _buildUserAction(
+                                  u,
+                                  accent1,
+                                ), // Action button for user . u: object يحمل البيانات
                               ),
                             ),
                           ),
@@ -243,7 +261,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
                   );
                 },
               ),
-              themesAsync.when( // Themes tab 
+              themesAsync.when(
+                // Themes tab
                 data:
                     (themes) => _buildGlassList(
                       themes
@@ -259,11 +278,16 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
             ],
           ),
           floatingActionButton:
-              _tabController.index == 1 // Themes tab
-                  ? FloatingActionButton( 
+              _tabController.index ==
+                      1 // Themes tab
+                  ? FloatingActionButton(
                     backgroundColor: accent2, // background  button color
                     onPressed:
-                        () => _showCreateThemeDialog(context, accent2, ref), //بفتح نافذة لانشاء الثيم
+                        () => _showCreateThemeDialog(
+                          context,
+                          accent2,
+                          ref,
+                        ), //بفتح نافذة لانشاء الثيم
                     child: Icon(Icons.add, color: Colors.black),
                   )
                   : null,
@@ -284,7 +308,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
           ScaffoldMessenger.of(
             context,
           ).showSnackBar(SnackBar(content: Text('تم اعتماد ${u.name}')));
-        }, //بعرض رسالة 
+        }, //بعرض رسالة
       );
     }
     // otherwise existing delete
@@ -299,8 +323,10 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
     );
   }
 
-  Widget _buildGlassList(List<Widget> items) { // Creates a glassmorphism effect list
-    return ListView.builder( // Builds a scrollable list of glassmorphism items
+  Widget _buildGlassList(List<Widget> items) {
+    // Creates a glassmorphism effect list
+    return ListView.builder(
+      // Builds a scrollable list of glassmorphism items
       padding: const EdgeInsets.all(16),
       itemCount: items.length, // عدد العناصر في القائمة
       itemBuilder:
@@ -309,7 +335,10 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10), // Applies a blur effect
+                filter: ImageFilter.blur(
+                  sigmaX: 10,
+                  sigmaY: 10,
+                ), // Applies a blur effect
                 child: Container(
                   color: Colors.white.withOpacity(0.05),
                   child: items[i],
@@ -319,9 +348,12 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
           ),
     );
   }
-  //عرض بيانات مستخدم واحد بشكل ListTile  , مع امكانية الحذف 
-  Widget _userTile(User u, Color accent) { //u: object يحمل بيانات المستخدم
-    return ListTile( // يعرض عنوان ,وصف  ,ايقونة
+
+  //عرض بيانات مستخدم واحد بشكل ListTile  , مع امكانية الحذف
+  Widget _userTile(User u, Color accent) {
+    //u: object يحمل بيانات المستخدم
+    return ListTile(
+      // يعرض عنوان ,وصف  ,ايقونة
       title: Text(u.name, style: GoogleFonts.orbitron(color: accent)),
       subtitle: Text(u.email, style: TextStyle(color: Colors.white70)),
       trailing: IconButton(
@@ -333,13 +365,16 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
       ),
     );
   }
-//ويدجت Flutter اسمها _themeTile 
-//وظيفتها عرض تفاصيل موضوع دعوة (InvitationTheme) بشكل منسق في قائمة
-  Widget _themeTile(InvitationTheme t, Color accent1, Color accent2) { // InvitationTheme : اسم وصورة
+
+  //ويدجت Flutter اسمها _themeTile
+  //وظيفتها عرض تفاصيل موضوع دعوة (InvitationTheme) بشكل منسق في قائمة
+  Widget _themeTile(InvitationTheme t, Color accent1, Color accent2) {
+    // InvitationTheme : اسم وصورة
     final host = kIsWeb ? 'localhost' : '192.168.1.107';
     final base = 'http://$host:5000/api';
     return ListTile(
-      leading: Container( // صورة الموضوع على اليسار
+      leading: Container(
+        // صورة الموضوع على اليسار
         width: 50,
         height: 50,
         decoration: BoxDecoration(
@@ -351,15 +386,21 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
           ),
         ),
       ),
-      title: Text(t.name, style: GoogleFonts.orbitron(color: accent1)), // اسم موضوع الدعوة
-      trailing: Row( // مجموعة الأزرار على اليمين , زر حذف وتعديل 
+      title: Text(
+        t.name,
+        style: GoogleFonts.orbitron(color: accent1),
+      ), // اسم موضوع الدعوة
+      trailing: Row(
+        // مجموعة الأزرار على اليمين , زر حذف وتعديل
         mainAxisSize: MainAxisSize.min,
         children: [
-          IconButton( // زر التعديل
+          IconButton(
+            // زر التعديل
             icon: Icon(Icons.edit, color: accent1),
             onPressed: () => _showEditThemeDialog(context, t),
           ),
-          IconButton( // زر الحذف
+          IconButton(
+            // زر الحذف
             icon: Icon(Icons.delete, color: accent2),
             onPressed: () async {
               await ref.read(adminServiceProvider).deleteTheme(t.id);
@@ -443,20 +484,22 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
           ),
     );
   }       */
- 
- // انشاء نافذة تصميم موضوع جديد واختيار صورة واسم
+
+  // انشاء نافذة تصميم موضوع جديد واختيار صورة واسم
   void _showCreateThemeDialog(
     BuildContext context, // بناء النافذة
     Color accent,
     WidgetRef ref,
   ) {
-    final picker = ImagePicker(); 
+    final picker = ImagePicker();
     final nameCtl = TextEditingController(); // للتحكم في حقل الاسم
 
     XFile? picked; // selected file يخزن الصورة المختارة
-    Uint8List? previewBytes; // used for web preview لعرض معاينة الصورة على الويب
+    Uint8List?
+    previewBytes; // used for web preview لعرض معاينة الصورة على الويب
 
-    showDialog( // انشاء نافذة جديدة  
+    showDialog(
+      // انشاء نافذة جديدة
       context: context,
       barrierDismissible: false, // يمنع اغلاق النافذة بالضغط خارجها
       builder:
@@ -477,7 +520,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         // ── Name field ────────────────────────────────────────────────
-                        TextField( //اسم التصميم ادخال
+                        TextField(
+                          //اسم التصميم ادخال
                           controller: nameCtl,
                           decoration: _inputDecoration(accent, 'الاسم'),
                           style: const TextStyle(color: Colors.white),
@@ -485,35 +529,43 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
                         const SizedBox(height: 16),
 
                         // ── Pick image button ────────────────────────────────────────
-                        ElevatedButton.icon( //زر معاينة الصورة 
+                        ElevatedButton.icon(
+                          //زر معاينة الصورة
                           style: ElevatedButton.styleFrom(
                             backgroundColor: accent,
                             foregroundColor: Colors.black,
                           ),
                           icon: const Icon(Icons.image_outlined),
-                          label: Text( 
-                            picked == null ? 'اختر صورة' : 'تغيير الصورة', // اذا اختار الصورة يظهر تغيير اذا لا يظهر اختر
+                          label: Text(
+                            picked == null
+                                ? 'اختر صورة'
+                                : 'تغيير الصورة', // اذا اختار الصورة يظهر تغيير اذا لا يظهر اختر
                           ),
-                          onPressed: () async { 
-                            final res = await picker.pickImage( // اختيار صورة من المعرض 
+                          onPressed: () async {
+                            final res = await picker.pickImage(
+                              // اختيار صورة من المعرض
                               source: ImageSource.gallery,
                             );
                             if (res != null) {
                               final bytes =
                                   await res
                                       .readAsBytes(); // works on all platforms
-                              setState(() { // تحديث الحالة
+                              setState(() {
+                                // تحديث الحالة
                                 picked = res; // تخزين الصورة المختارة
-                                previewBytes = bytes; // معاينة الصورة المختارة وتخزين البيانات في الخادم 
+                                previewBytes =
+                                    bytes; // معاينة الصورة المختارة وتخزين البيانات في الخادم
                               });
                             }
                           },
                         ),
 
                         // ── Live preview ─────────────────────────────────────────────
-                        if (previewBytes != null) ...[ // اذا تم اختيار صورة
-                          const SizedBox(height: 12), 
-                          ClipRRect( // عرض الصورة داخل اطار دائري  
+                        if (previewBytes != null) ...[
+                          // اذا تم اختيار صورة
+                          const SizedBox(height: 12),
+                          ClipRRect(
+                            // عرض الصورة داخل اطار دائري
                             borderRadius: BorderRadius.circular(8),
                             child: Image.memory(
                               previewBytes!,
@@ -527,7 +579,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
                   ),
 
                   // ── Dialog actions ────────────────────────────────────────────────
-                  actions: [ //زر الالغاء 
+                  actions: [
+                    //زر الالغاء
                     TextButton(
                       onPressed: () => Navigator.pop(ctx),
                       child: Text('إلغاء', style: TextStyle(color: accent)),
@@ -536,14 +589,19 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
                       style: FilledButton.styleFrom(backgroundColor: accent),
                       onPressed: () async {
                         if (nameCtl.text.trim().isEmpty || picked == null)
-                          return;  // يمنع الإجراء إذا الاسم فارغ أو لم يتم اختيار صورة
+                          return; // يمنع الإجراء إذا الاسم فارغ أو لم يتم اختيار صورة
                         Navigator.pop(ctx); // close the dialog
 
                         await ref
                             .read(adminServiceProvider)
-                            .createTheme(nameCtl.text.trim(), picked!); // إنشاء تصميم جديد
+                            .createTheme(
+                              nameCtl.text.trim(),
+                              picked!,
+                            ); // إنشاء تصميم جديد
 
-                        ref.invalidate(adminThemesProvider); // تحديث قائمة التصاميم
+                        ref.invalidate(
+                          adminThemesProvider,
+                        ); // تحديث قائمة التصاميم
                       },
                       child: Text(
                         'إنشاء',
@@ -557,7 +615,6 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
   }
 
   /// Keeps the underline styling DRY ,للحفاظ على تصميم موحد وسهل التعديل (DRY = Don't Repeat Yourself).
-
 
   InputDecoration _inputDecoration(Color accent, String hint) =>
       InputDecoration(
@@ -610,7 +667,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen>
                   onChanged: (v) => name = v,
                 ),
                 const SizedBox(height: 12),
-                ElevatedButton.icon( // زر تغيير الصورة
+                ElevatedButton.icon(
+                  // زر تغيير الصورة
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Theme.of(context).colorScheme.secondary,
                     foregroundColor: Colors.black,

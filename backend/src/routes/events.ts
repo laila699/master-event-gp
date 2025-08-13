@@ -14,11 +14,11 @@ router.put("/:id", ctrl.updateEvent);
 router.delete("/:id", ctrl.deleteEvent);
 router.get("/:eventId/recommended-offerings", recommendedOfferings);
 
-router.post("/:id/guests", ctrl.addGuest);
+router.post("/:id/guests", ctrl.addMember);
 router.put(
   "/:id/guests/:guestId",
 
-  ctrl.updateGuestStatus
+  ctrl.updateMemberStatus
 );
 
 export default router;

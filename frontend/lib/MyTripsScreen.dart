@@ -3,16 +3,16 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../services/api_service.dart';
 
-class MyEventsScreen extends StatefulWidget {
+class MyTripsScreen extends StatefulWidget {
   final String userId;
 
-  const MyEventsScreen({super.key, required this.userId});
+  const MyTripsScreen({super.key, required this.userId});
 
   @override
-  _MyEventsScreenState createState() => _MyEventsScreenState();
+  _MyTripsScreenState createState() => _MyTripsScreenState();
 }
 
-class _MyEventsScreenState extends State<MyEventsScreen> {
+class _MyTripsScreenState extends State<MyTripsScreen> {
   late Future<List<dynamic>> _eventsFuture;
 
   @override

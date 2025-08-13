@@ -1,7 +1,7 @@
 // lib/distribution_provider_dashboard_screen.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:softwareGP/manage_distribution_store_screen.dart';
+import 'package:softwareGP/manage_Distribution_Store_screen.dart';
 
 // **ملاحظة:** في التطبيق الحقيقي، هذه القائمة ستأتي من الـ Backend
 // لكن لأغراض الـ Front-end، سنستخدم هذه البيانات كمثال

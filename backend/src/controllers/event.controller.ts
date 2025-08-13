@@ -103,7 +103,7 @@ export const deleteEvent = asyncHandler(async (req: Request, res: Response) => {
 });
 
 // POST /api/events/:id/guests
-export const addGuest = asyncHandler(async (req: Request, res: Response) => {
+export const addMember = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, email } = req.body;
 
@@ -133,18 +133,18 @@ export const addGuest = asyncHandler(async (req: Request, res: Response) => {
     console.error("E-mail sending error →", err);
   }
 
-  res.status(201).json({ message: "Guest added & email processed" });
+  res.status(201).json({ message: "Member added & email processed" });
 });
 
 // PUT /api/events/:id/guests/:guestId
-export const updateGuestStatus = asyncHandler(
+export const updateMemberStatus = asyncHandler(
   async (req: Request, res: Response) => {
     const { id, guestId } = req.params;
     const { status } = req.body as { status: "pending" | "yes" | "no" };
     const event = await Event.findById(id);
     if (!event) return res.status(404).json({ message: "Event not found" });
     const guest = event.guests.find((g: any) => g._id?.toString() === guestId);
-    if (!guest) return res.status(404).json({ message: "Guest not found" });
+    if (!guest) return res.status(404).json({ message: "Member not found" });
     guest.status = status;
     await event.save();
     res.json(event);

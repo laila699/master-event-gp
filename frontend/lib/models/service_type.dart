@@ -1,32 +1,32 @@
 // lib/models/service_type.dart
 
 enum VendorServiceType {
-  decorator,
+  accommodation,
 
-  furnitureStore,
+  transportation,
   photographer,
   restaurant,
-  giftShop,
-  entertainer,
+  tools,
+  guides,
   unknown,
 }
 
 extension VendorServiceTypeExt on VendorServiceType {
   String get value {
     switch (this) {
-      case VendorServiceType.decorator:
-        return 'decorator';
+      case VendorServiceType.accommodation:
+        return 'accommodation';
 
-      case VendorServiceType.furnitureStore:
-        return 'furniture_store';
+      case VendorServiceType.transportation:
+        return 'transportation';
       case VendorServiceType.photographer:
         return 'photographer';
       case VendorServiceType.restaurant:
         return 'restaurant';
-      case VendorServiceType.giftShop:
-        return 'gift_shop';
-      case VendorServiceType.entertainer:
-        return 'entertainer';
+      case VendorServiceType.tools:
+        return 'tools';
+      case VendorServiceType.guides:
+        return 'guides';
       case VendorServiceType.unknown:
         return '';
     }
@@ -35,18 +35,18 @@ extension VendorServiceTypeExt on VendorServiceType {
   /// **Never** returns null.
   String get label {
     switch (this) {
-      case VendorServiceType.decorator:
+      case VendorServiceType.accommodation:
         return 'الاقامة';
 
-      case VendorServiceType.furnitureStore:
+      case VendorServiceType.transportation:
         return 'النقل ';
       case VendorServiceType.photographer:
         return 'التصوير';
       case VendorServiceType.restaurant:
         return 'المطاعم';
-      case VendorServiceType.giftShop:
+      case VendorServiceType.tools:
         return 'معدات الرحل ';
-      case VendorServiceType.entertainer:
+      case VendorServiceType.guides:
         return 'المرشد ';
       case VendorServiceType.unknown:
         return '';

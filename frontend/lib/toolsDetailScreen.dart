@@ -4,10 +4,10 @@ import 'feedbackScreen.dart';
 import 'full_image_screen.dart';
 import 'BookingScreen.dart';
 
-class StoreDetailScreen extends StatelessWidget {
+class ToolsDetailScreen extends StatelessWidget {
   final Map<String, dynamic> store;
 
-  const StoreDetailScreen({super.key, required this.store});
+  const ToolsDetailScreen({super.key, required this.store});
 
   @override
   Widget build(BuildContext context) {

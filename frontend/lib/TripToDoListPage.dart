@@ -7,19 +7,19 @@ import 'package:intl/intl.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:softwareGP/theme/colors.dart';
 
-import '../models/event.dart';
+import 'models/trip.dart';
 import '../models/task.dart';
-import '../providers/event_provider.dart';
+import 'providers/tr_provider.dart';
 
-class EventToDoListPage extends ConsumerStatefulWidget {
+class TripToDoListPage extends ConsumerStatefulWidget {
   final String eventId;
-  const EventToDoListPage({super.key, required this.eventId});
+  const TripToDoListPage({super.key, required this.eventId});
 
   @override
-  ConsumerState<EventToDoListPage> createState() => _EventToDoListPageState();
+  ConsumerState<TripToDoListPage> createState() => _TripToDoListPageState();
 }
 
-class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
+class _TripToDoListPageState extends ConsumerState<TripToDoListPage> {
   final List<Task> _tasks = [];
   final _dateFmt = DateFormat('yyyy/MM/dd');
   bool _inited = false;
@@ -69,7 +69,10 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: BorderSide(color: const Color.fromARGB( 255, 244, 168, 196), width: 2),
+          borderSide: BorderSide(
+            color: const Color.fromARGB(255, 244, 168, 196),
+            width: 2,
+          ),
         ),
       ),
     );
@@ -146,7 +149,12 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
                                           colorScheme: ColorScheme.dark(
                                             primary: AppColors.gradientStart,
                                             onPrimary: Colors.black,
-                                            surface: const Color.fromARGB( 255, 244, 168, 196),
+                                            surface: const Color.fromARGB(
+                                              255,
+                                              244,
+                                              168,
+                                              196,
+                                            ),
                                             onSurface: AppColors.textOnNeon,
                                           ),
                                         ),
@@ -158,7 +166,12 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
                               child: Text(
                                 'اختر تاريخ',
                                 style: GoogleFonts.orbitron(
-                                  color: const Color.fromARGB( 255, 244, 168, 196),
+                                  color: const Color.fromARGB(
+                                    255,
+                                    244,
+                                    168,
+                                    196,
+                                  ),
                                 ),
                               ),
                             ),
@@ -180,7 +193,7 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
                               borderSide: BorderSide(
-                                color: const Color.fromARGB( 255, 244, 168, 196),
+                                color: const Color.fromARGB(255, 244, 168, 196),
                                 width: 2,
                               ),
                             ),
@@ -211,13 +224,18 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
                             gradient: const LinearGradient(
                               colors: [
                                 AppColors.gradientStart,
-                                Color.fromARGB( 255, 244, 168, 196),
+                                Color.fromARGB(255, 244, 168, 196),
                               ],
                             ),
                             borderRadius: BorderRadius.circular(16),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color.fromARGB( 255, 244, 168, 196).withOpacity(0.6),
+                                color: const Color.fromARGB(
+                                  255,
+                                  244,
+                                  168,
+                                  196,
+                                ).withOpacity(0.6),
                                 blurRadius: 12,
                                 offset: const Offset(0, 6),
                               ),
@@ -304,7 +322,10 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
               gradient: RadialGradient(
                 center: const Alignment(-0.8, -0.8),
                 radius: 1.5,
-                colors: [AppColors.gradientStart, const Color.fromARGB( 255, 244, 168, 196)],
+                colors: [
+                  AppColors.gradientStart,
+                  const Color.fromARGB(255, 244, 168, 196),
+                ],
               ),
             ),
           ),
@@ -366,7 +387,7 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
                     actions: [
                       IconButton(
                         icon: const Icon(Icons.save),
-                        color: const Color.fromARGB( 255, 244, 168, 196),
+                        color: const Color.fromARGB(255, 244, 168, 196),
                         onPressed: _saveSettings,
                       ),
                     ],
@@ -389,7 +410,12 @@ class _EventToDoListPageState extends ConsumerState<EventToDoListPage> {
                                   ),
                                 ),
                                 selected: _filterCategory == null,
-                                selectedColor: const Color.fromARGB( 255, 244, 168, 196),
+                                selectedColor: const Color.fromARGB(
+                                  255,
+                                  244,
+                                  168,
+                                  196,
+                                ),
                                 onSelected:
                                     (_) =>
                                         setState(() => _filterCategory = null),

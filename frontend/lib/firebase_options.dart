@@ -64,7 +64,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '730341362424',
     projectId: 'eventmngmt-1deb7',
     storageBucket: 'eventmngmt-1deb7.firebasestorage.app',
-    iosBundleId: 'com.example.masterevent',
+    iosBundleId: 'com.example.Tripify',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
@@ -73,7 +73,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '730341362424',
     projectId: 'eventmngmt-1deb7',
     storageBucket: 'eventmngmt-1deb7.firebasestorage.app',
-    iosBundleId: 'com.example.masterevent',
+    iosBundleId: 'com.example.Tripify',
   );
 
   static const FirebaseOptions windows = FirebaseOptions(
@@ -85,5 +85,4 @@ class DefaultFirebaseOptions {
     storageBucket: 'eventmngmt-1deb7.firebasestorage.app',
     measurementId: 'G-CQLSQ3X5TK',
   );
-
 }

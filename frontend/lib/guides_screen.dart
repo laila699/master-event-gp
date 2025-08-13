@@ -1,10 +1,10 @@
 // lib/entertainment_screen.dart
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'entertainment_detail_screen.dart'; // تأكدي من المسار الصحيح لشاشة التفاصيل
+import 'guides_detail_screen.dart'; // تأكدي من المسار الصحيح لشاشة التفاصيل
 
 // 1. بيانات جميع الفرق والعروض (الآن مدمجة هنا)
-final List<Map<String, dynamic>> allEntertainmentOptions = [
+final List<Map<String, dynamic>> allToolsOptions = [
   {
     'id': 'debka_pro',
     'name': 'فرقة شمس للأعراس ',
@@ -114,7 +114,7 @@ class _EntertainmentScreenState extends State<EntertainmentScreen> {
   String? _selectedEventType; // لتخزين نوع الرحلة المختار من الفلترة
 
   // قائمة بأنواع المناسبات التي ستظهر في الـ Dropdown
-  final List<String> _eventTypes = [
+  final List<String> _tripTypes = [
     'جميع المناسبات', // هذا الخيار سيعرض كل الفرق
     'زفاف',
     'خطوبة',
@@ -132,7 +132,7 @@ class _EntertainmentScreenState extends State<EntertainmentScreen> {
   Widget build(BuildContext context) {
     // بناء القائمة المفلترة بناءً على البحث ونوع الرحلة
     List<Map<String, dynamic>> filteredEntertainmentOptions =
-        allEntertainmentOptions.where((option) {
+        allToolsOptions.where((option) {
           // شرط البحث عن طريق الاسم
           final nameMatches = option['name'].toLowerCase().contains(
             _searchQuery.toLowerCase(),
@@ -218,7 +218,7 @@ class _EntertainmentScreenState extends State<EntertainmentScreen> {
                     ),
                   ),
                   items:
-                      _eventTypes.map((type) {
+                      _tripTypes.map((type) {
                         return DropdownMenuItem<String>(
                           value: type,
                           child: Text(

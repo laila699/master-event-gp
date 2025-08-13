@@ -1,4 +1,4 @@
-package com.example.masterevent
+package com.example.Tripify
 
 import io.flutter.embedding.android.FlutterActivity
 
