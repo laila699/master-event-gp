@@ -1,0 +1,99 @@
+// lib/providers/event_provider.dart
+
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:softwareGP/models/recommended_offers.dart';
+import '../models/trip.dart';
+import '../models/member.dart';
+import '../services/event_service.dart';
+import 'auth_provider.dart';
+
+final eventServiceProvider = Provider<TripService>((ref) {
+  final dio = ref.watch(
+    dioProvider,
+  ); // Get the configured Dio instance to make API calls
+  return TripService(dio);
+});
+
+/// 1) List my events
+final eventListProvider = FutureProvider<List<Trip>>((ref) async {
+  final auth = ref.watch(authNotifierProvider);
+  if (auth.status != AuthStatus.authenticated) return [];
+  return ref.read(eventServiceProvider).fetchTrips(auth.user!.id);
+});
+
+/// 2) Single‐event detail (with guests & optional settings)
+final eventDetailProvider = FutureProvider.family<Trip, String>(
+  (ref, id) => ref.read(eventServiceProvider).fetchTripById(id),
+);
+final recommendedOffersFamily = FutureProvider.family<List<RecBucket>, String>((
+  ref,
+  eventId,
+) {
+  return ref
+      .read(eventServiceProvider)
+      .fetchRecommendedOffers(eventId, limit: 5);
+});
+
+/// 3) Create
+final createTripProvider = FutureProvider.family<Trip, Map<String, dynamic>>((
+  ref,
+  params,
+) {
+  return ref
+      .read(eventServiceProvider)
+      .createTrip(
+        title: params['title'] as String,
+        date: DateTime.parse(params['date'] as String),
+        venue: params['venue'] as String,
+      );
+});
+
+/// 4) Update (including settings)
+final updateTripProvider = FutureProvider.family<Trip, Map<String, dynamic>>((
+  ref,
+  params,
+) {
+  return ref
+      .read(eventServiceProvider)
+      .updateTrip(
+        eventId: params['eventId'] as String,
+        title: params['title'] as String?,
+        date:
+            params['date'] == null
+                ? null
+                : DateTime.parse(params['date'] as String),
+        venue: params['venue'] as String?,
+        settings: params['settings'] as Map<String, dynamic>?,
+      );
+});
+
+/// 5) Delete
+final deleteTripProvider = FutureProvider.family<void, String>((ref, eventId) {
+  return ref.read(eventServiceProvider).deleteTrip(eventId);
+});
+
+/// 6) Add Member
+final addMemberProvider = FutureProvider.family<Member, Map<String, String>>((
+  ref,
+  params,
+) {
+  return ref
+      .read(eventServiceProvider)
+      .addMember(
+        eventId: params['eventId']!,
+        name: params['name']!,
+        email: params['email']!,
+      );
+});
+
+/// 7) Update Member Status
+final updateMemberStatusProvider =
+    FutureProvider.family<Member, Map<String, String>>((ref, params) {
+      return ref
+          .read(eventServiceProvider)
+          .updateMemberStatus(
+            eventId: params['eventId']!,
+            guestId: params['guestId']!,
+            status: params['status']!,
+          );
+    });
